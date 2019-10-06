@@ -13,7 +13,7 @@ public class ManagePlugins extends Command{
 	
 	public ManagePlugins() {
 		super(new String[]{"manageplugins"}, "", "%s");
-		this.setCategory(CommandCategory.CPANEL);
+		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
 	}
 
@@ -40,25 +40,7 @@ public class ManagePlugins extends Command{
 			System.out.println(ozzie.getJDA().getShardInfo());
 		}
 		
-		/*MessageBuilder mb = new MessageBuilder();
-		MessageChannel channel = event.getChannel();// Predefined channel
-		String[] messages = {"1", "2", "3", "4"};
-		Message send = mb.append(messages[0]).build();
-		String id = channel.sendMessage(send).complete().getId();
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		for (String msg : messages)
-		{
-			channel.editMessageById(id, msg).queue();
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}*/
+		
 		//ozzie.getOzzieManager().getJsonManager().writeJson("test", "test", ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList());
 		//HashMap<Long, ServerSettings> test = ozzie.getOzzieManager().getJsonManager().readJson("test", "test", new TypeToken<HashMap<Long, ServerSettings>>(){}.getType());
 		//System.out.println(test.get("151831331796549632").getCustomBotPrefix());

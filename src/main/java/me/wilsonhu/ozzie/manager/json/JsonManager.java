@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import me.wilsonhu.ozzie.OzzieManager;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettings;
+import me.wilsonhu.ozzie.manager.plugin.Plugin;
 
 public class JsonManager {
 	private OzzieManager manager;
@@ -22,7 +23,7 @@ public class JsonManager {
 		getOzzieManager().getLogger().info("Json Manager started");
 	}
 	
-	public void writeJson(String path, String filename, Object object) {
+	private void writeJson(String path, String filename, Object object) {
 		try {
             Gson gson = new Gson();
             String json = gson.toJson(object);
@@ -34,7 +35,7 @@ public class JsonManager {
         } catch (Exception ex) {}
 	}
 	
-	public <T> T readJson(String path, String filename, Type type) {
+	private <T> T readJson(String path, String filename, Type type) {
 		Gson gson = new Gson();
         FileReader fileReader = null;
         BufferedReader buffered = null;
@@ -54,6 +55,14 @@ public class JsonManager {
 			}
         }
 		return null;
+	}
+	
+	public void writeJsonPlugin(Plugin pl,String filename, Object object) {
+		this.writeJson(this.getOzzieManager().getPluginLoader().getDirectory() + File.separator + pl.getName(), filename, object);
+	}
+	
+	public <T> T readJsonPlugin(Plugin pl, String filename, Type type) {
+		return readJson(this.getOzzieManager().getPluginLoader().getDirectory() + File.separator + pl.getName(), filename, type);
 	}
 
 	public void writeTokenList() {

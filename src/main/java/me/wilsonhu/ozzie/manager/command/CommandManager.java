@@ -41,7 +41,8 @@ public class CommandManager
 				new BotPrefix(),
 				new Channel(),
 				new ManagePlugins(),
-				new Clara()
+				new Clara(),
+				new Token()
 		};
 	}
 	

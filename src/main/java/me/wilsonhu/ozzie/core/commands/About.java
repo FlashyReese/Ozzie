@@ -53,9 +53,9 @@ public class About extends Command{
 		long days = hours / 24;
 		EmbedBuilder embed = new EmbedBuilder();
 		embed.setColor(Color.red)
-		.setAuthor("About " + ozzie.getOzzieManager().getBotName(), "http://polr.me/flashybot", event.getJDA().getSelfUser().getAvatarUrl())
+		.setAuthor("About " + ozzie.getOzzieManager().getBotName(), "https://cutt.ly/Ozzie", event.getJDA().getSelfUser().getAvatarUrl())
 		.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-		.setDescription("Howdy, I am " + ozzie.getOzzieManager().getBotName() + ", some call me Clara or Oswin. I'm currently being worked on :heart:. Born on 2019-09-17. Try using `"+ ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().get(event.getGuild().getIdLong()).getCustomBotPrefix() +"help` to start using my features! \n **[Add Me To A Server](http://polr.me/flashybot)** !!")
+		.setDescription("Howdy, I am " + ozzie.getOzzieManager().getBotName() + ", some call me Clara or Oswin. I'm currently being worked on :heart:. Born on 2019-09-17. Try using `"+ ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().get(event.getGuild().getIdLong()).getCustomBotPrefix() +"help` to start using my features! \n **[Add Me To A Server](https://cutt.ly/Ozzie)** !!")
 		.addField("Lead Developer", dev, true)
 		.addField("Co-Developer", codev, true)
 		//.addBlankField(true)

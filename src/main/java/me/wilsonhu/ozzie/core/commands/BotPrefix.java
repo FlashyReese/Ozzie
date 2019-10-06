@@ -11,7 +11,7 @@ public class BotPrefix extends Command{
 	public BotPrefix() {
 		super(new String[]{"botprefix"}, "prefix", "%s (Guild ID) <Prefix>");
 		this.setLevel(CommandLevel.ADMINISTRATOR);
-		this.setCategory(CommandCategory.UTILITY);
+		this.setCategory(CommandCategory.SETTINGS);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 	}
 

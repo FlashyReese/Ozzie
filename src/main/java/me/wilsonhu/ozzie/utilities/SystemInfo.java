@@ -74,11 +74,11 @@ public class SystemInfo {
     }
 
     public String DiskInfo() {
-        /* Get a list of all filesystem roots on this system */
+        
         File[] roots = File.listRoots();
         StringBuilder sb = new StringBuilder();
 
-        /* For each filesystem root, print some info */
+        
         for (File root : roots) {
             sb.append("File system root: ");
             sb.append(root.getAbsolutePath());

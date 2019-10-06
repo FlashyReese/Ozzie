@@ -13,7 +13,7 @@ public class Channel extends Command{
 	
 	public Channel() {
 		super(new String[]{"channel"}, "desc", "%s add (Guild ID) <Mentioned TextChannels>\n%s remove (Guild ID) <Mentioned TextChannel>");
-		this.setCategory(CommandCategory.MODERATION);
+		this.setCategory(CommandCategory.SETTINGS);
 		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 	}

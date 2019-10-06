@@ -27,7 +27,7 @@ public class Tenor {
 
                 String searchTerm = "";
 				try {
-					searchTerm = URLEncoder.encode(search, "UTF-8");
+					searchTerm = URLEncoder.encode(search, "UTF-8").replaceAll("\\+", "%20");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
@@ -49,10 +49,7 @@ public class Tenor {
     	return items;
     }
 
-    /**
-     * Get Search Result GIFs
-     * @param ozzie 
-     */
+    
     public JSONObject getSearchResults(String searchTerm, int limit, OzzieManager ozzie) {
 
         // make search request - using default locale of EN_US
@@ -67,9 +64,7 @@ public class Tenor {
         return null;
     }
 
-    /**
-     * Construct and run a GET request
-     */
+    
     private JSONObject get(String url) throws IOException, JSONException {
         HttpURLConnection connection = null;
         try {
@@ -100,9 +95,7 @@ public class Tenor {
         return new JSONObject("");
     }
 
-    /**
-     * Parse the response into JSONObject
-     */
+    
     private JSONObject parser(HttpURLConnection connection) throws JSONException {
         char[] buffer = new char[1024 * 4];
         int n;

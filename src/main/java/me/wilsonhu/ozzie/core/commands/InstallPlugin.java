@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class InstallPlugin extends Command{
 	public InstallPlugin() {
 		super(new String[] {"installplugin"}, "Installs plugin via direct upload or URL", "%s\n%s <URL>");
-		this.setCategory(CommandCategory.CPANEL);
+		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
 	}
 

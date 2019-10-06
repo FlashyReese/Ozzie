@@ -14,7 +14,7 @@ public class User extends Command{
 	
 	public User() {
 		super(new String[]{"user"}, "Turn on whitelist, add or remove users from whitelist and blacklist", "%s whitelist add (Guild ID) <Mentioned User>\n%s whitelist remove (Guild ID) <Mentioned User>\n%s blacklist add (Guild ID) <Mentioned User>\n%s blacklist remove (Guild ID) <Mentioned User>\n%s whitelist on (Guild ID)\n%s whitelist off (Guild ID)");
-		this.setCategory(CommandCategory.MODERATION);
+		this.setCategory(CommandCategory.SETTINGS);
 		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 	}
