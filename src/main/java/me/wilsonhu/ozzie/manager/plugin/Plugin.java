@@ -2,12 +2,12 @@ package me.wilsonhu.ozzie.manager.plugin;
 
 import java.util.ArrayList;
 
-import com.darkmagician6.eventapi.EventManager;
-
+import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 
-public abstract class Plugin {
+public abstract class Plugin extends ListenerAdapter{
 	
 	private String name;
 	private String author;
@@ -19,8 +19,10 @@ public abstract class Plugin {
 		this.setName(name);
 		this.setVersion(version);
 		this.setAuthor(author);
-		EventManager.register(this);
 	}
+	
+	public void onEnable(Ozzie ozzie) {}
+	public void onDisable(Ozzie ozzie) {}	
 	
 	public ArrayList<Command> getCommands() {
 		return commands;

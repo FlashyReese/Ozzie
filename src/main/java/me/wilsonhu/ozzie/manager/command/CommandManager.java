@@ -36,6 +36,7 @@ public class CommandManager
 				new Ping(),
 				new Plugins(),
 				new User(),
+				new Reload(),
 				new Restart(),
 				new InstallPlugin(),
 				new BotPrefix(),
@@ -185,8 +186,8 @@ public class CommandManager
 		return (((c.getLevel() == CommandLevel.OWNER || c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT) && event.getGuild().getOwner().getUser().getIdLong() == event.getAuthor().getIdLong()) || ((c.getLevel() == CommandLevel.DEVELOPER || c.getLevel() == CommandLevel.OWNER || c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT)) || ((c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT) && event.getGuild().getMemberById(event.getAuthor().getIdLong()).hasPermission(Permission.ADMINISTRATOR)) || (c.getLevel() == CommandLevel.DEFAULT));
 	}
 
-	public void addCommands(Plugin pl, Command...commands) {
-		for(Command cmd: commands) {
+	public void addCommands(Plugin pl) {
+		for(Command cmd: pl.getCommands()) {
 			this.getCommands().add(cmd);
 			this.getOzzieManager().getLogger().info(String.format("[%s] Loading command %s", pl.getName(), cmd.getNames()[0]));
 		}

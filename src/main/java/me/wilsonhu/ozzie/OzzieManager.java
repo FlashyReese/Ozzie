@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.darkmagician6.eventapi.EventManager;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
-import me.wilsonhu.ozzie.core.events.EventOzzieManager;
 import me.wilsonhu.ozzie.core.params.DisablePlugins;
 import me.wilsonhu.ozzie.core.params.ShardSize;
 import me.wilsonhu.ozzie.manager.command.CommandManager;
@@ -87,7 +85,6 @@ public class OzzieManager {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		EventManager.call(new EventOzzieManager(this));
 		if(((ShardSize) getParameterManager().getParam(ShardSize.class)).isShardless()) {
 			new Ozzie(this).start();
 		}else {

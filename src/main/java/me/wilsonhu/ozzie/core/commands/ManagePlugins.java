@@ -30,7 +30,7 @@ public class ManagePlugins extends Command{
 			}
 			line = line + f.getName() + spacer + this.humanReadableByteCount(f.length(), true) + "\n";
 		}
-		event.getChannel().sendMessage("```md\n" + line + "```").queue();
+		//event.getChannel().sendMessage("```md\n" + line + "```").queue();
 		//Shard Info v: check if running shardless first
 		if(!ozzie.isShardless()) {
 			for(OzzieShard shard: ozzie.getOzzieManager().getShardManager().getShardList()) {
@@ -39,7 +39,6 @@ public class ManagePlugins extends Command{
 		}else {
 			System.out.println(ozzie.getJDA().getShardInfo());
 		}
-		
 		
 		//ozzie.getOzzieManager().getJsonManager().writeJson("test", "test", ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList());
 		//HashMap<Long, ServerSettings> test = ozzie.getOzzieManager().getJsonManager().readJson("test", "test", new TypeToken<HashMap<Long, ServerSettings>>(){}.getType());

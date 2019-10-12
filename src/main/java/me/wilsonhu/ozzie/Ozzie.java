@@ -1,10 +1,8 @@
 package me.wilsonhu.ozzie;
 
-import com.darkmagician6.eventapi.EventManager;
-
-import me.wilsonhu.ozzie.core.events.EventOzzie;
 import me.wilsonhu.ozzie.core.params.DisablePlugins;
 import me.wilsonhu.ozzie.listener.EventListener;
+import me.wilsonhu.ozzie.manager.plugin.Plugin;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -43,7 +41,12 @@ public class Ozzie {
 				getJDA().addEventListener(getOzzieManager().getEventWaiter());
 				getJDA().addEventListener(new EventListener(this.getOzzieManager(), this));
 				if(!((DisablePlugins) this.getOzzieManager().getParameterManager().getParam(DisablePlugins.class)).isPluginless()) {
-					EventManager.call(new EventOzzie(this));
+					for(Plugin pl: this.getOzzieManager().getLoadedPluginList()) {
+						this.getOzzieManager().getLogger().info(String.format("Enabling %s %s", pl.getName(), pl.getVersion()));
+						pl.onEnable(this);
+						getJDA().addEventListener(pl);
+						this.getOzzieManager().getCommandManager().addCommands(pl);
+					}
 				}
 				me.wilsonhu.ozzie.utilities.Activity act = new me.wilsonhu.ozzie.utilities.Activity(); 
 				getJDA().getPresence().setActivity(Activity.playing(act.getRandomQuote()));

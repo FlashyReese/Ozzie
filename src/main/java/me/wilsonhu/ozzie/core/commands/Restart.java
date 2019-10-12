@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Restart extends Command{
 	public Restart() {
 		super(new String[] {"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
-		this.setCategory(CommandCategory.CPANEL);
+		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
 	}
 
