@@ -1,11 +1,14 @@
 package me.wilsonhu.ozzie.listener;
 
+import java.util.ArrayList;
+
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.OzzieManager;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettings;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -28,6 +31,20 @@ public class EventListener extends ListenerAdapter {
 				getOzzieManager().getServerSettingsManager().getServerSettingsList().put(guild.getIdLong(), new ServerSettings(guild, getOzzieManager()));
 			}
 			getOzzieManager().getJsonManager().writeServerSettingsList();
+		}
+		
+		getOzzieManager().getJsonManager().readUserPermissionList();
+		if(getOzzieManager().getPermissionManager().getUserPermissionList().isEmpty()) {
+			for(Guild guild: getOzzie().getJDA().getGuilds()) {
+				for(Member m : guild.getMembers()) {
+					if(!getOzzieManager().getPermissionManager().getUserPermissionList().containsKey(m.getIdLong())) {
+						ArrayList<String> defaultPerms = new ArrayList<String>();
+						defaultPerms.add("ozzie.default");
+						getOzzieManager().getPermissionManager().getUserPermissionList().put(m.getIdLong(), defaultPerms);
+					}
+				}
+			}
+			getOzzieManager().getJsonManager().writeUserPermissionList();
 		}
 	}
 	

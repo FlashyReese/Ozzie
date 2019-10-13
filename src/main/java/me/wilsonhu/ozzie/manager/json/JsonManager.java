@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
@@ -111,6 +112,34 @@ public class JsonManager {
             BufferedReader buffered = new BufferedReader(fileReader);
             Type type = new TypeToken<HashMap<Long, ServerSettings>>(){}.getType();
             this.getOzzieManager().getServerSettingsManager().setServerSettingsList(gson.fromJson(fileReader, type));
+            buffered.close();
+            fileReader.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+	
+	
+	public void writeUserPermissionList() {
+        try {
+            Gson gson = new Gson();
+            String json = gson.toJson(this.getOzzieManager().getPermissionManager().getUserPermissionList());
+            FileWriter fw = new FileWriter("userpermissions.json");
+            fw.write(json);
+            fw.flush();
+            fw.close();
+        } catch (Exception ex) {}
+    }
+	
+	public void readUserPermissionList() {
+		try {
+            Gson gson = new Gson();
+            File file = new File("userpermissions.json");
+            if(!file.exists())return;
+            FileReader fileReader = new FileReader(file);
+            BufferedReader buffered = new BufferedReader(fileReader);
+            Type type = new TypeToken<HashMap<Long, ArrayList<String>>>(){}.getType();
+            this.getOzzieManager().getPermissionManager().setUserPermissionList(gson.fromJson(fileReader, type));
             buffered.close();
             fileReader.close();
         } catch (Exception ex) {

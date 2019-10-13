@@ -16,6 +16,7 @@ public class Eval extends Command{
 		super(new String[]{"eval"}, "Cool Stuff", "%s <java code>");
 		this.setLevel(CommandLevel.DEVELOPER);
 		this.setCategory(CommandCategory.DEVELOPER);
+		this.setPermission("ozzie.developer");
 	}
 
 	@Override

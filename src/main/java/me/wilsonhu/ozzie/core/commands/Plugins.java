@@ -17,6 +17,7 @@ public class Plugins extends Command{
 		super(new String[] {"plugins", "plugin"}, "List Plugins", "%s | %s <Plugin Name>");
 		this.setCategory(CommandCategory.INFORMATION);
 		this.setLevel(CommandLevel.DEVELOPER);
+		this.setPermission("ozzie.viewplugins");
 	}
 
 	@Override

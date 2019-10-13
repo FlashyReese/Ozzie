@@ -13,10 +13,12 @@ public class Reload extends Command{
 		super(new String[] {"reload"}, "reloading plugins without restarting", "%s");
 		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
+		this.setPermission("ozzie.developer");
 	}
 
 	@Override
 	public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+		
 		event.getChannel().sendMessage("Reloading").queue();
 		this.removeListenersAndCommands(ozzie);
 		this.reloadPluginLoader(ozzie);
@@ -36,12 +38,10 @@ public class Reload extends Command{
 	public void removeListenersAndCommands(Ozzie ozzie) {
 		for(Plugin pl: ozzie.getOzzieManager().getLoadedPluginList()) {
 			ozzie.getJDA().removeEventListener(pl);
-			for(Command cmd: pl.getCommands()) {
-				ozzie.getOzzieManager().getCommandManager().getCommands().remove(cmd);
-			}
 			ozzie.getOzzieManager().getLogger().info(String.format("Disabling %s %s", pl.getName(), pl.getVersion()));
 			pl.onDisable(ozzie);
 		}
+		ozzie.getOzzieManager().getCommandManager().getPluginCommands().clear();
 		ozzie.getOzzieManager().getLoadedPluginList().clear();
 	}
 	

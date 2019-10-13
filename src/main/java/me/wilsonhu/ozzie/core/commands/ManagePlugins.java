@@ -15,6 +15,7 @@ public class ManagePlugins extends Command{
 		super(new String[]{"manageplugins"}, "", "%s");
 		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
+		this.setPermission("ozzie.developer");
 	}
 
 	@Override

@@ -15,6 +15,7 @@ public class InstallPlugin extends Command{
 		super(new String[] {"installplugin"}, "Installs plugin via direct upload or URL", "%s\n%s <URL>");
 		this.setCategory(CommandCategory.DEVELOPER);
 		this.setLevel(CommandLevel.DEVELOPER);
+		this.setPermission("ozzie.developer");
 	}
 
 	@Override

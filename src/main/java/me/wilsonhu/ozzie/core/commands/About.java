@@ -19,6 +19,7 @@ public class About extends Command{
 	public About() {
 		super(new String[] {"about"}, "tells you about the bot", "%s");
 		this.setCategory(CommandCategory.INFORMATION);
+		this.setPermission("ozzie.info");
 	}
 
 	@Override

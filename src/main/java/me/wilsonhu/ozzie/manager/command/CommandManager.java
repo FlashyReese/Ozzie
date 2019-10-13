@@ -16,12 +16,14 @@ public class CommandManager
 {
 	
 	private ArrayList<Command> commands;
+	private ArrayList<Command> pluginCommands;
 	private OzzieManager manager;
 	
 	public CommandManager(OzzieManager manager)
 	{
 		this.setOzzieManager(manager);
 		commands = new ArrayList<Command>();
+		pluginCommands = new ArrayList<Command>();
 		for (Command c: commands())
 		{
 			commands.add(c);
@@ -55,7 +57,7 @@ public class CommandManager
 			full = event.getMessage().getContentRaw();
 		}
 		full = full.trim();
-		if(event.isFromType(ChannelType.PRIVATE)) {
+		/*if(event.isFromType(ChannelType.PRIVATE)) {
 			try {
 				if (full == getOzzieManager().getDefaultBotPrefix()){
 					return;
@@ -86,12 +88,33 @@ public class CommandManager
 						}
 					}
 				}
+				//Plugin
+				for(Command cmd: getPluginCommands()) {
+					for(String name: cmd.getNames()) {
+						if(name.equalsIgnoreCase(s[0])) {
+							String args = full.substring(name.length()).trim();
+							if(!cmd.isGuildOnly()) {
+								try
+								{
+									cmd.onCommand(full, args, event, ozzie);
+								}
+								catch (Exception e)
+								{
+									event.getChannel().sendMessage(cmd.getHelpEmblem()).queue();
+									e.printStackTrace();
+								}
+								return;
+							}
+						}
+					}
+				}
 			}catch(Exception e) {
 				e.printStackTrace();
 				event.getChannel().sendMessage("Sorry I think I'm broken").queue();
 			}
 			return;
-		}else if(event.isFromGuild()) {
+		}else */
+		if(event.isFromGuild()) {
 			try{
 				Guild guild = event.getGuild();
 				if(!getOzzieManager().getServerSettingsManager().getServerSettingsList().containsKey(guild.getIdLong())) {
@@ -110,43 +133,19 @@ public class CommandManager
 				}else{
 					s = new String[]{full};
 				}
+				long author = event.getAuthor().getIdLong();
+				
 				if(event.getMessage().getContentRaw().startsWith(ss.getCustomBotPrefix()) && ss.getAllowedCommandTextChannels().contains(event.getChannel().getIdLong())){
 					if(ss.isWhiteListMode()) {
 						if(ss.getWhitelistedUsers().contains(event.getAuthor().getIdLong())) {
-							for (Command c: getCommands()){
-								for (String name: c.getNames()){
-									if (name.equalsIgnoreCase(s[0])){
-										String args = full.substring(name.length()).trim();
-											try{
-												c.onCommand(full, args, event, ozzie);
-											}catch (Exception e){
-												event.getChannel().sendMessage(c.getHelpEmblem()).queue();
-												e.printStackTrace();
-											}
-											return;
-									}
-								}
-								
-							}
+							this.onCommand(author, getCommands(), s, full, event, ozzie);
+							this.onCommand(author, getPluginCommands(), s, full, event, ozzie);
 							return;
 						}
 						event.getChannel().sendMessage("Not Whitelisted").queue();
 					}else if(!ss.isWhiteListMode() && !ss.getBlacklistedUsers().contains(event.getAuthor().getIdLong())) {
-						for (Command c: getCommands()){
-							for (String name: c.getNames()){
-								if (name.equalsIgnoreCase(s[0])){
-									String args = full.substring(name.length()).trim();
-										try{
-											c.onCommand(full, args, event, ozzie);
-										}catch (Exception e){
-											event.getChannel().sendMessage(c.getHelpEmblem()).queue();
-											e.printStackTrace();
-										}
-										return;
-								}
-							}
-							
-						}
+						this.onCommand(author, getCommands(), s, full, event, ozzie);
+						this.onCommand(author, getPluginCommands(), s, full, event, ozzie);
 						return;
 					}else {
 						event.getChannel().sendMessage("Blacklisted").queue();
@@ -162,9 +161,36 @@ public class CommandManager
 		
 	}
 	
+	public void onCommand(long author, ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event, Ozzie ozzie) {
+		for (Command c: list){
+			for (String name: c.getNames()){
+				if (name.equalsIgnoreCase(s[0])){
+					if(getOzzieManager().getPermissionManager().hasPermission(author, c.getPermission())) {
+						String args = full.substring(name.length()).trim();
+						try{
+							c.onCommand(full, args, event, ozzie);
+						}catch (Exception e){
+							event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+							e.printStackTrace();
+						}
+						return;
+					}else {
+						event.getChannel().sendMessage("You don't have sufficient privileges to perform this operation").queue();
+					}
+				}
+			}
+		}
+	}
+	
 	public ArrayList<Command> getCommands()
 	{
 		return commands;
+	}
+	
+	
+	public ArrayList<Command> getPluginCommands()
+	{
+		return pluginCommands;
 	}
 	
 	public Command getCommand(Class<?extends Command> leCommandClass)
@@ -188,7 +214,12 @@ public class CommandManager
 
 	public void addCommands(Plugin pl) {
 		for(Command cmd: pl.getCommands()) {
-			this.getCommands().add(cmd);
+			if(cmd.getPermission().equalsIgnoreCase("ozzie.default")) {
+				cmd.setPermission(String.format("%s.%s", pl.getName(), "default").toLowerCase());
+			}else {
+				cmd.setPermission(String.format("%s.%s", pl.getName(), cmd.getPermission()).toLowerCase());
+			}
+			this.getPluginCommands().add(cmd);
 			this.getOzzieManager().getLogger().info(String.format("[%s] Loading command %s", pl.getName(), cmd.getNames()[0]));
 		}
 	}

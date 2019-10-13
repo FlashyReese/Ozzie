@@ -16,6 +16,7 @@ public class Channel extends Command{
 		this.setCategory(CommandCategory.SETTINGS);
 		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
+		this.setPermission("ozzie.modifycmdchannels");
 	}
 
 	@Override

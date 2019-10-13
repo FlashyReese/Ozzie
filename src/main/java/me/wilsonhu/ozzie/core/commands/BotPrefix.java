@@ -13,6 +13,7 @@ public class BotPrefix extends Command{
 		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setCategory(CommandCategory.SETTINGS);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
+		this.setPermission("ozzie.changebotprefix");
 	}
 
 	@Override

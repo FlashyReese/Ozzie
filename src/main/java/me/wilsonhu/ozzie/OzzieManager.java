@@ -10,6 +10,7 @@ import me.wilsonhu.ozzie.core.params.DisablePlugins;
 import me.wilsonhu.ozzie.core.params.ShardSize;
 import me.wilsonhu.ozzie.manager.command.CommandManager;
 import me.wilsonhu.ozzie.manager.json.JsonManager;
+import me.wilsonhu.ozzie.manager.json.configuration.PermissionManager;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettingsManager;
 import me.wilsonhu.ozzie.manager.parameter.ParameterManager;
 import me.wilsonhu.ozzie.manager.plugin.Plugin;
@@ -32,6 +33,7 @@ public class OzzieManager {
 	private PluginLoader pluginLoader;
 	private JsonManager jsonManager;
 	private ServerSettingsManager serverSettingsManager;
+	private PermissionManager permissionManager;
 	private CommandManager commandManager;
 	private OzzieShardManager shardManager;
 	
@@ -54,6 +56,7 @@ public class OzzieManager {
 		this.setTokenManager(new TokenManager(this));
 		this.setParameterManager(new ParameterManager(this, args));
 		this.setServerSettingsManager(new ServerSettingsManager(this));
+		this.setPermissionManager(new PermissionManager(this));
 		this.setJsonManager(new JsonManager(this));
 		this.setCommandManager(new CommandManager(this));
 		try {
@@ -219,6 +222,14 @@ public class OzzieManager {
 
 	public void setShardManager(OzzieShardManager shardManager) {
 		this.shardManager = shardManager;
+	}
+
+	public PermissionManager getPermissionManager() {
+		return permissionManager;
+	}
+
+	public void setPermissionManager(PermissionManager permissionManager) {
+		this.permissionManager = permissionManager;
 	}
 	
 }

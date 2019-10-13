@@ -12,6 +12,7 @@ public abstract class Command {
 	private String description;
 	private String syntax;
 	private String important;
+	private String permission;
 	private CommandLevel level;
 	private CommandCategory category;
 	private boolean guildOnly;
@@ -25,6 +26,7 @@ public abstract class Command {
 		this.setLevel(CommandLevel.DEFAULT);
 		this.setCategory(CommandCategory.DEFAULT);
 		this.setGuildOnly(false);
+		this.setPermission("ozzie.default");
 	}
 	
 	public abstract void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception;
@@ -108,6 +110,14 @@ public abstract class Command {
 
 	public void setGuildOnly(boolean guildOnly) {
 		this.guildOnly = guildOnly;
+	}
+
+	public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
 	}
 	
 }

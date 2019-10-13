@@ -17,16 +17,18 @@ public class User extends Command{
 		this.setCategory(CommandCategory.SETTINGS);
 		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
+		this.setPermission("ozzie.developer");
 	}
 
 	@Override
 	public void onCommand(String full, String argss, MessageReceivedEvent event, Ozzie ozzie){
+		//re write this garbage v:
 		try {
 			String[] args = argss.split(" ");
 			String args1 = args[0];
 			String args2 = args[1];
 			Guild guild = event.getGuild();
-			if(args.length == 4 || args2.equalsIgnoreCase("on") || args2.equalsIgnoreCase("off")) {
+			if(args.length == 3 || args2.equalsIgnoreCase("on") || args2.equalsIgnoreCase("off")) {
 				guild = ozzie.getJDA().getGuildById(args[2]);
 			}
 			ServerSettings ss = ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().get(guild.getIdLong());
@@ -79,6 +81,32 @@ public class User extends Command{
 					}
 					ss.getBlacklistedUsers().remove(m.getUser().getIdLong());
 					event.getChannel().sendMessage(m.getAsMention() + " has been removed from " + guild.getName() + "'s blacklist").queue();
+				}
+			}else if(args1.equalsIgnoreCase("permissions")){
+				String args3 = args[2];
+				args3 = args3.toLowerCase();
+				if(args2.equalsIgnoreCase("add")) {
+					Member m = event.getMessage().getMentionedMembers().get(0);
+					Boolean[] bool = ozzie.getOzzieManager().getPermissionManager().addPermission(m.getIdLong(), args3.toLowerCase());
+					if(bool[0] == true && bool[1] == true) {
+						event.getChannel().sendMessage(String.format("%s already has a the permission \"%s\"", m.getAsMention(), args3.toLowerCase())).queue();
+					}else if(bool[0] == true && bool[1] == false) {
+						event.getChannel().sendMessage(String.format("%s has a new permission \"%s\"", m.getAsMention(), args3.toLowerCase())).queue();
+					}else {
+						event.getChannel().sendMessage(String.format("%s has a their first permission \"%s\"", m.getAsMention(), args3.toLowerCase())).queue();
+					}
+					ozzie.getOzzieManager().getJsonManager().writeUserPermissionList();
+				}else if(args2.equalsIgnoreCase("remove")) {
+					Member m = event.getMessage().getMentionedMembers().get(0);
+					Boolean[] bool = ozzie.getOzzieManager().getPermissionManager().removePermission(m.getIdLong(), args3.toLowerCase());
+					if(bool[0] == true && bool[1] == true) {
+						event.getChannel().sendMessage(String.format("%s no longer has the permission \"%s\"", m.getAsMention(), args3.toLowerCase())).queue();
+					}else if(bool[0] == true && bool[1] == false) {
+						event.getChannel().sendMessage(String.format("%s does not have the permission \"%s\"", m.getAsMention(), args3.toLowerCase())).queue();
+					}else {
+						event.getChannel().sendMessage(String.format("%s does not have any permissions", m.getAsMention())).queue();
+					}
+					ozzie.getOzzieManager().getJsonManager().writeUserPermissionList();
 				}
 			}
 			ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().replace(guild.getIdLong(), ss);

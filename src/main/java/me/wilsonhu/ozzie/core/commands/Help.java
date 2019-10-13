@@ -17,6 +17,7 @@ public class Help extends Command{
 
 	@Override
 	public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+		//Improve to show only commands taht you have access to v: viewing your permission list v:
 		if(full.equalsIgnoreCase(this.getNames()[0])) {
 			EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle("Following Commands for " + ozzie.getOzzieManager().getBotName());
 			for(CommandCategory cc : CommandCategory.values()) {
