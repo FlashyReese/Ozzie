@@ -7,14 +7,12 @@ import bsh.Interpreter;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
 import me.wilsonhu.ozzie.manager.command.CommandCategory;
-import me.wilsonhu.ozzie.manager.command.CommandLevel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Eval extends Command{
 
 	public Eval() {
 		super(new String[]{"eval"}, "Cool Stuff", "%s <java code>");
-		this.setLevel(CommandLevel.DEVELOPER);
 		this.setCategory(CommandCategory.DEVELOPER);
 		this.setPermission("ozzie.developer");
 	}

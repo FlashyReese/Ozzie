@@ -3,14 +3,12 @@ package me.wilsonhu.ozzie.core.commands;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
 import me.wilsonhu.ozzie.manager.command.CommandCategory;
-import me.wilsonhu.ozzie.manager.command.CommandLevel;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class BotPrefix extends Command{
 	public BotPrefix() {
 		super(new String[]{"botprefix"}, "prefix", "%s (Guild ID) <Prefix>");
-		this.setLevel(CommandLevel.ADMINISTRATOR);
 		this.setCategory(CommandCategory.SETTINGS);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 		this.setPermission("ozzie.changebotprefix");

@@ -4,11 +4,22 @@ import java.util.ArrayList;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.OzzieManager;
-import me.wilsonhu.ozzie.core.commands.*;
+import me.wilsonhu.ozzie.core.commands.About;
+import me.wilsonhu.ozzie.core.commands.BotPrefix;
+import me.wilsonhu.ozzie.core.commands.Channel;
+import me.wilsonhu.ozzie.core.commands.Clara;
+import me.wilsonhu.ozzie.core.commands.Eval;
+import me.wilsonhu.ozzie.core.commands.Help;
+import me.wilsonhu.ozzie.core.commands.InstallPlugin;
+import me.wilsonhu.ozzie.core.commands.ManagePlugins;
+import me.wilsonhu.ozzie.core.commands.Ping;
+import me.wilsonhu.ozzie.core.commands.Plugins;
+import me.wilsonhu.ozzie.core.commands.Reload;
+import me.wilsonhu.ozzie.core.commands.Restart;
+import me.wilsonhu.ozzie.core.commands.Token;
+import me.wilsonhu.ozzie.core.commands.User;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettings;
 import me.wilsonhu.ozzie.manager.plugin.Plugin;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -203,13 +214,6 @@ public class CommandManager
 			}
 		}
 		return null;
-	}
-	
-	public boolean performUserCheck(Command c, MessageReceivedEvent event){
-		if(event.isFromType(ChannelType.PRIVATE)){
-			return true;
-		}
-		return (((c.getLevel() == CommandLevel.OWNER || c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT) && event.getGuild().getOwner().getUser().getIdLong() == event.getAuthor().getIdLong()) || ((c.getLevel() == CommandLevel.DEVELOPER || c.getLevel() == CommandLevel.OWNER || c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT)) || ((c.getLevel() == CommandLevel.ADMINISTRATOR || c.getLevel() == CommandLevel.DEFAULT) && event.getGuild().getMemberById(event.getAuthor().getIdLong()).hasPermission(Permission.ADMINISTRATOR)) || (c.getLevel() == CommandLevel.DEFAULT));
 	}
 
 	public void addCommands(Plugin pl) {

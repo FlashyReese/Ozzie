@@ -4,7 +4,6 @@ import java.util.Random;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandLevel;
 import me.wilsonhu.ozzie.utilities.Tenor;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -14,7 +13,6 @@ public class Clara extends Command{
 	
 	public Clara() {
 		super(new String[]{"clara"}, "", "%s");
-		this.setLevel(CommandLevel.DEVELOPER);
 	}
 
 	@Override

@@ -54,8 +54,10 @@ public class PermissionManager {
 			if(userPerms.contains("*")) {
 				return true;
 			}
-			String parser = permission.substring(0, permission.lastIndexOf(".") + 1) + "*";
-			if(userPerms.contains(parser)) {
+			if(userPerms.contains("*"+permission.substring(permission.lastIndexOf("."), permission.length()))) {
+				return true;
+			}
+			if(userPerms.contains(permission.substring(0, permission.lastIndexOf(".") + 1) + "*")) {
 				return true;
 			}
 		}

@@ -39,7 +39,7 @@ public class EventListener extends ListenerAdapter {
 				for(Member m : guild.getMembers()) {
 					if(!getOzzieManager().getPermissionManager().getUserPermissionList().containsKey(m.getIdLong())) {
 						ArrayList<String> defaultPerms = new ArrayList<String>();
-						defaultPerms.add("ozzie.default");
+						defaultPerms.add("*.default");
 						getOzzieManager().getPermissionManager().getUserPermissionList().put(m.getIdLong(), defaultPerms);
 					}
 				}

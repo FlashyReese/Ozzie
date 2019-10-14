@@ -17,13 +17,26 @@ public class Help extends Command{
 
 	@Override
 	public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-		//Improve to show only commands taht you have access to v: viewing your permission list v:
+		//Improve to show only commands taht you have access to v: viewing your permission list v: also doesn't show plugin commands
 		if(full.equalsIgnoreCase(this.getNames()[0])) {
 			EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle("Following Commands for " + ozzie.getOzzieManager().getBotName());
 			for(CommandCategory cc : CommandCategory.values()) {
 				String name = cc.name().substring(0, 1).toUpperCase() + cc.name().substring(1).toLowerCase();
 				String line = "";
 				for(Command c: ozzie.getOzzieManager().getCommandManager().getCommands()) {
+					if(!c.isHidden()) {
+						if(event.isFromType(ChannelType.PRIVATE) && !c.isGuildOnly()) {
+							if(c.getCategory() == cc) {
+								line = line + "`" + c.getNames()[0] + "` ";
+							}
+						}else if(event.isFromGuild()){
+							if(c.getCategory() == cc) {
+								line = line + "`" + c.getNames()[0] + "` ";
+							}
+						}
+					}
+				}
+				for(Command c: ozzie.getOzzieManager().getCommandManager().getPluginCommands()) {
 					if(!c.isHidden()) {
 						if(event.isFromType(ChannelType.PRIVATE) && !c.isGuildOnly()) {
 							if(c.getCategory() == cc) {

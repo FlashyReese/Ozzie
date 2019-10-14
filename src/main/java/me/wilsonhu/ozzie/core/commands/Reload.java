@@ -3,7 +3,6 @@ package me.wilsonhu.ozzie.core.commands;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
 import me.wilsonhu.ozzie.manager.command.CommandCategory;
-import me.wilsonhu.ozzie.manager.command.CommandLevel;
 import me.wilsonhu.ozzie.manager.plugin.Plugin;
 import me.wilsonhu.ozzie.manager.plugin.PluginLoader;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -12,7 +11,6 @@ public class Reload extends Command{
 	public Reload() {
 		super(new String[] {"reload"}, "reloading plugins without restarting", "%s");
 		this.setCategory(CommandCategory.DEVELOPER);
-		this.setLevel(CommandLevel.DEVELOPER);
 		this.setPermission("ozzie.developer");
 	}
 

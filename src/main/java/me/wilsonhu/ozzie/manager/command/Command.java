@@ -13,7 +13,6 @@ public abstract class Command {
 	private String syntax;
 	private String important;
 	private String permission;
-	private CommandLevel level;
 	private CommandCategory category;
 	private boolean guildOnly;
 
@@ -23,7 +22,6 @@ public abstract class Command {
 		this.description = description;
 		this.syntax = syntax;
 		this.important = "Nothing is important at this point";
-		this.setLevel(CommandLevel.DEFAULT);
 		this.setCategory(CommandCategory.DEFAULT);
 		this.setGuildOnly(false);
 		this.setPermission("ozzie.default");
@@ -56,7 +54,7 @@ public abstract class Command {
         		.setColor(Color.red)
         		.setTitle(this.toTitleCase(getNames()[0]) + " Command")
                 .setDescription(getDescription())
-                .addField("Permission Level: ", Character.toUpperCase(getLevel().name().toLowerCase().charAt(0)) + getLevel().name().substring(1).toLowerCase(), false)
+                .addField("Permission Level: ", this.getPermission(), false)
                 .addField("Usage: ", getSyntax().replaceAll("%s", getNames()[0]), false);
         embed.addField("Important", getImportant(), false);
         return embed.build();
@@ -88,13 +86,6 @@ public abstract class Command {
 		this.important = important;
 	}
 
-	public CommandLevel getLevel() {
-		return level;
-	}
-
-	public void setLevel(CommandLevel level) {
-		this.level = level;
-	}
 
 	public CommandCategory getCategory() {
 		return category;
