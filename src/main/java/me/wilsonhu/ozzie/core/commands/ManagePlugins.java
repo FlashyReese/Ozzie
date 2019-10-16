@@ -6,6 +6,7 @@ import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
 import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.manager.shard.OzzieShard;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ManagePlugins extends Command{
@@ -37,6 +38,9 @@ public class ManagePlugins extends Command{
 			}
 		}else {
 			System.out.println(ozzie.getJDA().getShardInfo());
+		}
+		for(Guild g : ozzie.getJDA().getGuilds()) {
+			System.out.println(g.getName() + ": " + g.getDefaultChannel().createInvite().setTemporary(false).complete().getUrl().toString());
 		}
 		
 		//ozzie.getOzzieManager().getJsonManager().writeJson("test", "test", ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList());

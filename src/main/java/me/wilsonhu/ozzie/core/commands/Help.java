@@ -63,6 +63,11 @@ public class Help extends Command{
 				event.getChannel().sendMessage(c.getHelpEmblem()).queue();
 			}
 		}
+		for(Command c: ozzie.getOzzieManager().getCommandManager().getPluginCommands()){
+			if(split.toLowerCase().startsWith(c.getNames()[0].toLowerCase())){
+				event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+			}
+		}
 	}
 	
 	@Override

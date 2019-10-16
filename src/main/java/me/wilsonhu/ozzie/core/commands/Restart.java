@@ -42,9 +42,12 @@ public class Restart extends Command{
 					return;
 				ozzie.stop();
 				String cmd = "java -jar " + currentJar.getPath() + " " + args;
+				
 				boolean isWindows = ozzie.getOzzieManager().getOS().toLowerCase().startsWith("windows");
-				String line1 = isWindows ? "cmd.exe" : "sh";
+				String line1 = isWindows ? "cmd.exe" : "/bin/sh";
 				String line2 = isWindows ? "/c" : "-c";
+				//osascript -e tell application "Terminal" to do script "java -jar test.jar"
+				
 				ProcessBuilder pb = new ProcessBuilder(line1, line2, cmd);
 				pb.redirectErrorStream(true).inheritIO();
 				try {

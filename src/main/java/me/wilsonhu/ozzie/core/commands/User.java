@@ -1,5 +1,7 @@
 package me.wilsonhu.ozzie.core.commands;
 
+import java.util.ArrayList;
+
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
 import me.wilsonhu.ozzie.manager.command.CommandCategory;
@@ -15,18 +17,18 @@ public class User extends Command{
 		super(new String[]{"user"}, "Turn on whitelist, add or remove users from whitelist and blacklist", "%s whitelist add (Guild ID) <Mentioned User>\n%s whitelist remove (Guild ID) <Mentioned User>\n%s blacklist add (Guild ID) <Mentioned User>\n%s blacklist remove (Guild ID) <Mentioned User>\n%s whitelist on (Guild ID)\n%s whitelist off (Guild ID)");
 		this.setCategory(CommandCategory.SETTINGS);
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
-		this.setPermission("ozzie.developer");
+		this.setPermission("ozzie.default");
 	}
 
 	@Override
 	public void onCommand(String full, String argss, MessageReceivedEvent event, Ozzie ozzie){
-		//re write this garbage v:
+		//re write this garbage v: this is really garbage v:
 		try {
 			String[] args = argss.split(" ");
 			String args1 = args[0];
 			String args2 = args[1];
 			Guild guild = event.getGuild();
-			if(args.length == 3 || args2.equalsIgnoreCase("on") || args2.equalsIgnoreCase("off")) {
+			if(args.length == 3 && (args1.equalsIgnoreCase("whitelist") && (args2.equalsIgnoreCase("on") || args2.equalsIgnoreCase("off")))) {
 				guild = ozzie.getJDA().getGuildById(args[2]);
 			}
 			ServerSettings ss = ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().get(guild.getIdLong());
@@ -105,6 +107,14 @@ public class User extends Command{
 						event.getChannel().sendMessage(String.format("%s does not have any permissions", m.getAsMention())).queue();
 					}
 					ozzie.getOzzieManager().getJsonManager().writeUserPermissionList();
+				}else if(args2.equalsIgnoreCase("list")) {
+					Member m = event.getMessage().getMentionedMembers().get(0);
+					ArrayList<String> userPerms = ozzie.getOzzieManager().getPermissionManager().getUserPermissionList().get(m.getIdLong());
+					String line = "";
+					for(String s: userPerms) {
+						line = String.format("%s `%s`", line, s);
+					}
+					event.getChannel().sendMessage(line).queue();
 				}
 			}
 			ozzie.getOzzieManager().getServerSettingsManager().getServerSettingsList().replace(guild.getIdLong(), ss);
