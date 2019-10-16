@@ -17,55 +17,42 @@ public class Help extends Command{
 
 	@Override
 	public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-		//Improve to show only commands taht you have access to v: viewing your permission list v: also doesn't show plugin commands
+		ArrayList<Command> allCommands = new ArrayList<Command>();
+		allCommands.addAll(ozzie.getOzzieManager().getCommandManager().getCommands());
+		allCommands.addAll(ozzie.getOzzieManager().getCommandManager().getPluginCommands());
 		if(full.equalsIgnoreCase(this.getNames()[0])) {
 			EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle("Following Commands for " + ozzie.getOzzieManager().getBotName());
-			for(CommandCategory cc : CommandCategory.values()) {
+			int adder = 0;
+			for(CommandCategory cc: CommandCategory.values()) {
 				String name = cc.name().substring(0, 1).toUpperCase() + cc.name().substring(1).toLowerCase();
 				String line = "";
-				for(Command c: ozzie.getOzzieManager().getCommandManager().getCommands()) {
-					if(!c.isHidden()) {
-						if(event.isFromType(ChannelType.PRIVATE) && !c.isGuildOnly()) {
-							if(c.getCategory() == cc) {
-								line = line + "`" + c.getNames()[0] + "` ";
-							}
-						}else if(event.isFromGuild()){
-							if(c.getCategory() == cc) {
-								line = line + "`" + c.getNames()[0] + "` ";
-							}
-						}
-					}
-				}
-				for(Command c: ozzie.getOzzieManager().getCommandManager().getPluginCommands()) {
-					if(!c.isHidden()) {
-						if(event.isFromType(ChannelType.PRIVATE) && !c.isGuildOnly()) {
-							if(c.getCategory() == cc) {
-								line = line + "`" + c.getNames()[0] + "` ";
-							}
-						}else if(event.isFromGuild()){
-							if(c.getCategory() == cc) {
-								line = line + "`" + c.getNames()[0] + "` ";
+				for(Command cmd: allCommands) {
+					if(!cmd.isHidden()) {
+						if(ozzie.getOzzieManager().getPermissionManager().hasPermission(event.getAuthor().getIdLong(), cmd.getPermission())) {
+							if(cmd.getCategory() == cc) {
+								if(event.isFromGuild()) {
+									line = line + String.format("`%s` ", cmd.getNames()[0]);
+								}else if(event.isFromType(ChannelType.PRIVATE) && !cmd.isGuildOnly()){
+									line = line + String.format("`%s` ", cmd.getNames()[0]);
+								}
+								adder++;
 							}
 						}
 					}
 				}
-				if(line.isEmpty()) {
-					line = "Work In Progress";
+				if(!line.isEmpty()) {
+					embed.addField(String.format("%s Commands", name), line, false);
 				}
-				embed.addField(name + " Commands", line, false);
 			}
-			embed.setFooter("Total Amount of Commands -> " + ozzie.getOzzieManager().getCommandManager().getCommands().size(), null);
+			embed.setFooter("Total Allowed of Commands -> " + adder, null);
 			event.getChannel().sendMessage(embed.build()).queue();
 			return;
-		}
-		for(Command c: ozzie.getOzzieManager().getCommandManager().getCommands()){
-			if(split.toLowerCase().startsWith(c.getNames()[0].toLowerCase())){
-				event.getChannel().sendMessage(c.getHelpEmblem()).queue();
-			}
-		}
-		for(Command c: ozzie.getOzzieManager().getCommandManager().getPluginCommands()){
-			if(split.toLowerCase().startsWith(c.getNames()[0].toLowerCase())){
-				event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+		}else {
+			String cmdName = split.toLowerCase().trim();
+			for(Command c: allCommands){
+				if(cmdName.startsWith(c.getNames()[0].toLowerCase())){
+					event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+				}
 			}
 		}
 	}
