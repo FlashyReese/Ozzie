@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.commands;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;

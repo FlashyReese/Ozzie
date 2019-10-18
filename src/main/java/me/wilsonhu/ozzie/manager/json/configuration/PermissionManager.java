@@ -60,6 +60,8 @@ public class PermissionManager {
 			if(userPerms.contains(permission.substring(0, permission.lastIndexOf(".") + 1) + "*")) {
 				return true;
 			}
+		}else {
+			this.addPermission(userID, "*.default");
 		}
 		return false;
 	}
