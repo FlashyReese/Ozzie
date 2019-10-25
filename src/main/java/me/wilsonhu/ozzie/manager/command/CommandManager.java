@@ -215,6 +215,17 @@ public class CommandManager
 		}
 		return null;
 	}
+	
+	public Command getCommandPlugin(Class<?extends Command> leCommandClass) {
+		for (Command c: getPluginCommands())
+		{
+			if (c.getClass() == leCommandClass)
+			{
+				return c;
+			}
+		}
+		return null;
+	}
 
 	public void addCommands(Plugin pl) {
 		for(Command cmd: pl.getCommands()) {

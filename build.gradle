@@ -32,6 +32,20 @@ task fatJar(type: Jar) {
     with jar
 }
 
+task buildScriptJar(type: Jar){
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+        	'Main-Class': 'me.wilsonhu.ozzie.CodeIgniter'
+    }
+    baseName = 'Ozzie'
+    from {
+        (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect {
+   			 it.isDirectory() ? it : zipTree(it)
+		}	
+    }
+    with jar
+}
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
