@@ -6,7 +6,6 @@ import java.lang.management.ManagementFactory;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.utilities.SystemInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -18,7 +17,7 @@ public class About extends Command{
 	
 	public About() {
 		super(new String[] {"about"}, "tells you about the bot", "%s");
-		this.setCategory(CommandCategory.INFORMATION);
+		this.setCategory("information");
 		this.setPermission("ozzie.info");
 	}
 
@@ -31,8 +30,6 @@ public class About extends Command{
 					users+=1;
 				}
 			}
-			//System.out.println(guild.getName());
-			
 		}
 		String dev = "FlashyReese";
 		String codev = "Anyone?";

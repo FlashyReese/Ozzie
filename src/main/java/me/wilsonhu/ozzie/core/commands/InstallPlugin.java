@@ -6,13 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class InstallPlugin extends Command{
 	public InstallPlugin() {
 		super(new String[] {"installplugin"}, "Installs plugin via direct upload or URL", "%s\n%s <URL>");
-		this.setCategory(CommandCategory.DEVELOPER);
+		this.setCategory("developer");
 		this.setPermission("ozzie.developer");
 	}
 

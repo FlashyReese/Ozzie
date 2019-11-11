@@ -2,14 +2,13 @@ package me.wilsonhu.ozzie.core.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Token extends Command{
 	public Token() {
 		super(new String[]{"token"}, "Token Manager", "%s add <Token Name> <Token> | token remove <Token Name>");
 		this.setPermission("ozzie.modifytoken");
-		this.setCategory(CommandCategory.DEVELOPER);
+		this.setCategory("developer");
 	}
 
 	@Override

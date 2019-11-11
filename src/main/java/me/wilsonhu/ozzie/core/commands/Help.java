@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -24,13 +23,13 @@ public class Help extends Command{
 		if(full.equalsIgnoreCase(this.getNames()[0])) {
 			EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle("Following Commands for " + ozzie.getOzzieManager().getBotName());
 			int adder = 0;
-			for(CommandCategory cc: CommandCategory.values()) {
-				String name = cc.name().substring(0, 1).toUpperCase() + cc.name().substring(1).toLowerCase();
+			for(String cc : ozzie.getOzzieManager().getCommandManager().getCategoryList()) {
+				String name = cc.substring(0, 1).toUpperCase() + cc.substring(1).toLowerCase();
 				String line = "";
 				for(Command cmd: allCommands) {
 					if(!cmd.isHidden()) {
 						if(ozzie.getOzzieManager().getPermissionManager().hasPermission(event.getAuthor().getIdLong(), cmd.getPermission())) {
-							if(cmd.getCategory() == cc) {
+							if(cmd.getAsCategory().equalsIgnoreCase(cc)) {
 								if(event.isFromGuild()) {
 									line = line + String.format("`%s` ", cmd.getNames()[0]);
 								}else if(event.isFromType(ChannelType.PRIVATE) && !cmd.isGuildOnly()){

@@ -13,7 +13,7 @@ public abstract class Command {
 	private String syntax;
 	private String important;
 	private String permission;
-	private CommandCategory category;
+	private String category;
 	private boolean guildOnly;
 
 	public Command(String[] names, String description, String syntax)
@@ -86,13 +86,22 @@ public abstract class Command {
 		this.important = important;
 	}
 
-
+	@Deprecated
 	public CommandCategory getCategory() {
-		return category;
+		return CommandCategory.DEPRECATED;
 	}
-
+	
+	public String getAsCategory() {
+		return this.category;
+	}
+	
+	@Deprecated
 	public void setCategory(CommandCategory category) {
-		this.category = category;
+		this.category = category.name();
+	}
+	
+	public void setCategory(String category) {
+		this.category = category.trim();
 	}
 
 	public boolean isGuildOnly() {

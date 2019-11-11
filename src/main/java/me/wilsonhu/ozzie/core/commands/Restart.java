@@ -6,13 +6,12 @@ import java.net.URISyntaxException;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Restart extends Command{
 	public Restart() {
 		super(new String[] {"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
-		this.setCategory(CommandCategory.DEVELOPER);
+		this.setCategory("developer");
 		this.setPermission("ozzie.developer");
 	}
 

@@ -5,7 +5,6 @@ import java.awt.Color;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.manager.plugin.Plugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,7 +13,7 @@ public class Plugins extends Command{
 
 	public Plugins() {
 		super(new String[] {"plugins", "plugin"}, "List Plugins", "%s | %s <Plugin Name>");
-		this.setCategory(CommandCategory.INFORMATION);
+		this.setCategory("information");
 		this.setPermission("ozzie.viewplugins");
 	}
 

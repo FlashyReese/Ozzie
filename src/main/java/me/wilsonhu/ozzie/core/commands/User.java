@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -15,7 +14,7 @@ public class User extends Command{
 	
 	public User() {
 		super(new String[]{"user"}, "Turn on whitelist, add or remove users from whitelist and blacklist", "%s whitelist add (Guild ID) <Mentioned User>\n%s whitelist remove (Guild ID) <Mentioned User>\n%s blacklist add (Guild ID) <Mentioned User>\n%s blacklist remove (Guild ID) <Mentioned User>\n%s whitelist on (Guild ID)\n%s whitelist off (Guild ID)");
-		this.setCategory(CommandCategory.SETTINGS);
+		this.setCategory("settings");
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 		this.setPermission("ozzie.default");
 	}

@@ -28,6 +28,7 @@ public class CommandManager
 	
 	private ArrayList<Command> commands;
 	private ArrayList<Command> pluginCommands;
+	private ArrayList<String> categoryList;
 	private OzzieManager manager;
 	
 	public CommandManager(OzzieManager manager)
@@ -35,9 +36,16 @@ public class CommandManager
 		this.setOzzieManager(manager);
 		commands = new ArrayList<Command>();
 		pluginCommands = new ArrayList<Command>();
+		categoryList = new ArrayList<String>();
 		for (Command c: commands())
 		{
 			commands.add(c);
+		}
+		for(Command c: getCommands()) {
+			String category = c.getAsCategory().toLowerCase().trim();
+			if(!categoryList.contains(category)) {
+				categoryList.add(category);
+			}
 		}
 	}
 	
@@ -204,6 +212,10 @@ public class CommandManager
 		return pluginCommands;
 	}
 	
+	public ArrayList<String> getCategoryList(){
+		return categoryList;
+	}
+	
 	public Command getCommand(Class<?extends Command> leCommandClass)
 	{
 		for (Command c: getCommands())
@@ -236,6 +248,12 @@ public class CommandManager
 			}
 			this.getPluginCommands().add(cmd);
 			this.getOzzieManager().getLogger().info(String.format("[%s] Loading command %s", pl.getName(), cmd.getNames()[0]));
+		}
+		for(Command c: getPluginCommands()) {
+			String category = c.getAsCategory().toLowerCase().trim();
+			if(!categoryList.contains(category)) {
+				categoryList.add(category);
+			}
 		}
 	}
 	

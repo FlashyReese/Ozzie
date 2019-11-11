@@ -2,7 +2,6 @@ package me.wilsonhu.ozzie.core.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -10,7 +9,7 @@ public class Ping extends Command{
 	
 	public Ping() {
 		super(new String[]{"ping"}, "Requests bot's ping to server", "%s");
-		this.setCategory(CommandCategory.INFORMATION);
+		this.setCategory("information");
 	}
 
 	@Override

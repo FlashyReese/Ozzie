@@ -2,7 +2,6 @@ package me.wilsonhu.ozzie.core.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.manager.json.configuration.ServerSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -12,7 +11,7 @@ public class Channel extends Command{
 	
 	public Channel() {
 		super(new String[]{"channel"}, "desc", "%s add (Guild ID) <Mentioned TextChannels>\n%s remove (Guild ID) <Mentioned TextChannel>");
-		this.setCategory(CommandCategory.SETTINGS);
+		this.setCategory("settings");
 		this.setGuildOnly(true);//Probably can fix this to make it work with PMs
 		this.setPermission("ozzie.modifycmdchannels");
 	}

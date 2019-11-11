@@ -4,7 +4,6 @@ import java.io.File;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.manager.command.Command;
-import me.wilsonhu.ozzie.manager.command.CommandCategory;
 import me.wilsonhu.ozzie.manager.shard.OzzieShard;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -13,7 +12,7 @@ public class ManagePlugins extends Command{
 	
 	public ManagePlugins() {
 		super(new String[]{"manageplugins"}, "", "%s");
-		this.setCategory(CommandCategory.DEVELOPER);
+		this.setCategory("developer");
 		this.setPermission("ozzie.developer");
 	}
 
