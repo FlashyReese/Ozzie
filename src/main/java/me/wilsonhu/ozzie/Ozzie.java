@@ -1,121 +1,142 @@
 package me.wilsonhu.ozzie;
 
-import me.wilsonhu.ozzie.core.params.DisablePlugins;
-import me.wilsonhu.ozzie.listener.EventListener;
-import me.wilsonhu.ozzie.manager.plugin.Plugin;
-import net.dv8tion.jda.api.AccountType;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
+import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
+import me.wilsonhu.ozzie.core.parameter.ParameterManager;
+import me.wilsonhu.ozzie.core.token.TokenManager;
+import me.wilsonhu.ozzie.handlers.PrimaryListener;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.security.auth.login.LoginException;
+import java.io.File;
 
 public class Ozzie {
-	
-	private boolean running = false;
-	private int shard;
-	private int shardTotal;
-	private boolean shardless;
-	private JDA jda;
-	
-	private OzzieManager ozzieManager;
-	
-	public Ozzie(int shard, int shardTotal, OzzieManager manager) {
-		this.setShard(shard);
-		this.setShardTotal(shardTotal);
-		this.setShardless(false);
-		this.setOzzieManager(manager);
-	}
-	
-	public Ozzie(OzzieManager manager) {
-		this.setShardless(true);
-		this.setOzzieManager(manager);
-	}
-	
-	public void start() {
-		if(!isRunning()) {
-			try{
-				if(isShardless()) {
-					setJDA(new JDABuilder(AccountType.BOT).setToken(getOzzieManager().getBotToken()).build());
-				}else {
-					setJDA(new JDABuilder(AccountType.BOT).setToken(getOzzieManager().getBotToken()).useSharding(shard, shardTotal).build());
-				}
-				getJDA().addEventListener(getOzzieManager().getEventWaiter());
-				getJDA().addEventListener(new EventListener(this.getOzzieManager(), this));
-				if(!((DisablePlugins) this.getOzzieManager().getParameterManager().getParam(DisablePlugins.class)).isPluginless()) {
-					for(Plugin pl: this.getOzzieManager().getLoadedPluginList()) {
-						this.getOzzieManager().getLogger().info(String.format("Enabling %s %s", pl.getName(), pl.getVersion()));
-						pl.onEnable(this);
-						getJDA().addEventListener(pl);
-						this.getOzzieManager().getCommandManager().addCommands(pl);
-					}
-				}
-				me.wilsonhu.ozzie.utilities.Activity act = new me.wilsonhu.ozzie.utilities.Activity(); 
-				getJDA().getPresence().setActivity(Activity.playing(act.getRandomQuote()));
-				getJDA().setAutoReconnect(true);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			setRunning(true);
-		}
-	}
-	
-	public void stop() {
-		if(isRunning()) {
-			getJDA().shutdownNow();
-			setRunning(false);
-		}
-	}
-	
-	protected void restart() {
-		this.stop();
-		this.start();
-	}
-	
 
-	public JDA getJDA() {
-		return jda;
-	}
+    private static final Logger log = LogManager.getLogger(Ozzie.class);
 
-	public void setJDA(JDA jda) {
-		this.jda = jda;
-	}
+    private ShardManager shardManager;
 
-	public boolean isRunning() {
-		return running;
-	}
+    private String botName;
+    private boolean running;
+    private String defaultCommandPrefix;
+    private String operatingSystemName;
+    private File directory;
 
-	public void setRunning(boolean running) {
-		this.running = running;
-	}
+    private ParameterManager parameterManager;
+    private TokenManager tokenManager;
+    private ConfigurationManager configurationManager;
 
-	public int getShard() {
-		return shard;
-	}
+    public Ozzie(String[] args) throws Exception {
+        log.info("Building client...");
+        this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
+        this.setDirectory(new File(System.getProperty("user.dir")));
+        this.getParameterManager().runParameters(args, this);
+        this.setBotName("Ozzie");
+        this.setRunning(false);
+        this.setDefaultCommandPrefix("-");
+        log.info("Client built!");
+    }
 
-	public void setShard(int shard) {
-		this.shard = shard;
-	}
+    public void start() throws LoginException {
+        if(isRunning()){
+            log.warn("Client already running!");
+        }else{
+            log.info("Starting client...");
+            this.setRunning(true);
+            if(shardManager == null){
+                log.info("Building ShardManager...");
+                DefaultShardManagerBuilder shardManagerBuilder = new DefaultShardManagerBuilder();
+                shardManagerBuilder.setAutoReconnect(true);
+                shardManagerBuilder.setToken(getTokenManager().getToken("discord"));
+                shardManager = shardManagerBuilder.build();
+                shardManager.addEventListener(new PrimaryListener());
+                log.info("ShardManager built!");
+            }
+            log.info("Client started!");
+        }
+    }
 
-	public int getShardTotal() {
-		return shardTotal;
-	}
+    public void stop(){
+        if(isRunning()){
+            log.info("Stopping client...");
+            this.setRunning(false);
+            this.getShardManager().shutdown();
+            shardManager = null;
+            log.info("Client stopped!");
+        }else{
+            log.warn("Client not running!");
+        }
+    }
 
-	public void setShardTotal(int shardTotal) {
-		this.shardTotal = shardTotal;
-	}
+    public void restart() throws LoginException {
+        if (isRunning()){
+            log.info("Restarting client...");
+            this.stop();
+            this.start();
+            log.info("Client restarted!");
+        }else{
+            log.warn("Client not running!");
+        }
+    }
 
-	public boolean isShardless() {
-		return shardless;
-	}
+    public ShardManager getShardManager(){
+        return shardManager;
+    }
 
-	public void setShardless(boolean shardLess) {
-		this.shardless = shardLess;
-	}
+    public String getBotName() {
+        return botName;
+    }
 
-	public OzzieManager getOzzieManager() {
-		return ozzieManager;
-	}
+    public void setBotName(String botName) {
+        this.botName = botName;
+    }
 
-	public void setOzzieManager(OzzieManager ozzieManager) {
-		this.ozzieManager = ozzieManager;
-	}
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public String getDefaultCommandPrefix() {
+        return defaultCommandPrefix;
+    }
+
+    public void setDefaultCommandPrefix(String defaultCommandPrefix) {
+        this.defaultCommandPrefix = defaultCommandPrefix;
+    }
+
+    public String getOperatingSystemName() {
+        return operatingSystemName;
+    }
+
+    public void setOperatingSystemName(String operatingSystemName) {
+        this.operatingSystemName = operatingSystemName;
+    }
+
+    public File getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(File directory) {
+        this.directory = directory;
+    }
+
+    public ParameterManager getParameterManager() {
+        if(parameterManager == null) parameterManager = new ParameterManager();
+        return parameterManager;
+    }
+
+    public TokenManager getTokenManager() {
+        if(tokenManager == null) tokenManager = new TokenManager(this);
+        return tokenManager;
+    }
+
+    public ConfigurationManager getConfigurationManager() {
+        if(configurationManager == null) configurationManager = new ConfigurationManager();
+        return configurationManager;
+    }
 }
