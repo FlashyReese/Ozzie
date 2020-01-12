@@ -14,8 +14,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -31,16 +33,16 @@ public class I18nManager {
         loadSavedSettings();
         try {
             loadOzzieLocale();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         log.info("I18nManager built!");
     }
 
-    private void loadOzzieLocale() throws IOException {
+    private void loadOzzieLocale() throws IOException, URISyntaxException {
         final String path = "locale";
-        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-        if(jarFile.isFile()) {
+        final File jarFile = new File(Application.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        if(jarFile.getAbsolutePath().endsWith(".jar")) {
             final JarFile jar = new JarFile(jarFile);
             final Enumeration<JarEntry> entries = jar.entries();
             while(entries.hasMoreElements()) {
@@ -81,7 +83,42 @@ public class I18nManager {
         getOzzie().getConfigurationManager().writeJson(ConfigurationManager.LOCALE_FOLDER, "settings", getPluginLocalizationControl());
     }
 
-    public static String translate(String key, String lang) {
+    public Locale[] getAvailableLocales(){
+        Locale[] locales = SimpleDateFormat.getAvailableLocales();
+        Locale[] availableLocales = new Locale[]{};
+        File dir = new File(ConfigurationManager.LOCALE_FOLDER);
+        for (File file: Objects.requireNonNull(dir.listFiles())) {
+            if (file.isDirectory()){
+                for (Locale locale : locales) {
+                    if(locale.toString().isEmpty())continue;
+                    if(locale.toString().equals(file.getName())){
+                        availableLocales = addItem(availableLocales, locale);
+                    }
+                }
+            }
+        }
+        return availableLocales;
+    }
+
+    public String getLocaleDisplayName(String tag){
+        for (Locale locale : getAvailableLocales()) {
+            if(locale.toString().equals(tag)){
+                return locale.getDisplayName();
+            }
+        }
+        return tag;
+    }
+
+    public Locale[] addItem(Locale[] arr, Locale x){
+        Locale[] newarr = new Locale[arr.length + 1];
+        for (int i = 0; i < arr.length; i++) {
+            newarr[i] = arr[i];
+        }
+        newarr[arr.length] = x;
+        return newarr;
+    }
+
+    public static String translate(String key, String lang) {//Todo: Implement if key not found in HashMap that is not empty revert to default v:
         key = key.trim();
         if(key.isEmpty()){
             return "";
@@ -110,7 +147,7 @@ public class I18nManager {
     }
 
     public static String translate(String key, MessageReceivedEvent event){
-        String lang = "en_US";
+        String lang = Locale.getDefault().toString();
         long server = event.getGuild().getIdLong();
         long user = event.getAuthor().getIdLong();
         ServerSchema serverSchema = getOzzie().getConfigurationManager().getServerSettings(server);

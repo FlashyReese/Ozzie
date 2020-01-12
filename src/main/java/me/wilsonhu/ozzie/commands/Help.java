@@ -42,7 +42,7 @@ public class Help extends Command {
                     }
                 }
                 if(!line.isEmpty()) {
-                    embed.addField(String.format("%s " + new TranslatableText("ozzie.cmd", event).toString(), name), line, false);
+                    embed.addField(String.format("%s " + new TranslatableText("ozzie.cmds", event).toString(), name), line, false);
                 }
             }
             embed.setFooter(new TranslatableText("ozzie.helptotal", event).toString() + " -> " + adder, null);
@@ -51,7 +51,7 @@ public class Help extends Command {
         }else {
             String cmdName = split.toLowerCase().trim();
             for(Command c: allCommands){
-                if(cmdName.startsWith(c.getNames()[0].toLowerCase())){
+                if(cmdName.startsWith(c.getNames()[0].toLowerCase())){//Todo: No idea if I should change this but works
                     event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                 }
             }

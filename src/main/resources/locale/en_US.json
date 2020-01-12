@@ -2,9 +2,13 @@
   "insufficientperms":"You don't have sufficient privileges to perform this operation",
   "helpdesc":"Gives all the list of commands, or gives information about a specific command",
   "helpfollowing":"Following Commands for",
-  "cmd":"Commands",
+  "cmd":"Command",
+  "cmds": "Commands",
   "helptotal":"Total Allowed Commands",
   "perm":"Permission",
   "usage":"Usage",
-  "important":"Important"
+  "important":"Important",
+  "currentlocaleuser": "Your current language is set to",
+  "currentlocaleserver": "The server's current language is set to",
+  "currentlocale": "The default language is set to"
 }

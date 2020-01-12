@@ -2,6 +2,8 @@ package me.wilsonhu.ozzie.core.i18n;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Locale;
+
 /*
 Create by @author flashyreese
 Created @since 1/2/20
@@ -36,7 +38,7 @@ public class TranslatableText {
     }
 
     public String toString(){
-        String lang = "en_US";
+        String lang = Locale.getDefault().toString();
         if(type != null && id != 0L){
             if(type == TranslationType.DEFAULT){
                 return I18nManager.translate(key, lang);

@@ -22,6 +22,7 @@ public class About extends Command {
 
     @Override
     public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception  {
+        //Todo: Clean this shit up
         long users = 0;
         for(Guild guild: ozzie.getShardManager().getGuilds()){
             for(Member member: guild.getMembers()){

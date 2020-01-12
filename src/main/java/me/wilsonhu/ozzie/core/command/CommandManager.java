@@ -39,13 +39,16 @@ public class CommandManager {
 
     private Command[] commands(){
         return new Command[]{
+                //Todo: Botprefix, Channel, permission, changelang
                 new About(),
                 new Clara(),
                 new Evaluate(),
                 new Help(),
                 new InstallPlugin(),
+                new Language(),
                 new Ping(),
                 new Reload(),
+                new Restart(),
                 new Shutdown(),
                 new Token()
         };

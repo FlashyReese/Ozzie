@@ -36,7 +36,7 @@ public class InstallPlugin extends Command {
 
             }
         }else {
-            //Please attach a file
+            //Please attach a file TODO: Adapt wget for this v:
         }
     }
 
