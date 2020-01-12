@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.parameter;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.parameters.DisablePlugins;
 import me.wilsonhu.ozzie.parameters.DiscordAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,7 @@ public class ParameterManager {
 
     private void loadParameters(){
         getParameters().add(new DiscordAPI());
+        getParameters().add(new DisablePlugins());
     }
 
     public void runParameters(String[] args, Ozzie ozzie) throws Exception {
@@ -53,7 +55,7 @@ public class ParameterManager {
         }
     }
 
-    public Parameter getParam(Class<?extends Parameter> leCommandClass){
+    public Parameter getParameter(Class<?extends Parameter> leCommandClass){
         for (Parameter c: getParameters()){
             if (c.getClass() == leCommandClass){
                 return c;

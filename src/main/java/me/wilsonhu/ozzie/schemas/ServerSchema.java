@@ -36,6 +36,13 @@ public class ServerSchema {
         return allowedCommandTextChannel;
     }
 
+    public boolean isAllowedCommandTextChannel(long textChannelId){
+        for(long id: getAllowedCommandTextChannel()){
+            if(id == textChannelId)return true;
+        }
+        return false;
+    }
+
     public void setAllowedCommandTextChannel(long[] allowedCommandTextChannel) {
         this.allowedCommandTextChannel = allowedCommandTextChannel;
     }

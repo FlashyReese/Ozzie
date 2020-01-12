@@ -37,13 +37,15 @@ public class TranslatableText {
 
     public String toString(){
         String lang = "en_US";
-        if(type != null){
-            //
+        if(type != null && id != 0L){
+            if(type == TranslationType.DEFAULT){
+                return I18nManager.translate(key, lang);
+            }else {
+                return I18nManager.translate(key, type, id);
+            }
         }
         if(event != null){
-            // use user
-            // use guild
-            //
+            return I18nManager.translate(key, event);
         }
         if(this.lang != null){
             return I18nManager.translate(key, this.lang);
@@ -52,6 +54,6 @@ public class TranslatableText {
     }
 
     enum TranslationType{
-        DEFAULT, GUILD, USER;
+        DEFAULT, SERVER, USER;
     }
 }
