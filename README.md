@@ -10,7 +10,7 @@ The [new-core](https://github.com/FlashyReese/Ozzie/tree/new-core) branch which 
 #### Quickstart:
 1. Clone this project
 2. Run > `mvn assembly:assembly -DdescriptorId=jar-with-dependencies`
-4. Run > `java -jar ./Ozzie/Ozzie-{version}-jar-with-dependencies.jar --discordapi (Discord Token)`
+4. Run > `java -jar ./tarjet/Ozzie-{version}-jar-with-dependencies.jar --discordapi (Discord Token)`
 
 # License
 
