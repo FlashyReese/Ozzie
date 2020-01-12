@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.command;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -32,11 +33,11 @@ public abstract class Command {
     public MessageEmbed getHelpEmblem(MessageReceivedEvent event) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Color.red)
-                .setTitle(this.toTitleCase(getNames()[0]) + " Command")
-                .setDescription(getDescription())
-                .addField("Permission: ", this.getPermission(), false)
-                .addField("Usage: ", getSyntax().replaceAll("%s", getNames()[0]), false);
-        embed.addField("Important", getImportant(), false);
+                .setTitle(this.toTitleCase(getNames()[0]) + " " + new TranslatableText("ozzie.cmd", event).toString())
+                .setDescription(new TranslatableText(getDescription(), event).toString())
+                .addField(new TranslatableText("ozzie.perm", event).toString() + ": ", this.getPermission(), false)
+                .addField(new TranslatableText("ozzie.usage", event).toString() + ": ", getSyntax().replaceAll("%s", getNames()[0]), false);
+        embed.addField(new TranslatableText("ozzie.important", event).toString(), getImportant(), false);
         return embed.build();
     }
 

@@ -1,3 +1,10 @@
 {
-  "insufficientperms":"No tiene privilegios suficientes para realizar esta operación."
+  "insufficientperms":"No tiene privilegios suficientes para realizar esta operación.",
+  "helpdesc":"Da toda la lista de comandos, o da información sobre un comando específico",
+  "helpfollowing":"Siguientes comandos para",
+  "cmd":"Comandos",
+  "helptotal":"Total de comandos permitidos",
+  "perm":"Permisp",
+  "usage":"Uso",
+  "important":"Importante"
 }

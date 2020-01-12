@@ -2,6 +2,7 @@ package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
+import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public class Help extends Command {
 
     public Help() {
-        super(new String[]{"help"}, "Gives all the list of commands, or gives information about a specific command", "%s | %s <commandname>");
+        super(new String[]{"help"}, "ozzie.helpdesc", "%s | %s <commandname>");
     }
 
     @Override
@@ -21,7 +22,7 @@ public class Help extends Command {
         allCommands.addAll(ozzie.getCommandManager().getCommands());
         allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
         if(full.equalsIgnoreCase(this.getNames()[0])) {
-            EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle("Following Commands for " + ozzie.getBotName());
+            EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle(String.format("%s %s", new TranslatableText("ozzie.helpfollowing", event).toString(), ozzie.getBotName()));
             int adder = 0;
             for(String cc : ozzie.getCommandManager().getCategoryList()) {
                 String name = cc.substring(0, 1).toUpperCase() + cc.substring(1).toLowerCase();
@@ -41,17 +42,17 @@ public class Help extends Command {
                     }
                 }
                 if(!line.isEmpty()) {
-                    embed.addField(String.format("%s Commands", name), line, false);
+                    embed.addField(String.format("%s " + new TranslatableText("ozzie.cmd", event).toString(), name), line, false);
                 }
             }
-            embed.setFooter("Total Allowed of Commands -> " + adder, null);
+            embed.setFooter(new TranslatableText("ozzie.helptotal", event).toString() + " -> " + adder, null);
             event.getChannel().sendMessage(embed.build()).queue();
             return;
         }else {
             String cmdName = split.toLowerCase().trim();
             for(Command c: allCommands){
                 if(cmdName.startsWith(c.getNames()[0].toLowerCase())){
-                    event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+                    event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                 }
             }
         }

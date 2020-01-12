@@ -1,7 +1,7 @@
 package me.wilsonhu.ozzie.core.command;
 
 import me.wilsonhu.ozzie.Ozzie;
-import me.wilsonhu.ozzie.commands.Help;
+import me.wilsonhu.ozzie.commands.*;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
@@ -39,7 +39,15 @@ public class CommandManager {
 
     private Command[] commands(){
         return new Command[]{
-            new Help()
+                new About(),
+                new Clara(),
+                new Evaluate(),
+                new Help(),
+                new InstallPlugin(),
+                new Ping(),
+                new Reload(),
+                new Shutdown(),
+                new Token()
         };
     }
 
@@ -92,16 +100,16 @@ public class CommandManager {
                         try{
                             c.onCommand(full, args, event, getOzzie());
                         }catch (Exception e){
-                            event.getChannel().sendMessage(c.getHelpEmblem()).queue();
+                            event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                             e.printStackTrace();
                         }
                         return;
                     }else {
-                        //""
                         event.getChannel().sendMessage(new TranslatableText("ozzie.insufficientperms", event).toString()).queue();
                     }
                 }
             }
+            //TODO: add Type of Chats
         }
     }
 

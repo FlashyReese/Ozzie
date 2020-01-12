@@ -1,5 +1,6 @@
 package me.wilsonhu.ozzie;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.wilsonhu.ozzie.core.command.CommandManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.core.i18n.I18nManager;
@@ -39,6 +40,8 @@ public class Ozzie {
     private CommandManager commandManager;
     private I18nManager i18nManager;
 
+    private EventWaiter eventWaiter;
+
     public Ozzie(String[] args) throws Exception {
         log.info("Building client...");
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
@@ -47,6 +50,7 @@ public class Ozzie {
         this.setBotName("Ozzie");
         this.setRunning(false);
         this.setDefaultCommandPrefix("-");
+        this.setEventWaiter(new EventWaiter());
         log.info("Client built!");
     }
 
@@ -67,6 +71,7 @@ public class Ozzie {
                 shardManagerBuilder.setToken(getTokenManager().getToken("discord"));
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
+                getShardManager().addEventListener(getEventWaiter());
                 if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
                     log.info("Plugins are disabled!");
                 }else{
@@ -168,6 +173,15 @@ public class Ozzie {
     public void setDirectory(File directory) {
         this.directory = directory;
     }
+
+    public EventWaiter getEventWaiter() {
+        return eventWaiter;
+    }
+
+    public void setEventWaiter(EventWaiter eventWaiter) {
+        this.eventWaiter = eventWaiter;
+    }
+
 
     public ParameterManager getParameterManager() {
         if(parameterManager == null) parameterManager = new ParameterManager();

@@ -29,11 +29,18 @@ public class TokenManager {
     }
 
     public String getToken(String key){
-        return this.getTokens().get(key).toString();
+        return this.getTokens().get(key);
     }
 
     public void addToken(String key, String token, Ozzie ozzie){
         this.getTokens().put(key, token);
+        log.info("Saving tokens...");
+        ozzie.getConfigurationManager().writeJson(ozzie.getDirectory().getAbsolutePath(), "tokens", this.getTokens());
+        log.info("Saved tokens!");
+    }
+
+    public void removeToken(String key, Ozzie ozzie){
+        this.getTokens().remove(key);
         log.info("Saving tokens...");
         ozzie.getConfigurationManager().writeJson(ozzie.getDirectory().getAbsolutePath(), "tokens", this.getTokens());
         log.info("Saved tokens!");

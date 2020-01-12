@@ -38,6 +38,9 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="D:/Projects/Eclipse Workspace/mvrk/Ozzie" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RunDashboard">
@@ -87,7 +90,7 @@
       <workItem from="1578507363518" duration="7626000" />
       <workItem from="1578619389523" duration="31000" />
       <workItem from="1578759440975" duration="6000" />
-      <workItem from="1578759496609" duration="24397000" />
+      <workItem from="1578759496609" duration="31078000" />
     </task>
     <servers />
   </component>

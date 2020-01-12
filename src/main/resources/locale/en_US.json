@@ -1,12 +1,10 @@
 {
   "insufficientperms":"You don't have sufficient privileges to perform this operation",
   "helpdesc":"Gives all the list of commands, or gives information about a specific command",
-  "":"",
-  "":"",
-  "":"",
-  "":"",
-  "":"",
-  "":"",
-  "":"",
-  "":""
+  "helpfollowing":"Following Commands for",
+  "cmd":"Commands",
+  "helptotal":"Total Allowed Commands",
+  "perm":"Permission",
+  "usage":"Usage",
+  "important":"Important"
 }

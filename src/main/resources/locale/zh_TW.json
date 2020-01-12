@@ -1,0 +1,10 @@
+{
+  "insufficientperms":"您沒有足夠的權限執行此操作",
+  "helpdesc":"提供所有命令列表，或提供有關特定命令的信息",
+  "helpfollowing":"遵循命令為",
+  "cmd":"命令",
+  "helptotal":"允許的命令總數",
+  "perm":"允許",
+  "usage":"用法",
+  "important":"重要"
+}
