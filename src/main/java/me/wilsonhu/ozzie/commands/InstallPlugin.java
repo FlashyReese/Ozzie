@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class InstallPlugin extends Command {
@@ -49,7 +50,8 @@ public class InstallPlugin extends Command {
                 ex.printStackTrace();
             }
             assert file != null;
-            if(event.getMessage().getAttachments().get(0).downloadToFile(file).isDone()) {
+            CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(file);
+            if(downloadFile.isDone()) {
                 event.getChannel().sendMessage("Plugin Installed: `" + event.getMessage().getAttachments().get(0).getFileName() + "`").queue();
                 log.info("Plugin Installed: " + event.getMessage().getAttachments().get(0).getFileName());
             }

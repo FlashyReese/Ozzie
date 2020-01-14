@@ -62,7 +62,7 @@ public class I18nManager {
                     final File apps = new File(url.toURI());
                     for (File app : Objects.requireNonNull(apps.listFiles())) {
                         String lang = app.getName().replaceAll(".json", "");
-                        HashMap<String, String> locale = new Gson().fromJson(new BufferedReader(new FileReader(app)), new TypeToken<HashMap<String, String>>(){}.getType());
+                        HashMap<String, String> locale = new Gson().fromJson(new BufferedReader(new InputStreamReader(new FileInputStream(app), "UTF-8")), new TypeToken<HashMap<String, String>>(){}.getType());
                         getOzzie().getConfigurationManager().writeJson(ConfigurationManager.LOCALE_FOLDER + File.separator + lang, "ozzie", locale);
                     }
                 } catch (URISyntaxException ex) {

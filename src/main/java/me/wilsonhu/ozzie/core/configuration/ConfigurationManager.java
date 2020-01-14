@@ -119,7 +119,8 @@ public class ConfigurationManager {
             Gson gson = new Gson();
             String json = gson.toJson(object);
             if(!new File(path).exists())new File(path).mkdirs();
-            FileWriter fw = new FileWriter(path + File.separator + filename + ".json");
+
+            FileWriter fw = new FileWriter(new File(path + File.separator + filename + ".json"));
             fw.write(json);
             fw.flush();
             fw.close();
