@@ -43,17 +43,23 @@ public class Restart extends Command {
                 } catch (URISyntaxException e1) {
                     e1.printStackTrace();
                 }
+                assert currentJar != null;
                 if(!currentJar.getName().endsWith(".jar"))
                     return;
                 ozzie.stop();
                 String cmd = "java -jar " + currentJar.getPath() + " " + args;
-
-                boolean isWindows = ozzie.getOperatingSystemName().toLowerCase().startsWith("windows");
-                String line1 = isWindows ? "cmd.exe" : "/bin/sh";
-                String line2 = isWindows ? "/c" : "-c";
-                //osascript -e tell application "Terminal" to do script "java -jar test.jar"
-                //Todo: Support Unix and macOS
-                ProcessBuilder pb = new ProcessBuilder(line1, line2, cmd);
+                String os_name = ozzie.getOperatingSystemName().toLowerCase();
+                String[] cmd_exec = new String[]{};
+                if (os_name.contains("win")){
+                    cmd_exec = new String[]{"cmd.exe", "/c", cmd};
+                }else if (os_name.contains("mac")){
+                    cmd_exec = new String[]{"/usr/bin/open", "-a", cmd};
+                }else if (os_name.contains("nix") || os_name.contains("nux")){
+                    cmd_exec = new String[]{"/bin/bash", cmd};
+                }else if (os_name.contains("sunos")){
+                    cmd_exec = new String[]{"/bin/bash", cmd};
+                }
+                ProcessBuilder pb = new ProcessBuilder(cmd_exec);
                 pb.redirectErrorStream(true).inheritIO();
                 try {
                     pb.start();

@@ -10,5 +10,12 @@
   "important":"Important",
   "currentlocaleuser": "Your current language is set to",
   "currentlocaleserver": "The server's current language is set to",
-  "currentlocale": "The default language is set to"
+  "currentlocale": "The default language is set to",
+  "servercustomprefix": "Server's custom user prefix is already set to",
+  "true":"true",
+  "false":"false",
+  "loggedin": "You have successfully logged in.",
+  "invalidpass": "Invalid password.",
+  "provideid": "User's ID:",
+  "providepass": "User's Password:"
 }

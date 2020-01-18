@@ -10,9 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 public class ConfigurationManager {
 
@@ -60,9 +62,15 @@ public class ConfigurationManager {
 
     public UserSchema getUserSettings(long id){
         if(!doesFileExist(USERS_SETTINGS_FOLDER, String.valueOf(id))){
+            String alphabet = "abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789";
             UserSchema schema = new UserSchema();
             schema.setUserLocale("default");
             schema.setCustomCommandPrefix("default");
+            String password = "";
+            for (int i = 0; i < 10; i++) {
+                password += alphabet.charAt(new Random().nextInt(alphabet.length()));
+            }
+            schema.setPassword(password);
             updateUserSettings(id, schema);
         }
         return readJson(USERS_SETTINGS_FOLDER, String.valueOf(id), new TypeToken<UserSchema>(){}.getType());
@@ -115,33 +123,39 @@ public class ConfigurationManager {
     }
 
     public void writeJson(String path, String filename, Object object) {
+        Writer fw = null;
         try {
             Gson gson = new Gson();
             String json = gson.toJson(object);
             if(!new File(path).exists())new File(path).mkdirs();
-
-            FileWriter fw = new FileWriter(new File(path + File.separator + filename + ".json"));
+            fw = new OutputStreamWriter(new FileOutputStream(new File(path + File.separator + filename + ".json")), StandardCharsets.UTF_8);
             fw.write(json);
             fw.flush();
             fw.close();
-        } catch (Exception ex) {}
-    }
-
-    public <T> T readJson(String path, String filename, Type type) {
-        Gson gson = new Gson();
-        FileReader fileReader = null;
-        BufferedReader buffered = null;
-        try {
-            fileReader = new FileReader(path + File.separator + filename + ".json");
-            buffered = new BufferedReader(fileReader);
-            Type t = type;
-            return gson.fromJson(fileReader, t);
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally {
             try {
+                assert fw != null;
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public <T> T readJson(String path, String filename, Type type) {
+        Gson gson = new Gson();
+        BufferedReader buffered = null;
+        try {
+            buffered = new BufferedReader(new InputStreamReader(new FileInputStream(path + File.separator + filename + ".json"), StandardCharsets.UTF_8));
+            return gson.fromJson(buffered, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }finally {
+            try {
+                assert buffered != null;
                 buffered.close();
-                fileReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

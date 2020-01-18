@@ -99,10 +99,23 @@
       <workItem from="1578759496609" duration="40006000" />
       <workItem from="1578853437369" duration="4313000" />
       <workItem from="1578969298633" duration="781000" />
+      <workItem from="1579054771896" duration="8404000" />
+      <workItem from="1579303650738" duration="10957000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/socket/UserThread.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

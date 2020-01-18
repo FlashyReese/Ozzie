@@ -8,6 +8,7 @@ import me.wilsonhu.ozzie.core.parameter.ParameterManager;
 import me.wilsonhu.ozzie.core.plugin.Plugin;
 import me.wilsonhu.ozzie.core.plugin.PluginLoader;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
+import me.wilsonhu.ozzie.core.socket.ListenerServer;
 import me.wilsonhu.ozzie.core.token.TokenManager;
 import me.wilsonhu.ozzie.handlers.PrimaryListener;
 import me.wilsonhu.ozzie.parameters.DisablePlugins;
@@ -39,6 +40,7 @@ public class Ozzie {
     private PluginLoader pluginLoader;
     private CommandManager commandManager;
     private I18nManager i18nManager;
+    private ListenerServer listenerServer;
 
     private EventWaiter eventWaiter;
 
@@ -211,5 +213,10 @@ public class Ozzie {
     public I18nManager getI18nManager(){
         if (i18nManager == null) i18nManager = new I18nManager(this);
         return i18nManager;
+    }
+
+    public ListenerServer getListenerServer(){
+        if (listenerServer == null) listenerServer = new ListenerServer(this, 27015);
+        return listenerServer;
     }
 }

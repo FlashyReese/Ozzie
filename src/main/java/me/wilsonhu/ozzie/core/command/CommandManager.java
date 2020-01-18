@@ -60,14 +60,16 @@ public class CommandManager {
             full = event.getMessage().getContentRaw();
         }
         full = full.trim();
-        try{
-            ServerSchema serverSchema = getOzzie().getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            if(serverSchema.isAllowedCommandTextChannel(event.getChannel().getIdLong())){
-                UserSchema userSchema = getOzzie().getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-                if((serverSchema.isAllowUserCustomCommandPrefix() && userSchema.getCustomCommandPrefix().equals("default")) || !serverSchema.isAllowUserCustomCommandPrefix()){
-                    onCommand(event, full, serverSchema.getCustomCommandPrefix());
-                }else if(serverSchema.isAllowUserCustomCommandPrefix() && !userSchema.getCustomCommandPrefix().equals("default")){
-                    onCommand(event, full, userSchema.getCustomCommandPrefix());
+        try{//Todo: Guild Splitting
+            if(event.getChannelType().isGuild()){
+                ServerSchema serverSchema = getOzzie().getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
+                if(serverSchema.isAllowedCommandTextChannel(event.getChannel().getIdLong())){
+                    UserSchema userSchema = getOzzie().getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
+                    if(!serverSchema.isAllowUserCustomCommandPrefix() || userSchema.getCustomCommandPrefix().equals("default")){
+                        onCommand(event, full, serverSchema.getCustomCommandPrefix());
+                    }else if(serverSchema.isAllowUserCustomCommandPrefix() && !userSchema.getCustomCommandPrefix().equals("default")){
+                        onCommand(event, full, userSchema.getCustomCommandPrefix());
+                    }
                 }
             }
         }catch (Exception e){

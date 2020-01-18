@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public abstract class Command {
     private String[] names;
@@ -109,5 +111,9 @@ public abstract class Command {
 
     public void setCommandTypes(CommandType... commandTypes) {
         this.commandTypes = commandTypes;
+    }
+
+    public boolean isCommandType(CommandType type){
+        return Arrays.stream(getCommandTypes()).collect(Collectors.toList()).contains(type);
     }
 }

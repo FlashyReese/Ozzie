@@ -4,6 +4,7 @@ public class UserSchema {
 
     private String userLocale;
     private String customCommandPrefix;
+    private String password;
 
     public String getUserLocale() {
         return userLocale;
@@ -19,5 +20,13 @@ public class UserSchema {
 
     public void setCustomCommandPrefix(String customCommandPrefix) {
         this.customCommandPrefix = customCommandPrefix;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

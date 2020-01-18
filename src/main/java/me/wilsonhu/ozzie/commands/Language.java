@@ -17,7 +17,7 @@ public class Language extends Command {
 
     @Override
     public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(full.equals(getNames()[0])){
+        if(full.equals(split)){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             if(serverSchema.isAllowUserLocale()){
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
@@ -28,6 +28,38 @@ public class Language extends Command {
                 }
             }else{
                 defaultServerLocaleCheck(event, ozzie, serverSchema);
+            }
+        }else if(split.startsWith("server")){
+            if(split.substring("server".length()).contains(" ")){
+                String cmd = split.trim();
+                if(cmd.contains(" ")){
+                    String[] args = cmd.split(" ");
+                    if(args[0].equalsIgnoreCase("set")){
+                        if(args[1].equalsIgnoreCase("allowuser")){
+                            if(args[2].equalsIgnoreCase("customprefix")){
+                                ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
+                                boolean prefix = Boolean.parseBoolean(args[3]);
+                                if(serverSchema.isAllowUserCustomCommandPrefix() == prefix){
+                                    event.getChannel().sendMessage(new TranslatableText("ozzie.servercustomprefix", event).toString() + " " + (serverSchema.isAllowUserCustomCommandPrefix() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).queue();
+                                }else{
+                                    serverSchema.setAllowUserCustomCommandPrefix(prefix);
+                                    //set to new
+                                    ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+                                }
+                            }else if(args[2].equalsIgnoreCase("customlocale")){
+                                ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
+                                boolean prefix = Boolean.parseBoolean(args[3]);
+                                if(serverSchema.isAllowUserLocale() == prefix){
+                                    event.getChannel().sendMessage(new TranslatableText("ozzie.servercustomlocale", event).toString() + " " + (serverSchema.isAllowUserLocale() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).queue();
+                                }else{
+                                    serverSchema.setAllowUserLocale(prefix);
+                                    //set to new
+                                    ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
