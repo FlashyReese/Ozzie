@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -115,6 +116,27 @@ public class CommandManager {
                 }
             }
             //TODO: add Type of Chats
+        }
+    }
+
+    public void onRConCommand(ArrayList<Command> list, String full, PrintWriter writer, long userId, long serverId) throws Exception {
+        String[] s;
+        if (full.contains(" ")) {
+            s = full.split(" ");
+        }else{
+            s = new String[]{full};
+        }
+        for(Command cmd: list){
+            if(cmd.isCommandType(CommandType.RCON)){
+                if(getOzzie().getConfigurationManager().hasPermission(serverId, userId, cmd.getPermission())){
+                    for(String name : cmd.getNames()){
+                        if(name.equalsIgnoreCase(s[0])){
+                            String args = full.substring(name.length()).trim();
+                            cmd.onCommand(full, args, writer, getOzzie());
+                        }
+                    }
+                }
+            }
         }
     }
 

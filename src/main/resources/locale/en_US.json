@@ -15,7 +15,10 @@
   "true":"true",
   "false":"false",
   "loggedin": "You have successfully logged in.",
+  "loggedinas": "You have logged in as",
+  "on": "on",
   "invalidpass": "Invalid password.",
-  "provideid": "User's ID:",
+  "provideidserver": "Server's ID:",
+  "provideiduser": "User's ID:",
   "providepass": "User's Password:"
 }

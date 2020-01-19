@@ -7,6 +7,7 @@ import me.wilsonhu.ozzie.schemas.ServerSchema;
 import me.wilsonhu.ozzie.schemas.UserSchema;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.io.PrintWriter;
 import java.util.Locale;
 
 public class Language extends Command {
@@ -62,6 +63,11 @@ public class Language extends Command {
                 }
             }
         }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 
     private void defaultServerLocaleCheck(MessageReceivedEvent event, Ozzie ozzie, ServerSchema serverSchema) {

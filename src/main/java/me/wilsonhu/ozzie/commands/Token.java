@@ -4,6 +4,8 @@ import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.io.PrintWriter;
+
 public class Token extends Command {
     public Token() {
         super(new String[]{"token"}, "Token Manager", "%s add <Token Name> <Token> | token remove <Token Name>");
@@ -41,5 +43,10 @@ public class Token extends Command {
                 return;
             }
         }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 }

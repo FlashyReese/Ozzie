@@ -1,4 +1,4 @@
-package me.wilsonhu.ozzie.core.socket;
+package me.wilsonhu.ozzie.core.rcon;
 
 import me.wilsonhu.ozzie.Ozzie;
 import org.apache.logging.log4j.LogManager;
@@ -10,15 +10,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ListenerServer {
+public class RConServer {
     //Todo: Understand this shit better with closing sockets and i/o streams;
-    private static final Logger log = LogManager.getLogger(ListenerServer.class);
+    private static final Logger log = LogManager.getLogger(RConServer.class);
 
     private int port;
     private Set<UserThread> userThreads = new HashSet<>();
     private Ozzie ozzie;
 
-    public ListenerServer(Ozzie ozzie, int port) {
+    public RConServer(Ozzie ozzie, int port) {
         log.info("Building ListenerServer...");
         this.setPort(port);
         this.setOzzie(ozzie);
@@ -31,6 +31,7 @@ public class ListenerServer {
             log.info("Listening on port " + port);
             while (true) {
                 Socket socket = serverSocket.accept();
+                log.info(socket.getInetAddress().toString() + " connected");
                 UserThread newUser = new UserThread(socket, this);
                 getUserThreads().add(newUser);
                 newUser.start();
@@ -52,11 +53,11 @@ public class ListenerServer {
         return port;
     }
 
-    public void setPort(int port) {
+    private void setPort(int port) {
         this.port = port;
     }
 
-    public Set<UserThread> getUserThreads() {
+    private Set<UserThread> getUserThreads() {
         return userThreads;
     }
 

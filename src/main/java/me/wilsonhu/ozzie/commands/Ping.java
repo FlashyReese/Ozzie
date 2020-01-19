@@ -5,6 +5,8 @@ import me.wilsonhu.ozzie.core.command.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.io.PrintWriter;
+
 public class Ping extends Command {
 
     public Ping() {
@@ -23,6 +25,11 @@ public class Ping extends Command {
 
             event.getChannel().sendMessage(embed.build()).queue();
         });
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 
 }

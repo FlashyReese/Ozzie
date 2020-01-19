@@ -1,22 +1,26 @@
-package me.wilsonhu.ozzie.core.socket;
+package me.wilsonhu.ozzie.core.rcon;
 
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import me.wilsonhu.ozzie.schemas.UserSchema;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
 
 public class UserThread extends Thread{
     private Socket socket;
-    private ListenerServer server;
+    private RConServer server;
     private PrintWriter writer;
     private boolean authenticated;
+    private long userId;
+    private long serverId;
 
-    public UserThread(Socket socket, ListenerServer server) {
+    public UserThread(Socket socket, RConServer server) {
         this.socket = socket;
         this.server = server;
         this.setAuthenticated(false);
+        this.setUserId(0L);
     }
 
     public void run() {
@@ -26,7 +30,17 @@ public class UserThread extends Thread{
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
             do{
-                writer.println(new TranslatableText("ozzie.provideid"));
+                writer.println(new TranslatableText("ozzie.provideidserver"));
+                String serverID = reader.readLine();
+                if(serverID.trim().equalsIgnoreCase("exit")){
+                    writer.close();
+                    reader.close();
+                    input.close();
+                    output.close();
+                    socket.close();
+                    return;
+                }
+                writer.println(new TranslatableText("ozzie.provideiduser"));
                 String userID = reader.readLine();
                 if(userID.trim().equalsIgnoreCase("exit")){
                     writer.close();
@@ -46,7 +60,7 @@ public class UserThread extends Thread{
                     socket.close();
                     return;
                 }
-                authenticate(userID, password);
+                authenticate(serverID, userID, password);
             }while(!isAuthenticated());
             String clientMessage;
             do {
@@ -55,7 +69,9 @@ public class UserThread extends Thread{
                     setAuthenticated(false);
                     break;
                 }
-                writer.println("[Test] " + clientMessage);
+                server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getCommands(), clientMessage, writer, getUserId(), getServerId());
+                server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getPluginCommands(), clientMessage, writer, getUserId(), getServerId());
+                //writer.println("[Test] " + clientMessage);
             } while (isAuthenticated());
             writer.close();
             reader.close();
@@ -65,6 +81,8 @@ public class UserThread extends Thread{
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -72,12 +90,23 @@ public class UserThread extends Thread{
         writer.println(message);
     }
 
-    private void authenticate(String userID, String password){
+    private void authenticate(String serverID, String userID, String password){
         long id = Long.parseLong(userID);
+        long serverid = Long.parseLong(serverID);
         UserSchema userSchema = server.getOzzie().getConfigurationManager().getUserSettings(id);
         if(userSchema.getPassword().equals(password)){
-            setAuthenticated(true);
-            writer.println(new TranslatableText("ozzie.loggedin"));
+            if(Objects.requireNonNull(server.getOzzie().getShardManager().getGuildById(serverid)).isMember(Objects.requireNonNull(server.getOzzie().getShardManager().getUserById(id)))){
+                setAuthenticated(true);
+                setUserId(id);
+                setServerId(serverid);
+                String userName = Objects.requireNonNull(server.getOzzie().getShardManager().getUserById(id)).getName();
+                String serverName = Objects.requireNonNull(server.getOzzie().getShardManager().getGuildById(serverID)).getName();
+                writer.println(new TranslatableText("ozzie.loggedin"));
+                writer.println(String.format("%s %s %s %s",new TranslatableText("ozzie.loggedinas").toString(), userName, new TranslatableText("ozzie.on").toString(), serverName));
+            }else{
+                setAuthenticated(false);
+                writer.println(new TranslatableText("ozzie.invalidpass"));
+            }
         }else{
             setAuthenticated(false);
             writer.println(new TranslatableText("ozzie.invalidpass"));
@@ -91,5 +120,22 @@ public class UserThread extends Thread{
 
     private void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+
+    public long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(long serverId) {
+        this.serverId = serverId;
     }
 }

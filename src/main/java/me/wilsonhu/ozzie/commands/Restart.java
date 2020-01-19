@@ -3,12 +3,14 @@ package me.wilsonhu.ozzie.commands;
 import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
+import me.wilsonhu.ozzie.core.command.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
 public class Restart extends Command {
@@ -19,6 +21,7 @@ public class Restart extends Command {
         super(new String[] {"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
     }
 
     @Override
@@ -29,6 +32,19 @@ public class Restart extends Command {
             restartApplication(split, ozzie);
         }else {
             event.getChannel().sendMessage("Restarting").queue();
+            log.info("Restarting");
+            restartApplication("", ozzie);
+        }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+        if(!split.isEmpty()) {
+            writer.println("Restarting with parameters: `" + split + "`");
+            log.info("Restarting with parameters: `" + split + "`");
+            restartApplication(split, ozzie);
+        }else {
+            writer.println("Restarting");
             log.info("Restarting");
             restartApplication("", ozzie);
         }

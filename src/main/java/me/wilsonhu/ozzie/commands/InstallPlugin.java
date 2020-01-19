@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,11 @@ public class InstallPlugin extends Command {
         }else {
             //Please attach a file TODO: Adapt wget for this v:
         }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 
     public void pinConfirm(Ozzie ozzie, MessageReceivedEvent event, MessageReceivedEvent e, int code) {

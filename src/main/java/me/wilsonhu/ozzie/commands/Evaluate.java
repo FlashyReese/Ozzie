@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class Evaluate extends Command {
 
@@ -33,6 +34,11 @@ public class Evaluate extends Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 
 }

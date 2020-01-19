@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import oshi.SystemInfo;
 
 import java.awt.*;
+import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 
 public class About extends Command {
@@ -73,5 +74,10 @@ public class About extends Command {
                 .addField("System Information", "```markdown\n" + si.getHardware().toString() + "```", false)
                 .setFooter("by FlashyReese", null);
         event.getChannel().sendMessage(embed.build()).queue();
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+
     }
 }

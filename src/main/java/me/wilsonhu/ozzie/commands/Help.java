@@ -2,18 +2,21 @@ package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
+import me.wilsonhu.ozzie.core.command.CommandType;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Help extends Command {
 
     public Help() {
         super(new String[]{"help"}, "ozzie.helpdesc", "%s | %s <commandname>");
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
     }
 
     @Override
@@ -56,6 +59,20 @@ public class Help extends Command {
                 }
             }
         }
+    }
+
+    @Override
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
+        ArrayList<Command> allCommands = new ArrayList<Command>();
+        allCommands.addAll(ozzie.getCommandManager().getCommands());
+        allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
+        String commands = "Available Commands: ";
+        for(Command c: allCommands){
+            if(c.isCommandType(CommandType.RCON)){
+                commands += c.getNames()[0] + ", ";
+            }
+        }
+        writer.println(commands);
     }
 
     @Override
