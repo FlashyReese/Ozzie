@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="317c7c98-4b42-49e7-95bb-365ed9f3e3a9" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,6 +37,11 @@
     <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1W7j7ZA3ErOrgN2BzSG070WcTuR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -48,18 +52,6 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -100,11 +92,26 @@
       <workItem from="1578853437369" duration="4313000" />
       <workItem from="1578969298633" duration="781000" />
       <workItem from="1579054771896" duration="8404000" />
-      <workItem from="1579303650738" duration="16831000" />
+      <workItem from="1579303650738" duration="18026000" />
+      <workItem from="1579937506613" duration="39480000" />
+      <workItem from="1579993065756" duration="2633000" />
+      <workItem from="1581055125735" duration="143000" />
+      <workItem from="1581055375115" duration="566000" />
+      <workItem from="1581280482323" duration="1103000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser" timestamp="1581282592787">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1581282592787" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1581280598295">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1581280598295" />
   </component>
 </project>

@@ -109,7 +109,7 @@ public class I18nManager {
         return tag;
     }
 
-    public Locale[] addItem(Locale[] arr, Locale x){
+    private Locale[] addItem(Locale[] arr, Locale x){
         Locale[] newarr = new Locale[arr.length + 1];
         for (int i = 0; i < arr.length; i++) {
             newarr[i] = arr[i];

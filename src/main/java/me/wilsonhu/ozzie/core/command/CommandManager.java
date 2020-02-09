@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CommandManager {
+public class CommandManager {//Todo: This can literally be cleaned up way better
 
     private static final Logger log = LogManager.getLogger(CommandManager.class);
     private ArrayList<Command> commands;
@@ -61,7 +61,7 @@ public class CommandManager {
             full = event.getMessage().getContentRaw();
         }
         full = full.trim();
-        try{//Todo: Guild Splitting
+        try{
             if(event.getChannelType().isGuild()){
                 ServerSchema serverSchema = getOzzie().getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
                 if(serverSchema.isAllowedCommandTextChannel(event.getChannel().getIdLong())){
@@ -72,6 +72,8 @@ public class CommandManager {
                         onCommand(event, full, userSchema.getCustomCommandPrefix());
                     }
                 }
+            }else{
+                //Todo: Non Guild Commands precheck
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -20,18 +20,3 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-tokens.json
-target/classes/log4j2.properties
-settings/users/141594071033577472.json
-settings/servers/633213345717157898/settings.json
-settings/servers/633213345717157898/permissions/141594071033577472.json
-settings/servers/151831331796549632/settings.json
-plugins/Ozzie Example Plugin.jar
-logs/2020-01/app-01-08-2020-1.log.gz
-locale/settings.json
-locale/es_MX/ozzie.json
-locale/es_MX/exampleid.json
-locale/en_US/ozzie.json
-locale/en_US/exampleid.json
-target/classes/log4j2.properties
-target/classes/log4j2.properties

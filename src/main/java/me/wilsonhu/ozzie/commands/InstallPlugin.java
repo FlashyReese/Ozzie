@@ -57,6 +57,7 @@ public class InstallPlugin extends Command {
             }
             assert file != null;
             CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(file);
+            downloadFile.complete(file);
             if(downloadFile.isDone()) {
                 event.getChannel().sendMessage("Plugin Installed: `" + event.getMessage().getAttachments().get(0).getFileName() + "`").queue();
                 log.info("Plugin Installed: " + event.getMessage().getAttachments().get(0).getFileName());

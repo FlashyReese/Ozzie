@@ -97,7 +97,10 @@ public class PluginLoader {
     public ArrayList<PluginModule> getConfiguredPlugins() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         final ArrayList<PluginModule> plugins = new ArrayList<PluginModule>();
         for (PluginModule pm: pluginsRaw) {
-            plugins.add(new PluginModule(initAsPlugin(pm.getClazz()), pm.getSchema(), pm.getClazz()));
+            Plugin pl = initAsPlugin(pm.getClazz());
+            pl.setPluginSchema(pm.getSchema());
+            PluginModule module = new  PluginModule(pl, pm.getSchema(), pm.getClazz());
+            plugins.add(module);
         }
         return plugins;
     }
