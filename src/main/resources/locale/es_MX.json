@@ -1,0 +1,14 @@
+{
+  "insufficientperms":"No tiene privilegios suficientes para realizar esta operación.",
+  "helpdesc":"Da toda la lista de comandos, o da información sobre un comando específico",
+  "helpfollowing":"Siguientes comandos para",
+  "cmd":"Comando",
+  "cmds": "Comandos",
+  "helptotal":"Total de comandos permitidos",
+  "perm":"Permisp",
+  "usage":"Uso",
+  "important":"Importante",
+  "currentlocaleuser": "Su idioma actual está configurado en",
+  "currentlocaleserver": "El idioma actual del servidor está configurado en",
+  "currentlocale": "El idioma predeterminado se establece en"
+}

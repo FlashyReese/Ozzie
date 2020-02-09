@@ -5,13 +5,12 @@ A modular Discord bot made in Java with JDA.
 
 If you're comfortable getting up and running from a `git clone`, this method is for you.
 
-The [master](https://github.com/FlashyReese/Ozzie) branch which contains the latest release.
+The [new-core](https://github.com/FlashyReese/Ozzie/tree/new-core) branch which contains the nightly releases.
 
 #### Quickstart:
 1. Clone this project
-2. Run > `gradlew clean`
-3. Run > `gradlew fatJar`
-4. Run > `java -jar ./Ozzie/build/libs/Ozzie-all-{version}.jar --token (Discord Token)`
+2. Run > `mvn assembly:assembly -DdescriptorId=jar-with-dependencies`
+4. Run > `java -jar ./tarjet/Ozzie-{version}-jar-with-dependencies.jar --discordapi (Discord Token)`
 
 # License
 
