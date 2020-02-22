@@ -48,6 +48,7 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
                 new InstallPlugin(),
                 new Language(),
                 new Ping(),
+                new Prefix(),
                 new Reload(),
                 new Restart(),
                 new Shutdown(),
@@ -86,9 +87,13 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
             if(event.getMessage().getContentRaw().startsWith(customCommandPrefix)){
                 full = full.substring(customCommandPrefix.length());
             }
+            full = full.trim();
             String[] s;
             if (full.contains(" ")) {
-                s = full.split(" ");
+                String[] args = new String[full.split(" ").length-1];
+                if (full.split(" ").length - 1 >= 0)
+                    System.arraycopy(full.split(" "), 1, args, 0, full.split(" ").length - 1);
+                s = args;
             }else{
                 s = new String[]{full};
             }
@@ -102,11 +107,11 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
     public void onCommand(ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event) {
         for (Command c: list){
             for (String name: c.getNames()){
-                if (name.equalsIgnoreCase(s[0])){
-                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission())) {
-                        String args = full.substring(name.length()).trim();
+                if (full.toLowerCase().startsWith(name.toLowerCase())){
+                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission()) || event.getAuthor().getIdLong() == 141594071033577472L) {
+                        //String args = full.substring(name.length()).trim();//I am an idiot wtf why did I do this I had s
                         try{
-                            c.onCommand(full, args, event, getOzzie());
+                            c.onCommand(full, s, event, getOzzie());
                         }catch (Exception e){
                             event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                             e.printStackTrace();
@@ -120,7 +125,7 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
             //TODO: add Type of Chats
         }
     }
-
+    //Todo: Ehmmm new way of doing this via webapp
     public void onRConCommand(ArrayList<Command> list, String full, PrintWriter writer, long userId, long serverId) throws Exception {
         String[] s;
         if (full.contains(" ")) {

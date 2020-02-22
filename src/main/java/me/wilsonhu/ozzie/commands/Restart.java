@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
 public class Restart extends Command {
@@ -25,11 +24,16 @@ public class Restart extends Command {
     }
 
     @Override
-    public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(!split.isEmpty()) {
-            event.getChannel().sendMessage("Restarting with parameters: `" + split + "`").queue();
-            log.info("Restarting with parameters: `" + split + "`");
-            restartApplication(split, ozzie);
+    public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+        if(args.length != 0) {
+            StringBuilder programArguments = new StringBuilder();
+            for(int i = 1; i < args.length; i++){
+                programArguments.append(args[i]).append(" ");
+            }
+            programArguments = new StringBuilder(programArguments.toString().trim());
+            event.getChannel().sendMessage("Restarting with parameters: `" + programArguments.toString() + "`").queue();
+            log.info("Restarting with parameters: `" + programArguments.toString() + "`");
+            restartApplication(programArguments.toString(), ozzie);
         }else {
             event.getChannel().sendMessage("Restarting").queue();
             log.info("Restarting");
@@ -37,7 +41,7 @@ public class Restart extends Command {
         }
     }
 
-    @Override
+    /*@Override
     public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
         if(!split.isEmpty()) {
             writer.println("Restarting with parameters: `" + split + "`");
@@ -48,7 +52,7 @@ public class Restart extends Command {
             log.info("Restarting");
             restartApplication("", ozzie);
         }
-    }
+    }*/
 
     public void restartApplication(String args, Ozzie ozzie) throws IOException, URISyntaxException{
         Runtime.getRuntime().addShutdownHook(new Thread() {

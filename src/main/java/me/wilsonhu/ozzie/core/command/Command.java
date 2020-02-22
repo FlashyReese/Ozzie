@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.command;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.i18n.ParsableText;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -31,19 +32,36 @@ public abstract class Command {
         this.setCommandTypes(CommandType.SERVER, CommandType.USER);
     }
 
-    public abstract void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception;
+    public abstract void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception;
 
-    public abstract void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception;
+    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception{
+
+    }
 
     public MessageEmbed getHelpEmblem(MessageReceivedEvent event) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(Color.red)
-                .setTitle(this.toTitleCase(getNames()[0]) + " " + new TranslatableText("ozzie.cmd", event).toString())
+                .setTitle(new ParsableText(new TranslatableText("ozzie.cmd", event), this.toTitleCase(getNames()[0])).toString())
                 .setDescription(new TranslatableText(getDescription(), event).toString())
-                .addField(new TranslatableText("ozzie.perm", event).toString() + ": ", this.getPermission(), false)
-                .addField(new TranslatableText("ozzie.usage", event).toString() + ": ", getSyntax().replaceAll("%s", getNames()[0]), false);
+                .addField(new TranslatableText("ozzie.perm", event).toString(), this.getPermission(), false)
+                .addField(new TranslatableText("ozzie.usage", event).toString(), getSyntax().replaceAll("%s", getNames()[0]), false);
         embed.addField(new TranslatableText("ozzie.important", event).toString(), getImportant(), false);
         return embed.build();
+    }
+
+    public boolean isCommand(String[] args, String... evaluateArgs) {
+        if (args.length >= evaluateArgs.length) {
+            for (int i = 0; i < evaluateArgs.length; i++) {
+                if (args[i].equalsIgnoreCase(evaluateArgs[i])) {
+                    if (evaluateArgs.length == i + 1) {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private String toTitleCase(String input) {

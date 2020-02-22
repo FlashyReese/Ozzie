@@ -16,7 +16,7 @@ public class Shutdown extends Command {
     }
 
     @Override
-    public void onCommand(String full, String split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+    public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         ozzie.stop();
         System.exit(0);
     }
