@@ -66,11 +66,11 @@ public class ConfigurationManager {
             UserSchema schema = new UserSchema();
             schema.setUserLocale("default");
             schema.setCustomCommandPrefix("default");
-            String password = "";
+            StringBuilder password = new StringBuilder();
             for (int i = 0; i < 10; i++) {
-                password += alphabet.charAt(new Random().nextInt(alphabet.length()));
+                password.append(alphabet.charAt(new Random().nextInt(alphabet.length())));
             }
-            schema.setPassword(password);
+            schema.setPassword(password.toString());//Todo: Completely useless unless if a way to display how to long in xd, add user support? probably bad idea since my db is id oriented
             updateUserSettings(id, schema);
         }
         return readJson(USERS_SETTINGS_FOLDER, String.valueOf(id), new TypeToken<UserSchema>(){}.getType());

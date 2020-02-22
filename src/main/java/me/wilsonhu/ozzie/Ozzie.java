@@ -8,7 +8,6 @@ import me.wilsonhu.ozzie.core.parameter.ParameterManager;
 import me.wilsonhu.ozzie.core.plugin.Plugin;
 import me.wilsonhu.ozzie.core.plugin.PluginLoader;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
-import me.wilsonhu.ozzie.core.rcon.RConServer;
 import me.wilsonhu.ozzie.core.token.TokenManager;
 import me.wilsonhu.ozzie.handlers.PrimaryListener;
 import me.wilsonhu.ozzie.parameters.DisablePlugins;
@@ -40,7 +39,7 @@ public class Ozzie {
     private PluginLoader pluginLoader;
     private CommandManager commandManager;
     private I18nManager i18nManager;
-    private RConServer RConServer;
+    /*private RConServer RConServer;*/
 
     private EventWaiter eventWaiter;
 
@@ -215,8 +214,8 @@ public class Ozzie {
         return i18nManager;
     }
 
-    public RConServer getRConServer(){
+    /*public RConServer getRConServer(){
         if (RConServer == null) RConServer = new RConServer(this, 27015);
         return RConServer;
-    }
+    }*/
 }
