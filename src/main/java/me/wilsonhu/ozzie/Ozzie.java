@@ -43,6 +43,8 @@ public class Ozzie {
 
     private EventWaiter eventWaiter;
 
+    private static Ozzie ozzie;
+
     public Ozzie(String[] args) throws Exception {
         log.info("Building client...");
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
@@ -65,8 +67,9 @@ public class Ozzie {
                 log.info("Building ShardManager...");
                 DefaultShardManagerBuilder shardManagerBuilder = new DefaultShardManagerBuilder();
                 shardManagerBuilder.setAutoReconnect(true);
-                if(getTokenManager().getToken("discord").isEmpty()){//broken
+                if(getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
                     log.error("Couldn't find discordapi token!");
+                    //Todo: Probably bad idea to read it, but sure why not
                     return;
                 }
                 shardManagerBuilder.setToken(getTokenManager().getToken("discord"));
@@ -74,12 +77,13 @@ public class Ozzie {
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
                 if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
-                    log.info("Plugins are disabled!");
+                    log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
                 }else{
                     loadPlugins();
                 }
                 log.info("ShardManager built!");
             }
+            setOzzie(this);
             log.info("Client started!");
         }
     }
@@ -212,6 +216,14 @@ public class Ozzie {
     public I18nManager getI18nManager(){
         if (i18nManager == null) i18nManager = new I18nManager(this);
         return i18nManager;
+    }
+
+    public static Ozzie getOzzie(){
+        return ozzie;
+    }
+
+    private static void setOzzie(Ozzie ozzie){
+        Ozzie.ozzie = ozzie;
     }
 
     /*public RConServer getRConServer(){

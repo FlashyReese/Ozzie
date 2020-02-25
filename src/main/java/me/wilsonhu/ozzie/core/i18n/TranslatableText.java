@@ -1,5 +1,6 @@
 package me.wilsonhu.ozzie.core.i18n;
 
+import me.wilsonhu.ozzie.Ozzie;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Locale;
@@ -41,18 +42,18 @@ public class TranslatableText {
         String lang = Locale.getDefault().toString();
         if(type != null && id != 0L){
             if(type == TranslationType.DEFAULT){
-                return I18nManager.translate(key, lang);
+                return Ozzie.getOzzie().getI18nManager().translate(key, lang);
             }else {
-                return I18nManager.translate(key, type, id);
+                return Ozzie.getOzzie().getI18nManager().translate(key, type, id);
             }
         }
         if(event != null){
-            return I18nManager.translate(key, event);
+            return Ozzie.getOzzie().getI18nManager().translate(key, event);
         }
         if(this.lang != null){
-            return I18nManager.translate(key, this.lang);
+            return Ozzie.getOzzie().getI18nManager().translate(key, this.lang);
         }
-        return I18nManager.translate(key, lang);
+        return Ozzie.getOzzie().getI18nManager().translate(key, lang);
     }
 
     enum TranslationType{
