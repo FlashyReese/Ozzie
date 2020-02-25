@@ -12,7 +12,7 @@ public class Clara extends Command {
     public String[] tags = new String[] {"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald"};
 
     public Clara() {
-        super(new String[]{"clara"}, "", "%s");
+        super(new String[]{"clara"}, ":p much love clara", "%s");
     }
 
     @Override

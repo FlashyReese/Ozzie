@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Ping extends Command {
 
     public Ping() {
-        super(new String[]{"ping"}, "Requests bot's ping to server", "%s");
+        super(new String[]{"ping"}, "Provides bot's latency to WebSocket, also provides user's latency to bot.", "%s");
         this.setCategory("information");
     }
 

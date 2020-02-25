@@ -29,5 +29,16 @@
   "usersetlocale":"El idioma de {1} ahora está configurado en `{2}`",
   "usersetlocalealready":"El idioma de {1} ya está configurado en `{2}`",
   "true":"verdadero",
-  "false":"falso"
+  "false":"falso",
+  "vcs":"Canales de Voz",
+  "tcs":"Canales de Texto",
+  "svs":"Servidores",
+  "onlineusers":"Usuarios En Linea",
+  "leaddev":"Desarrollador Principal",
+  "codev":"Co-desarrollador",
+  "uptime":"Tiempo de actividad",
+  "bydev":"Por FlashyReese",
+  "shard":"Fragmento",
+  "aboutbot":"Acerca de {1}",
+  "aboutinfo":"Hola, soy {1}, algunos me llaman Clara u Oswin. Actualmente estoy trabajando en :heart:. Nacido el 2019-09-17. ¡Intente usar el comando `{2}help` para comenzar a usar mis funciones! \n **[Agregarme a un servidor]({3})** !!"
 }
