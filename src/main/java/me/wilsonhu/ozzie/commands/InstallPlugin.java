@@ -1,15 +1,24 @@
 package me.wilsonhu.ozzie.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
+import me.wilsonhu.ozzie.core.plugin.PluginLoader;
+import me.wilsonhu.ozzie.schemas.PluginSchema;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class InstallPlugin extends Command {
 
@@ -43,21 +52,56 @@ public class InstallPlugin extends Command {
 
     public void pinConfirm(Ozzie ozzie, MessageReceivedEvent event, MessageReceivedEvent e, int code) {
         if(code == Integer.parseInt(e.getMessage().getContentRaw())) {
-            File file = null;
-            try {
-                file = new File(ozzie.getPluginLoader().getDirectory() + File.separator + event.getMessage().getAttachments().get(0).getFileName());
-            } catch (Exception ex){
-                ex.printStackTrace();
+            if(!event.getMessage().getAttachments().isEmpty()){
+                try {
+                    downloadFile(ozzie, event);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
-            assert file != null;
-            CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(file);
-            downloadFile.complete(file);
-            if(downloadFile.isDone()) {
-                event.getChannel().sendMessage("Plugin Installed: `" + event.getMessage().getAttachments().get(0).getFileName() + "`").queue();
-                log.info("Plugin Installed: " + event.getMessage().getAttachments().get(0).getFileName());
-            }
+            
         }else {
             event.getChannel().sendMessage("Unsuccessful Verification").queue();
+        }
+    }
+
+    public void downloadFile(Ozzie ozzie, MessageReceivedEvent event) throws Exception{
+        File newFile = new File(ozzie.getPluginLoader().getDirectory() + File.separator + event.getMessage().getAttachments().get(0).getFileName());
+        if(event.getMessage().getAttachments().get(0).getFileName().toLowerCase().endsWith(".jar")){
+            CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(newFile);
+            newFile = downloadFile.get();
+            final JarFile jf = new JarFile(newFile);
+            final JarEntry je = jf.getJarEntry("ozzie.plugin.json");
+            if(je != null) {
+                final BufferedReader br = new BufferedReader(new InputStreamReader(jf.getInputStream(je), StandardCharsets.UTF_8));
+                PluginSchema pluginSchema = new Gson().fromJson(br, new TypeToken<PluginSchema>() {}.getType());//Saved for future lang references v:
+                br.close();
+                jf.close();
+                if (pluginSchema.getSchemaVersion() != PluginLoader.SCHEMA_VERSION) {//todo: auto reload? or reload based on setting?
+                    event.getChannel().sendMessage("Incompatible Plugin Version: Plugin may be using a newer schema, or plugin may be using an outdated schema!").queue();
+                }
+                File renamedFile = new File(ozzie.getPluginLoader().getDirectory() + File.separator + pluginSchema.getId() + ".jar");
+                if(renamedFile.exists()){
+                    boolean success = newFile.delete();
+                    if(!success){
+                        event.getChannel().sendMessage("Something went wrong! :')").queue();
+                    }
+                    downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(renamedFile);
+                    downloadFile.get();
+                    if(downloadFile.isDone()){
+                        event.getChannel().sendMessage(String.format("Plugin Installed: `%s %s` - `%s`", pluginSchema.getName(), pluginSchema.getVersion(), renamedFile.getName())).queue();
+                    }
+                }
+                boolean success = newFile.renameTo(renamedFile);
+                if(success){
+                    event.getChannel().sendMessage(String.format("Plugin Installed: `%s %s` - `%s`", pluginSchema.getName(), pluginSchema.getVersion(), renamedFile.getName())).queue();
+                }
+            }else{
+                event.getChannel().sendMessage("File not a valid Plugin").queue();
+            }
+            jf.close();
+        }else{
+            event.getChannel().sendMessage("Unsupported File Type as Plugin").queue();
         }
     }
 }

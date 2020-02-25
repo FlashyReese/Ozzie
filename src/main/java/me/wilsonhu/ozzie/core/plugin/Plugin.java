@@ -14,7 +14,7 @@ public abstract class Plugin extends ListenerAdapter{
     private PluginSchema pluginSchema;
 
     public Plugin(){
-        //LoadConfig
+        //Todo: LoadConfigxdxd
     }
 
     public void onEnable(Ozzie ozzie) {}
