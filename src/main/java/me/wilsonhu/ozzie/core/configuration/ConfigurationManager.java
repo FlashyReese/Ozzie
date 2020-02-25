@@ -38,8 +38,8 @@ public class ConfigurationManager {
     public ServerSchema getServerSettings(long id){
         if(!doesFileExist(SERVERS_SETTINGS_FOLDER + File.separator + id, SERVER_SETTINGS_FILE_NAME)){
             ServerSchema schema = new ServerSchema();
-            long[] channel = new long[]{ozzie.getShardManager().getGuildById(id).getDefaultChannel().getIdLong()};
-            long owner = ozzie.getShardManager().getGuildById(id).getOwnerIdLong();
+            long[] channel = new long[]{Objects.requireNonNull(Objects.requireNonNull(ozzie.getShardManager().getGuildById(id)).getDefaultChannel()).getIdLong()};
+            long owner = Objects.requireNonNull(ozzie.getShardManager().getGuildById(id)).getOwnerIdLong();
             schema.setOwnerID(owner);
             schema.setAllowedCommandTextChannel(channel);
             schema.setCustomCommandPrefix(ozzie.getDefaultCommandPrefix());
@@ -65,12 +65,12 @@ public class ConfigurationManager {
             String alphabet = "abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789";
             UserSchema schema = new UserSchema();
             schema.setUserLocale("default");
-            schema.setCustomCommandPrefix("default");
+            schema.setCustomCommandPrefix(getOzzie().getDefaultCommandPrefix());
             StringBuilder password = new StringBuilder();
             for (int i = 0; i < 10; i++) {
                 password.append(alphabet.charAt(new Random().nextInt(alphabet.length())));
             }
-            schema.setPassword(password.toString());//Todo: Completely useless unless if a way to display how to long in xd, add user support? probably bad idea since my db is id oriented
+            schema.setPassword(password.toString());//Fixme: Completely useless unless if a way to display how to long in xd, add user support? probably bad idea since my db is id oriented, orrrrrrr use discord's oauth method xd
             updateUserSettings(id, schema);
         }
         return readJson(USERS_SETTINGS_FOLDER, String.valueOf(id), new TypeToken<UserSchema>(){}.getType());
@@ -91,7 +91,7 @@ public class ConfigurationManager {
 
     public boolean hasPermission(long serverID, long userID, String permission) {
         if(!doesFileExist(SERVERS_SETTINGS_FOLDER + File.separator + serverID + File.separator + USERS_PERMISSIONS_SERVER_SETTINGS, String.valueOf(userID))){
-            updateUserPermissions(serverID, userID, new String[]{"ozzie.default"});
+            updateUserPermissions(serverID, userID, new String[]{"*.default"});
         }
         ArrayList<String> userPerms = getUserPermissions(serverID, userID);
         if(userPerms.contains(permission)) {
@@ -109,6 +109,12 @@ public class ConfigurationManager {
         return false;
     }
 
+    public boolean isOwner(long serverID, long userID){
+        if(!hasPermission(serverID, userID, "*.developer"))return false;
+        ServerSchema serverSchema = getServerSettings(serverID);
+        return userID == serverSchema.getOwnerID();
+    }
+
     public <T> T getPluginSettings(String pluginId, Type schemaType){
         return readJson(PLUGINS_SETTINGS_FOLDER, pluginId, schemaType);
     }
@@ -118,8 +124,11 @@ public class ConfigurationManager {
     }
 
     public boolean doesFileExist(String path, String filename){
-        File file = new File(path + File.separator + filename + ".json");
-        return file.exists();
+        return new File(path + File.separator + filename + ".json").isFile();
+    }
+
+    public boolean doesDirectoryExist(String path){
+        return new File(path).isDirectory();
     }
 
     public void writeJson(String path, String filename, Object object) {

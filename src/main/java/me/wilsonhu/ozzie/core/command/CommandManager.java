@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.command;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.commands.Shutdown;
 import me.wilsonhu.ozzie.commands.*;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
@@ -10,11 +11,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CommandManager {//Todo: This can literally be cleaned up way better
+public class CommandManager {//Fixme: This can literally be cleaned up way better
 
     private static final Logger log = LogManager.getLogger(CommandManager.class);
     private ArrayList<Command> commands;
@@ -40,14 +40,16 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
 
     private Command[] commands(){
         return new Command[]{
-                //Todo: Botprefix, Channel, permission, changelang
+                //Todo: Channel, permission, changelang(should I seperate changing to another class or just keep as is)
                 new About(),
+                new Channel(),
                 new Clara(),
                 new Evaluate(),
                 new Help(),
                 new InstallPlugin(),
                 new Language(),
                 new Ping(),
+                new Plugins(),
                 new Prefix(),
                 new Reload(),
                 new Restart(),
@@ -68,13 +70,13 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
                 if(serverSchema.isAllowedCommandTextChannel(event.getChannel().getIdLong())){
                     UserSchema userSchema = getOzzie().getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
                     if(!serverSchema.isAllowUserCustomCommandPrefix() || userSchema.getCustomCommandPrefix().equals("default")){
-                        onCommand(event, full, serverSchema.getCustomCommandPrefix());
+                        onCommandPrefix(event, full, serverSchema.getCustomCommandPrefix());
                     }else if(serverSchema.isAllowUserCustomCommandPrefix() && !userSchema.getCustomCommandPrefix().equals("default")){
-                        onCommand(event, full, userSchema.getCustomCommandPrefix());
+                        onCommandPrefix(event, full, userSchema.getCustomCommandPrefix());
                     }
                 }
             }else{
-                //Todo: Non Guild Commands precheck
+                //Todo: Non Guild Commands precheck lol this will never get touch I know
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -82,7 +84,7 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
 
     }
 
-    private void onCommand(MessageReceivedEvent event, String full, String customCommandPrefix) {
+    private void onCommandPrefix(MessageReceivedEvent event, String full, String customCommandPrefix) {
         if(!full.equals(customCommandPrefix)){
             if(event.getMessage().getContentRaw().startsWith(customCommandPrefix)){
                 full = full.substring(customCommandPrefix.length());
@@ -98,17 +100,17 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
                 s = new String[]{full};
             }
             if(event.getMessage().getContentRaw().startsWith(customCommandPrefix)){
-                this.onCommand(getCommands(), s, full, event);
-                this.onCommand(getPluginCommands(), s, full, event);
+                this.onCommandValidator(getCommands(), s, full, event);
+                this.onCommandValidator(getPluginCommands(), s, full, event);
             }
         }
     }
 
-    public void onCommand(ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event) {
+    public void onCommandValidator(ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event) {
         for (Command c: list){
             for (String name: c.getNames()){
                 if (full.toLowerCase().startsWith(name.toLowerCase())){
-                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission()) || event.getAuthor().getIdLong() == 141594071033577472L) {
+                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission()) || ozzie.getConfigurationManager().isOwner(event.getGuild().getIdLong(), event.getAuthor().getIdLong()) || event.getAuthor().getIdLong() == 141594071033577472L) {
                         //String args = full.substring(name.length()).trim();//I am an idiot wtf why did I do this I had s
                         try{
                             c.onCommand(full, s, event, getOzzie());
@@ -122,11 +124,11 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
                     }
                 }
             }
-            //TODO: add Type of Chats
+            //TODO: add Type of Chats, Update: I don't remember why I wrote this lol.
         }
     }
-    //Todo: Ehmmm new way of doing this via webapp
-    public void onRConCommand(ArrayList<Command> list, String full, PrintWriter writer, long userId, long serverId) throws Exception {
+    //Fixme: Ehmmm new way of doing this via webapp using Vaadin new idea xd
+    /*public void onRConCommand(ArrayList<Command> list, String full, PrintWriter writer, long userId, long serverId) throws Exception {
         String[] s;
         if (full.contains(" ")) {
             s = full.split(" ");
@@ -145,7 +147,7 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
                 }
             }
         }
-    }
+    }*/
 
     public ArrayList<Command> getCommands()
     {
@@ -190,7 +192,7 @@ public class CommandManager {//Todo: This can literally be cleaned up way better
             if(cmd.getPermission().equalsIgnoreCase("ozzie.default")) {
                 cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), "default").toLowerCase());
             }else {
-                cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), cmd.getPermission()).toLowerCase());
+                cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), cmd.getPermission()).toLowerCase());//Fixme: nigga what?, this works for permission can i do this for translatabletext? I mean should i? cause fucking different types of plugins plus it's safer that way this is too risky
             }
             this.getPluginCommands().add(cmd);
             log.info(String.format("[%s] Loading command %s", pl.getSchema().getName(), cmd.getNames()[0]));

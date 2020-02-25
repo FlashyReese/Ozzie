@@ -9,6 +9,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Tenor {
@@ -96,18 +97,20 @@ public class Tenor {
         InputStream stream = null;
         try {
             stream = new BufferedInputStream(connection.getInputStream());
-            InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
+            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
             StringWriter writer = new StringWriter();
             while (-1 != (n = reader.read(buffer))) {
                 writer.write(buffer, 0, n);
             }
             return new JSONObject(writer.toString());
-        } catch (IOException ignored) {
+        } catch (IOException ex) {
+            ex.printStackTrace();
         } finally {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException ignored) {
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         }
