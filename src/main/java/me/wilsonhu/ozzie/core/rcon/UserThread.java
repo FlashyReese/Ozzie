@@ -69,8 +69,8 @@ public class UserThread extends Thread{
                     setAuthenticated(false);
                     break;
                 }
-                server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getCommands(), clientMessage, writer, getUserId(), getServerId());
-                server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getPluginCommands(), clientMessage, writer, getUserId(), getServerId());
+                //server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getCommands(), clientMessage, writer, getUserId(), getServerId());
+                //server.getOzzie().getCommandManager().onRConCommand(server.getOzzie().getCommandManager().getPluginCommands(), clientMessage, writer, getUserId(), getServerId());
                 //writer.println("[Test] " + clientMessage);
             } while (isAuthenticated());
             writer.close();

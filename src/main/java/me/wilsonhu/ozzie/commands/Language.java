@@ -42,7 +42,7 @@ public class Language extends Command {
             }
         }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            String locale = args[2];
+            String locale = args[2];//Fixme: Implement safety checks and fucking not be stupid
             if(serverSchema.getServerLocale().equalsIgnoreCase(locale)){
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocalealready", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
             }else{
@@ -51,7 +51,7 @@ public class Language extends Command {
                 ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
             }
         }else if(isCommand(args, "set")){
-            ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
+            ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());//Fixme: Implement safety checks and fucking not be stupid
             if(serverSchema.isAllowUserLocale()){
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
                 String locale = args[1];

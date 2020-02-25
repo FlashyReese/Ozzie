@@ -37,7 +37,7 @@ public class Prefix extends Command {
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.servercustomprefix", event), (serverSchema.isAllowUserCustomCommandPrefix() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString()).queue();
                 ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
             }
-        }else if(isCommand(args, "set", "server")){
+        }else if(isCommand(args, "set", "server")){//Fixme: Seperate into a different class
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             String prefix = args[2];
             if(serverSchema.getCustomCommandPrefix().equalsIgnoreCase(prefix)){

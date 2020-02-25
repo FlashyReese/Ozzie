@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class PrimaryListener extends ListenerAdapter {
 
@@ -17,12 +18,12 @@ public class PrimaryListener extends ListenerAdapter {
     }
 
     @Override
-    public void onReady(ReadyEvent event){
+    public void onReady(@NotNull ReadyEvent event){
         log.info("Ready to go!");
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         getOzzie().getCommandManager().onCommand(event, null);
     }
 

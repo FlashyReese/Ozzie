@@ -27,19 +27,19 @@ public class ParameterManager {
 
     public void runParameters(String[] args, Ozzie ozzie) throws Exception {
         ArrayList<String> formattedCommandList = new ArrayList<String>();
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
         for(String arg: args){
             if(arg.startsWith("-")){
-                if(!temp.isEmpty()){
-                    formattedCommandList.add(temp);
+                if(temp.length() > 0){
+                    formattedCommandList.add(temp.toString());
                 }
-                temp = "";
-                temp += arg + " ";
+                temp = new StringBuilder();
+                temp.append(arg).append(" ");
             }else{
-                temp += arg + " ";
+                temp.append(arg).append(" ");
             }
         }
-        if(!temp.isEmpty())formattedCommandList.add(temp);
+        if(temp.length() > 0)formattedCommandList.add(temp.toString());
         for(String cmd: formattedCommandList){
             cmd = cmd.trim().substring(1);
             String full = cmd;

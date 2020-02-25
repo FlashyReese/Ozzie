@@ -1,5 +1,7 @@
 package me.wilsonhu.ozzie.schemas;
 
+import me.wilsonhu.ozzie.utilities.Helper;
+
 public class ServerSchema {
     private long ownerID;
     private String serverLocale;
@@ -32,7 +34,7 @@ public class ServerSchema {
         this.customCommandPrefix = customCommandPrefix;
     }
 
-    public long[] getAllowedCommandTextChannel() {
+    public long[] getAllowedCommandTextChannel() {//Not going to lie you are fucking cancer to deal with
         return allowedCommandTextChannel;
     }
 
@@ -41,6 +43,14 @@ public class ServerSchema {
             if(id == textChannelId)return true;
         }
         return false;
+    }
+
+    public void addCommandTextChannel(long textChannelId){
+        setAllowedCommandTextChannel(Helper.appendArray(getAllowedCommandTextChannel(), textChannelId));
+    }
+
+    public void removeCommandTextChannel(long textChannelId){
+        setAllowedCommandTextChannel(Helper.unappendArray(getAllowedCommandTextChannel(), textChannelId));
     }
 
     public void setAllowedCommandTextChannel(long[] allowedCommandTextChannel) {

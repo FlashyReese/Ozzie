@@ -67,7 +67,7 @@ public class Restart extends Command {
                 if(!currentJar.getName().endsWith(".jar"))
                     return;
                 ozzie.stop();
-                String cmd = "java -jar " + currentJar.getPath() + " " + args;
+                String cmd = "java -jar " + currentJar.getPath() + " " + args;//Fixme: Hmmm odd behaviour in Linux may be due to users
                 String os_name = ozzie.getOperatingSystemName().toLowerCase();
                 String[] cmd_exec = new String[]{};
                 if (os_name.contains("win")){

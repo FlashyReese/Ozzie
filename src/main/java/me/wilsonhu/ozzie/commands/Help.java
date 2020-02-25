@@ -53,7 +53,7 @@ public class Help extends Command {
         }else{
             String cmdName = args[0];
             for(Command c: allCommands){
-                if(cmdName.startsWith(c.getNames()[0].toLowerCase())){//Todo: No idea if I should change this but works
+                if(cmdName.startsWith(c.getNames()[0].toLowerCase())){//Fixme: No idea if I should change this but works
                     event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                 }
             }

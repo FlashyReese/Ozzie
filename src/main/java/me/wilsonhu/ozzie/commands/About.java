@@ -2,6 +2,8 @@ package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
+import me.wilsonhu.ozzie.core.i18n.ParsableText;
+import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,12 +19,10 @@ public class About extends Command {
     public About() {
         super(new String[] {"about"}, "Information about the bot", "%s");
         this.setCategory("information");
-        this.setPermission("ozzie.info");
     }
 
     @Override
     public void onCommand(String full, String[] split, MessageReceivedEvent event, Ozzie ozzie) throws Exception  {
-        //Todo: Clean this shit up
         long users = 0;
         for(Guild guild: ozzie.getShardManager().getGuilds()){
             for(Member member: guild.getMembers()){
@@ -39,9 +39,6 @@ public class About extends Command {
                 if(m.getUser().getIdLong() == 141594071033577472L){
                     dev = m.getAsMention();
                 }
-                //if(m.getUser().getIdLong() == Long.parseLong(FlashyBot.getInstance().getDEVIDS()[1])){
-                codev = "Looking for one";
-                //}
             }
         }
         long millis = ManagementFactory.getRuntimeMXBean().getUptime();
@@ -51,27 +48,25 @@ public class About extends Command {
         long days = hours / 24;
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.red)
-                .setAuthor("About " + ozzie.getBotName(), "https://cutt.ly/Ozzie", event.getJDA().getSelfUser().getAvatarUrl())
+                .setAuthor(new ParsableText(new TranslatableText("ozzie.aboutbot", event), ozzie.getBotName()).toString(), "https://cutt.ly/Ozzie", event.getJDA().getSelfUser().getAvatarUrl())
                 .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
-                .setDescription("Howdy, I am " + ozzie.getBotName() + ", some call me Clara or Oswin. I'm currently being worked on :heart:. Born on 2019-09-17. Try using `"
-                        + (ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).isAllowUserCustomCommandPrefix() ? ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong()).getCustomCommandPrefix() : ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).getCustomCommandPrefix())
-                        +"help` to start using my features! \n **[Add Me To A Server](https://cutt.ly/Ozzie)** !!")
-                .addField("Lead Developer", dev, true)
-                .addField("Co-Developer", codev, true)
-                //.addBlankField(true)
-                .addField("Uptime", String.format(
+                .setDescription(new ParsableText(new TranslatableText("ozzie.aboutinfo", event), ozzie.getBotName(), (ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).isAllowUserCustomCommandPrefix() ? ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong()).getCustomCommandPrefix() : ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).getCustomCommandPrefix()), "https://cutt.ly/Ozzie").toString())
+                .addField(new TranslatableText("ozzie.leaddev", event).toString(), dev, true)
+                .addField(new TranslatableText("ozzie.codev", event).toString(), codev, true)
+                .addBlankField(true)
+                .addField(new TranslatableText("ozzie.uptime", event).toString(), String.format(
                         "%d days, %02d hrs, %02d min",
                         days, hours % 24, minutes % 60
-                ), false)
-                //.addField("Version", ozzie.getOzzieManager().getBotVersion().getVersion(), false)
-                //.addBlankField(true)
-                .addField("Guilds", ozzie.getShardManager().getGuilds().size() + "", true)
-                .addField("Voice Channels", ozzie.getShardManager().getVoiceChannels().size() + "", true)
-                .addField("Text Channels", ozzie.getShardManager().getTextChannels().size() + "", true)
-                .addField("Online Users", users + "", true)
-                .addField("Shard", ozzie.getShardManager().getShardsRunning() + "(" + ozzie.getShardManager().getShardsQueued() + "...)/" + ozzie.getShardManager().getShardsTotal(), true)
-                .addField("System Information", "```markdown\n" + si.getHardware().toString() + "```", false)
-                .setFooter("by FlashyReese", null);
+                ), false)//Todo: Figure a way to mirage a custom datetime format per region using settings. orrrrr... using custom cron format
+                //.addField("Version", ozzie.getOzzieManager().getBotVersion().getVersion(), false)//Fixme: Build date
+                .addBlankField(true)
+                .addField(new TranslatableText("ozzie.svs", event).toString(), ozzie.getShardManager().getGuilds().size() + "", true)
+                .addField(new TranslatableText("ozzie.vcs", event).toString(), ozzie.getShardManager().getVoiceChannels().size() + "", true)
+                .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
+                .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
+                .addField(new TranslatableText("ozzie.shard", event).toString(), ozzie.getShardManager().getShardsRunning() + "(" + ozzie.getShardManager().getShardsQueued() + "...)/" + ozzie.getShardManager().getShardsTotal(), true)
+                //.addField("System Information", "```markdown\n" + si.getHardware().toString() + "```", false)//Todo: Seperate this for only dev
+                .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
         event.getChannel().sendMessage(embed.build()).queue();
     }
 }
