@@ -19,7 +19,7 @@ public class TokenManager {
         log.info("Token Manager built!");
     }
 
-    private void loadSavedTokens(Ozzie ozzie){
+    public void loadSavedTokens(Ozzie ozzie){
         if(!new File("tokens.json").exists()){
             return;
         }
@@ -30,6 +30,10 @@ public class TokenManager {
 
     public String getToken(String key){
         return this.getTokens().get(key);
+    }
+
+    public boolean containsKey(String key){
+        return getTokens().containsKey(key);
     }
 
     public void addToken(String key, String token, Ozzie ozzie){
