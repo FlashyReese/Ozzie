@@ -11,6 +11,8 @@ import me.wilsonhu.ozzie.core.plugin.PluginModule;
 import me.wilsonhu.ozzie.core.token.TokenManager;
 import me.wilsonhu.ozzie.handlers.PrimaryListener;
 import me.wilsonhu.ozzie.parameters.DisablePlugins;
+import me.wilsonhu.ozzie.utilities.ActivityHelper;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.logging.log4j.LogManager;
@@ -76,6 +78,7 @@ public class Ozzie {
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
+                getShardManager().setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS, ActivityHelper.getRandomQuote()));
                 if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
                     log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
                 }else{

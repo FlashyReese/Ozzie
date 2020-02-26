@@ -44,7 +44,7 @@ public class Language extends Command {
                 ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
             }
         }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
-                OrderedMenu.Builder builder = new OrderedMenu.Builder();
+                OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem
             builder.allowTextInput(true)
                     .useNumbers()
                     .useCancelButton(true)
