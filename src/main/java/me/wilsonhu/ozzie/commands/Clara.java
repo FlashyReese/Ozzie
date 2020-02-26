@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Clara extends Command {
 
-    public String[] tags = new String[] {"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald"};
+    public String[] tags = new String[] {"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald", "Doctor Who Clara Oswald", "Doctor Who Clara Oswin Oswald", "Doctor Who Oswin Oswald", "Doctor Who Clara Oswald"};
 
     public Clara() {
         super(new String[]{"clara"}, ":p much love clara", "%s");

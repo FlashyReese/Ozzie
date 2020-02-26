@@ -40,5 +40,11 @@
   "bydev":"Por FlashyReese",
   "shard":"Fragmento",
   "aboutbot":"Acerca de {1}",
-  "aboutinfo":"Hola, soy {1}, algunos me llaman Clara u Oswin. Actualmente estoy trabajando en :heart:. Nacido el 2019-09-17. ¡Intente usar el comando `{2}help` para comenzar a usar mis funciones! \n **[Agregarme a un servidor]({3})** !!"
+  "aboutinfo":"Hola, soy {1}, algunos me llaman Clara u Oswin. Actualmente estoy trabajando en :heart:. Nacido el 2019-09-17. ¡Intente usar el comando `{2}help` para comenzar a usar mis funciones! \n **[Agregarme a un servidor]({3})** !!",
+  "tcsallowalready":"Los comandos ya están permitidos en `{1}`",
+  "tcsallow":"Los comandos ahora están permitidos en `{1}`",
+  "tcsdisallowalready":"Los comandos ya no están permitidos en `{1}`",
+  "tcsdisallow":"Los comandos ahora no están permitidos en `{1}`",
+  "setserverlocaletext": "Seleccione un idioma para `{1}`",
+  "setuserlocaletext": "Seleccione un idioma, `{1}`"
 }

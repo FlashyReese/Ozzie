@@ -1,5 +1,6 @@
 package me.wilsonhu.ozzie.commands;
 
+import com.jagrosh.jdautilities.menu.OrderedMenu;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
 import me.wilsonhu.ozzie.core.i18n.ParsableText;
@@ -9,6 +10,8 @@ import me.wilsonhu.ozzie.schemas.UserSchema;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Language extends Command {
 
@@ -17,7 +20,7 @@ public class Language extends Command {
     }
 
     @Override
-    public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+    public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {//Fixme: Definitely can make this look nicer xd
         if(full.equalsIgnoreCase(args[0])){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             if(serverSchema.isAllowUserLocale()){
@@ -41,27 +44,41 @@ public class Language extends Command {
                 ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
             }
         }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
-            ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            String locale = args[2];//Fixme: Implement safety checks and fucking not be stupid
-            if(serverSchema.getServerLocale().equalsIgnoreCase(locale)){
-                event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocalealready", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
-            }else{
-                serverSchema.setServerLocale(locale);
-                event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocale", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
-                ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
-            }
+                OrderedMenu.Builder builder = new OrderedMenu.Builder();
+            builder.allowTextInput(true)
+                    .useNumbers()
+                    .useCancelButton(true)
+                    .setText(new ParsableText(new TranslatableText("ozzie.setserverlocaletext", event), event.getGuild().getName()).toString())
+                    .setEventWaiter(ozzie.getEventWaiter())
+                    .setTimeout(1, TimeUnit.MINUTES)
+                    .setColor(Objects.requireNonNull(event.getMember()).getColor())
+                    .addChoices(getLocaleChoices(ozzie))
+                    .setSelection((msg,i) ->
+                    {
+                        setServerLocale(ozzie, event, i);
+                    })
+                    .setCancel((msg) -> {})
+                    .setUsers(event.getAuthor());
+            builder.build().display(event.getChannel());
         }else if(isCommand(args, "set")){
-            ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());//Fixme: Implement safety checks and fucking not be stupid
+            ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             if(serverSchema.isAllowUserLocale()){
-                UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-                String locale = args[1];
-                if(userSchema.getUserLocale().equalsIgnoreCase(locale)){
-                    event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetlocalealready", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
-                }else{
-                    userSchema.setUserLocale(locale);
-                    event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetlocale", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
-                    ozzie.getConfigurationManager().updateUserSettings(event.getAuthor().getIdLong(), userSchema);
-                }
+                OrderedMenu.Builder builder = new OrderedMenu.Builder();
+                builder.allowTextInput(true)
+                        .useNumbers()
+                        .useCancelButton(true)
+                        .setText(new ParsableText(new TranslatableText("ozzie.setuserlocaletext", event), event.getAuthor().getName()).toString())
+                        .setEventWaiter(ozzie.getEventWaiter())
+                        .setTimeout(1, TimeUnit.MINUTES)
+                        .setColor(Objects.requireNonNull(event.getMember()).getColor())
+                        .addChoices(getLocaleChoices(ozzie))
+                        .setSelection((msg,i) ->
+                        {
+                            setUserLocale(ozzie, event, i);
+                        })
+                        .setCancel((msg) -> {})
+                        .setUsers(event.getAuthor());
+                builder.build().display(event.getChannel());
             }else{
                 event.getChannel().sendMessage(new TranslatableText("ozzie.serverlocaledisabled", event).toString()).queue();
             }
@@ -73,6 +90,41 @@ public class Language extends Command {
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentlocaleserver", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
         }else{
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentlocale", event), ozzie.getI18nManager().getLocaleDisplayName(Locale.getDefault().toString())).toString()).queue();
+        }
+    }
+
+    public String[] getLocaleChoices(Ozzie ozzie){
+        Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
+        String[] choices = new String[locales.length];
+        for(int i = 0; i < locales.length; i++){
+            choices[i] = locales[i].getDisplayName();
+        }
+        return choices;
+    }
+
+    public void setServerLocale(Ozzie ozzie, MessageReceivedEvent event, int selection){
+        Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
+        ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
+        String locale = locales[selection-1].toString();
+        if(serverSchema.getServerLocale().equalsIgnoreCase(locale)){
+            event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocalealready", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
+        }else{
+            serverSchema.setServerLocale(locale);
+            event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocale", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
+            ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+        }
+    }
+
+    public void setUserLocale(Ozzie ozzie, MessageReceivedEvent event, int selection){
+        Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
+        UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
+        String locale = locales[selection-1].toString();
+        if(userSchema.getUserLocale().equalsIgnoreCase(locale)){
+            event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetlocalealready", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
+        }else{
+            userSchema.setUserLocale(locale);
+            event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetlocale", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
+            ozzie.getConfigurationManager().updateUserSettings(event.getAuthor().getIdLong(), userSchema);
         }
     }
 }

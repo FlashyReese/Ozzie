@@ -17,5 +17,6 @@ public class Application {
          move to firebase(should be easy, haven't touched it)
          */
         //Todo: add a shutdown hook and fucking link those plugins to disable every single one of them xd
+        //Todo: ScheduledExecutorService and Move to Firebase and Move to Java 11 LTS, Java 8 LTS end of life coming soon, fucking learn lambda
     }
 }

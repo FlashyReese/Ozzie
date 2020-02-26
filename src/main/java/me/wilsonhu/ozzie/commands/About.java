@@ -53,18 +53,18 @@ public class About extends Command {
                 .setDescription(new ParsableText(new TranslatableText("ozzie.aboutinfo", event), ozzie.getBotName(), (ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).isAllowUserCustomCommandPrefix() ? ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong()).getCustomCommandPrefix() : ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong()).getCustomCommandPrefix()), "https://cutt.ly/Ozzie").toString())
                 .addField(new TranslatableText("ozzie.leaddev", event).toString(), dev, true)
                 .addField(new TranslatableText("ozzie.codev", event).toString(), codev, true)
-                .addBlankField(true)
+                //.addBlankField(true)
                 .addField(new TranslatableText("ozzie.uptime", event).toString(), String.format(
                         "%d days, %02d hrs, %02d min",
                         days, hours % 24, minutes % 60
                 ), false)//Todo: Figure a way to mirage a custom datetime format per region using settings. orrrrr... using custom cron format
                 //.addField("Version", ozzie.getOzzieManager().getBotVersion().getVersion(), false)//Fixme: Build date
-                .addBlankField(true)
+                //.addBlankField(true)
                 .addField(new TranslatableText("ozzie.svs", event).toString(), ozzie.getShardManager().getGuilds().size() + "", true)
                 .addField(new TranslatableText("ozzie.vcs", event).toString(), ozzie.getShardManager().getVoiceChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
-                .addField(new TranslatableText("ozzie.shard", event).toString(), ozzie.getShardManager().getShardsRunning() + "(" + ozzie.getShardManager().getShardsQueued() + "...)/" + ozzie.getShardManager().getShardsTotal(), true)
+                .addField(new TranslatableText("ozzie.shard", event).toString(), ozzie.getShardManager().getShardsRunning() + "/" + ozzie.getShardManager().getShardsTotal(), true)//Fixme: Queue Shards, too lazy atm xd
                 //.addField("System Information", "```markdown\n" + si.getHardware().toString() + "```", false)//Todo: Seperate this for only dev
                 .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
         event.getChannel().sendMessage(embed.build()).queue();

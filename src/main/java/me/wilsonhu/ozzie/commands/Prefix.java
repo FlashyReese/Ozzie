@@ -19,8 +19,8 @@ public class Prefix extends Command {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             if(serverSchema.isAllowUserCustomCommandPrefix()){
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-                if(!userSchema.getUserLocale().equals(ozzie.getDefaultCommandPrefix())){
-                    event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentprefixuser", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
+                if(!userSchema.getCustomCommandPrefix().equals(ozzie.getDefaultCommandPrefix())){
+                    event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentprefixuser", event), event.getAuthor().getName(), userSchema.getCustomCommandPrefix()).toString()).queue();
                 }else{
                     defaultServerPrefixCheck(event, ozzie, serverSchema);
                 }

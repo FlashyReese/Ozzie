@@ -11,7 +11,7 @@
   "currentlocaleuser": "{1}'s current language is set to `{2}`",
   "currentlocaleserver": "The server's current language is set to `{1}`",
   "currentlocale": "The default language is set to `{1}`",
-  "currentprefixuser": "{1}'s current command prefix is set to `{1}`",
+  "currentprefixuser": "{1}'s current command prefix is set to `{2}`",
   "currentprefixserver": "The server's current command prefix is set to `{1}`",
   "currentprefix": "The default command prefix is set to `{1}`",
   "servercustomlocalealready": "Server's custom user language is already set to `{1}`",
@@ -45,11 +45,6 @@
   "tcsallow":"Commands are now allowed on `{1}`",
   "tcsdisallowalready":"Commands are already not allowed on `{1}`",
   "tcsdisallow":"Commands are now not allowed on `{1}`",
-  "loggedin": "You have successfully logged in.",
-  "loggedinas": "You have logged in as",
-  "on": "on",
-  "invalidpass": "Invalid password.",
-  "provideidserver": "Server's ID:",
-  "provideiduser": "User's ID:",
-  "providepass": "User's Password:"
+  "setserverlocaletext": "Please select a language for `{1}`",
+  "setuserlocaletext": "Please select a language, `{1}`"
 }
