@@ -25,7 +25,9 @@ public class Restart extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(args.length != 0) {
+        event.getChannel().sendMessage("Restarting").queue();
+        ozzie.restart();//Fixme: Doesn't take in params v: temporal built in fix
+        /*if(args.length != 0) {
             StringBuilder programArguments = new StringBuilder();
             for(int i = 1; i < args.length; i++){
                 programArguments.append(args[i]).append(" ");
@@ -38,7 +40,7 @@ public class Restart extends Command {
             event.getChannel().sendMessage("Restarting").queue();
             log.info("Restarting");
             restartApplication("", ozzie);
-        }
+        }*/
     }
 
     /*@Override

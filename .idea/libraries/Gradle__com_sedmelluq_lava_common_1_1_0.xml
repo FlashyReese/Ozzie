@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: com.sedmelluq:lava-common:1.1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sedmelluq/lava-common/1.1.0/lava-common-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

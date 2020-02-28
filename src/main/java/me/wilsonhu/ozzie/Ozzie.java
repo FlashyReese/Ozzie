@@ -78,7 +78,7 @@ public class Ozzie {
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
-                getShardManager().setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS, ActivityHelper.getRandomQuote()));
+                getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
                 if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
                     log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
                 }else{

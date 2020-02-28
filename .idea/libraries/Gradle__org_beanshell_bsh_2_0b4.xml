@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: org.beanshell:bsh:2.0b4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

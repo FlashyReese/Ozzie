@@ -1,9 +1,9 @@
 package me.wilsonhu.ozzie.core.configuration;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
+import me.wilsonhu.ozzie.schemas.ServerUserPermissionSchema;
 import me.wilsonhu.ozzie.schemas.UserSchema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,9 +12,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
 
 public class ConfigurationManager {
 
@@ -28,65 +25,43 @@ public class ConfigurationManager {
     private static final String SERVER_SETTINGS_FILE_NAME = "settings";
 
     private Ozzie ozzie;
+    private MongoDBHandler mongoDBHandler;
 
     public ConfigurationManager(Ozzie ozzie){
         log.info("Building Configuration Manager...");
-        this.ozzie = ozzie;
+        setOzzie(ozzie);
+        setMongoDBHandler(new MongoDBHandler(ozzie));
         log.info("Configuration Manager built!");
     }
 
     public ServerSchema getServerSettings(long id){
-        if(!doesFileExist(SERVERS_SETTINGS_FOLDER + File.separator + id, SERVER_SETTINGS_FILE_NAME)){
-            ServerSchema schema = new ServerSchema();
-            long[] channel = new long[]{Objects.requireNonNull(Objects.requireNonNull(ozzie.getShardManager().getGuildById(id)).getDefaultChannel()).getIdLong()};
-            long owner = Objects.requireNonNull(ozzie.getShardManager().getGuildById(id)).getOwnerIdLong();
-            schema.setOwnerID(owner);
-            schema.setAllowedCommandTextChannel(channel);
-            schema.setCustomCommandPrefix(ozzie.getDefaultCommandPrefix());
-            schema.setAllowUserCustomCommandPrefix(true);
-            schema.setServerLocale("default");
-            schema.setAllowUserLocale(true);
-            updateServerSettings(id, schema);
-        }
-        ServerSchema schema = readJson(SERVERS_SETTINGS_FOLDER + File.separator + id, SERVER_SETTINGS_FILE_NAME, new TypeToken<ServerSchema>(){}.getType());
-        if(Objects.requireNonNull(getOzzie().getShardManager().getGuildById(id)).getOwnerIdLong() != schema.getOwnerID()){
-            schema.setOwnerID(Objects.requireNonNull(getOzzie().getShardManager().getGuildById(id)).getOwnerIdLong());
-            log.info(String.format("Updated owner id from server(%s)", id));
-        }
-        return schema;
+        return getMongoDBHandler().retrieveServer(id);
     }
 
     public void updateServerSettings(long id, ServerSchema schema){
-        writeJson(SERVERS_SETTINGS_FOLDER + File.separator + id, SERVER_SETTINGS_FILE_NAME, schema);
+        getMongoDBHandler().updateServer(schema);
     }
 
     public UserSchema getUserSettings(long id){
-        if(!doesFileExist(USERS_SETTINGS_FOLDER, String.valueOf(id))){
-            String alphabet = "abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLNMOPQRSTUVWXYZ0123456789";
-            UserSchema schema = new UserSchema();
-            schema.setUserLocale("default");
-            schema.setCustomCommandPrefix(getOzzie().getDefaultCommandPrefix());
-            StringBuilder password = new StringBuilder();
-            for (int i = 0; i < 10; i++) {
-                password.append(alphabet.charAt(new Random().nextInt(alphabet.length())));
-            }
-            schema.setPassword(password.toString());//Fixme: Completely useless unless if a way to display how to long in xd, add user support? probably bad idea since my db is id oriented, orrrrrrr use discord's oauth method xd
-            updateUserSettings(id, schema);
-        }
-        return readJson(USERS_SETTINGS_FOLDER, String.valueOf(id), new TypeToken<UserSchema>(){}.getType());
+        return getMongoDBHandler().retrieveUser(id);
     }
 
     public void updateUserSettings(long id, UserSchema schema){
-        writeJson(USERS_SETTINGS_FOLDER, String.valueOf(id), schema);
+        getMongoDBHandler().updateUser(schema);
     }
 
     public ArrayList<String> getUserPermissions(long serverId, long userId){
-        String[] permissions = readJson(SERVERS_SETTINGS_FOLDER + File.separator + serverId + File.separator + USERS_PERMISSIONS_SERVER_SETTINGS, String.valueOf(userId), new TypeToken<String[]>(){}.getType());
-        return new ArrayList<String>(Arrays.asList(permissions));
+        return getMongoDBHandler().retrieveServerUserPermission(serverId, userId).getPermissions();
     }
 
     public void updateUserPermissions(long serverId, long userId, String[] permissions){
-        writeJson(SERVERS_SETTINGS_FOLDER + File.separator + serverId + File.separator + USERS_PERMISSIONS_SERVER_SETTINGS, String.valueOf(userId), permissions);
+        ServerUserPermissionSchema serverUserPermissionSchema = new ServerUserPermissionSchema(serverId, userId);
+        for(String perm: permissions){
+            if(!serverUserPermissionSchema.getPermissions().contains(perm)){
+                serverUserPermissionSchema.getPermissions().add(perm);
+            }
+        }
+        getMongoDBHandler().updateServerUserPermission(serverUserPermissionSchema);
     }
 
     public boolean hasPermission(long serverID, long userID, String permission) {
@@ -172,7 +147,20 @@ public class ConfigurationManager {
         return null;
     }
 
+    private void setOzzie(Ozzie ozzie){
+        this.ozzie = ozzie;
+    }
+
     private Ozzie getOzzie(){
         return ozzie;
     }
+
+    public MongoDBHandler getMongoDBHandler() {
+        return mongoDBHandler;
+    }
+
+    public void setMongoDBHandler(MongoDBHandler mongoDBHandler) {
+        this.mongoDBHandler = mongoDBHandler;
+    }
+
 }

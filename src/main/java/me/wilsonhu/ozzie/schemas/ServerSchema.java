@@ -1,14 +1,45 @@
 package me.wilsonhu.ozzie.schemas;
 
-import me.wilsonhu.ozzie.utilities.Helper;
+import me.wilsonhu.ozzie.Ozzie;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class ServerSchema {
+
+
+    private long serverId;
     private long ownerID;
     private String serverLocale;
     private String customCommandPrefix;
-    private long[] allowedCommandTextChannel;
+    private ArrayList<Long> allowedCommandTextChannel;
     private boolean allowUserLocale;
     private boolean allowUserCustomCommandPrefix;
+
+    public ServerSchema(){
+
+    }
+
+    public ServerSchema(long serverId, Ozzie ozzie){
+        setServerId(serverId);
+        long owner = Objects.requireNonNull(ozzie.getShardManager().getGuildById(serverId)).getOwnerIdLong();
+        setOwnerID(owner);
+        setAllowedCommandTextChannel(new ArrayList<Long>());
+        getAllowedCommandTextChannel().add(Objects.requireNonNull(Objects.requireNonNull(ozzie.getShardManager().getGuildById(serverId)).getDefaultChannel()).getIdLong());
+        setCustomCommandPrefix(ozzie.getDefaultCommandPrefix());
+        setAllowUserCustomCommandPrefix(true);
+        setServerLocale("default");
+        setAllowUserLocale(true);
+    }
+
+
+    public long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(long serverId) {
+        this.serverId = serverId;
+    }
 
     public long getOwnerID() {
         return ownerID;
@@ -34,7 +65,7 @@ public class ServerSchema {
         this.customCommandPrefix = customCommandPrefix;
     }
 
-    public long[] getAllowedCommandTextChannel() {//Not going to lie you are fucking cancer to deal with
+    public ArrayList<Long> getAllowedCommandTextChannel() {//Not going to lie you are fucking cancer to deal with
         return allowedCommandTextChannel;
     }
 
@@ -46,14 +77,14 @@ public class ServerSchema {
     }
 
     public void addCommandTextChannel(long textChannelId){
-        setAllowedCommandTextChannel(Helper.appendArray(getAllowedCommandTextChannel(), textChannelId));
+        getAllowedCommandTextChannel().add(textChannelId);
     }
 
     public void removeCommandTextChannel(long textChannelId){
-        setAllowedCommandTextChannel(Helper.unappendArray(getAllowedCommandTextChannel(), textChannelId));
+        getAllowedCommandTextChannel().remove(textChannelId);
     }
 
-    public void setAllowedCommandTextChannel(long[] allowedCommandTextChannel) {
+    public void setAllowedCommandTextChannel(ArrayList<Long> allowedCommandTextChannel) {
         this.allowedCommandTextChannel = allowedCommandTextChannel;
     }
 

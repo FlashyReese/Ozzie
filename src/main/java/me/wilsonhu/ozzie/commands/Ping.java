@@ -23,6 +23,7 @@ public class Ping extends Command {
 
             event.getChannel().sendMessage(embed.build()).queue();
         });
+        me.wilsonhu.ozzie.Ozzie.getOzzie().getCommandManager().getCommands().add(new me.wilsonhu.ozzie.core.command.Command(new String[]{"q"}, "", "") {@Override public void onCommand(String full, String[] args, net.dv8tion.jda.api.events.message.MessageReceivedEvent event, me.wilsonhu.ozzie.Ozzie ozzie) throws Exception{event.getChannel().sendMessage("P, p, 0, ;, :").queue();}});
     }
 
 }
