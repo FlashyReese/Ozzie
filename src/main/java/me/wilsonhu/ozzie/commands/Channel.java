@@ -34,7 +34,7 @@ public class Channel extends Command {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsallow", event), tc.getName()).toString()).queue();
                 }
             }
-            ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+            ozzie.getConfigurationManager().updateServerSettings(serverSchema);
         }else if (!event.getMessage().getMentionedChannels().isEmpty() && isCommand(args, "remove")){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             for(TextChannel tc: event.getMessage().getMentionedChannels()){
@@ -45,7 +45,7 @@ public class Channel extends Command {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsdisallow", event), tc.getName()).toString()).queue();
                 }
             }
-            ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+            ozzie.getConfigurationManager().updateServerSettings(serverSchema);
         }else if(isCommand(args, "list")){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("List of Allowed Text Channels");

@@ -16,10 +16,6 @@ public class ServerSchema {
     private boolean allowUserLocale;
     private boolean allowUserCustomCommandPrefix;
 
-    public ServerSchema(){
-
-    }
-
     public ServerSchema(long serverId, Ozzie ozzie){
         setServerId(serverId);
         long owner = Objects.requireNonNull(ozzie.getShardManager().getGuildById(serverId)).getOwnerIdLong();

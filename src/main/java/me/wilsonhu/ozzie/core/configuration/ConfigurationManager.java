@@ -38,7 +38,7 @@ public class ConfigurationManager {
         return getMongoDBHandler().retrieveServer(id);
     }
 
-    public void updateServerSettings(long id, ServerSchema schema){
+    public void updateServerSettings(ServerSchema schema){
         getMongoDBHandler().updateServer(schema);
     }
 
@@ -46,7 +46,7 @@ public class ConfigurationManager {
         return getMongoDBHandler().retrieveUser(id);
     }
 
-    public void updateUserSettings(long id, UserSchema schema){
+    public void updateUserSettings(UserSchema schema){
         getMongoDBHandler().updateUser(schema);
     }
 

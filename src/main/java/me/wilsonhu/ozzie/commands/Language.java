@@ -41,7 +41,7 @@ public class Language extends Command {
             }else{
                 serverSchema.setAllowUserLocale(prefix);
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.servercustomlocale", event), (serverSchema.isAllowUserLocale() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString()).queue();
-                ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+                ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
         }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
                 OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem
@@ -111,7 +111,7 @@ public class Language extends Command {
         }else{
             serverSchema.setServerLocale(locale);
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetlocale", event), ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString()).queue();
-            ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+            ozzie.getConfigurationManager().updateServerSettings(serverSchema);
         }
     }
 
@@ -124,7 +124,7 @@ public class Language extends Command {
         }else{
             userSchema.setUserLocale(locale);
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetlocale", event), event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString()).queue();
-            ozzie.getConfigurationManager().updateUserSettings(event.getAuthor().getIdLong(), userSchema);
+            ozzie.getConfigurationManager().updateUserSettings(userSchema);
         }
     }
 }

@@ -35,7 +35,7 @@ public class Prefix extends Command {
             }else{
                 serverSchema.setAllowUserCustomCommandPrefix(prefix);
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.servercustomprefix", event), (serverSchema.isAllowUserCustomCommandPrefix() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString()).queue();
-                ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+                ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
         }else if(isCommand(args, "set", "server")){//Fixme: Seperate into a different class
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
@@ -45,7 +45,7 @@ public class Prefix extends Command {
             }else{
                 serverSchema.setCustomCommandPrefix(prefix);
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetprefix", event), serverSchema.getServerLocale()).toString()).queue();
-                ozzie.getConfigurationManager().updateServerSettings(event.getGuild().getIdLong(), serverSchema);
+                ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
         }else if(isCommand(args, "set")){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
@@ -57,7 +57,7 @@ public class Prefix extends Command {
                 }else{
                     userSchema.setCustomCommandPrefix(prefix);
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetcustomprefix", event), event.getAuthor().getName(), userSchema.getCustomCommandPrefix()).toString()).queue();
-                    ozzie.getConfigurationManager().updateUserSettings(event.getAuthor().getIdLong(), userSchema);
+                    ozzie.getConfigurationManager().updateUserSettings(userSchema);
                 }
             }else{
                 event.getChannel().sendMessage(new TranslatableText("ozzie.servercustomprefixdisabled", event).toString()).queue();

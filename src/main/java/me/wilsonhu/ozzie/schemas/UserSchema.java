@@ -11,8 +11,6 @@ public class UserSchema {
     private String customCommandPrefix;
     private String password;
 
-
-
     public UserSchema(long userId, Ozzie ozzie){
         setUserId(userId);
         setUserLocale("default");
