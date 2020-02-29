@@ -12,17 +12,25 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileContent/fileContent.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileContent/fileContent.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Channel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Channel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Language.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Language.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Prefix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Prefix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Help.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Help.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Ping.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Ping.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/ServerSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/ServerSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/UserSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/UserSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/MongoDBHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/MongoDBHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,16 +94,16 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="D:/Projects/Intellij Workspace/ozzie-music" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
   <component name="RunManager">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="me.wilsonhu.ozzie.Application" />
       <module name="Ozzie.main" />
@@ -150,7 +158,10 @@
       <workItem from="1582745054833" duration="1947000" />
       <workItem from="1582785296652" duration="332000" />
       <workItem from="1582785639106" duration="4000" />
-      <workItem from="1582785659699" duration="14707000" />
+      <workItem from="1582785659699" duration="22999000" />
+      <workItem from="1582943260943" duration="1497000" />
+      <workItem from="1582949846015" duration="2021000" />
+      <workItem from="1582957603319" duration="5017000" />
     </task>
     <servers />
   </component>
@@ -158,14 +169,14 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="552" y="178" key="#Project_Structure" timestamp="1582786338218">
+    <state x="552" y="178" key="#Project_Structure" timestamp="1582934657252">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1582786338218" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582786297175">
+    <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1582934657252" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582934638340">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582786297175" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582934638340" />
     <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser" timestamp="1582869626498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -190,42 +201,42 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582444325131" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1582785683277">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1582942773871">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1582785683277" />
-    <state width="1877" height="347" key="GridCell.Tab.0.bottom" timestamp="1582871034204">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1582942773871" />
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1582962644144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034204" />
-    <state width="1877" height="347" key="GridCell.Tab.0.center" timestamp="1582871034204">
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1582962644144" />
+    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1582962644144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034204" />
-    <state width="1877" height="347" key="GridCell.Tab.0.left" timestamp="1582871034204">
+    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1582962644144" />
+    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1582962644144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034204" />
-    <state width="1877" height="347" key="GridCell.Tab.0.right" timestamp="1582871034204">
+    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1582962644144" />
+    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1582962644144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034204" />
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1582871034111">
+    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1582962644144" />
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1582962462248">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034111" />
-    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1582871034111">
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1582962462248" />
+    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1582962462248">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034111" />
-    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1582871034111">
+    <state width="1877" height="285" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1582962462248" />
+    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1582962462248">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034111" />
-    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1582871034111">
+    <state width="1877" height="285" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1582962462248" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1582962462248">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1582871034111" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1582962462248" />
     <state x="748" y="230" key="RollbackChangesDialog" timestamp="1582786257295">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -234,17 +245,32 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="621" y="238" width="998" height="708" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1582786366470" />
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1582785660181">
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1582957851725">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582785660181" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582957851725" />
+    <state x="342" y="140" key="new project wizard" timestamp="1582942698869">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="342" y="140" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1582942698869" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1582089357545">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1582089357545" />
-    <state x="1001" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1582613207337">
+    <state x="1068" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1582962336175">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1001" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1582613207337" />
+    <state x="1068" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1582962336175" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/MongoDBHandler.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

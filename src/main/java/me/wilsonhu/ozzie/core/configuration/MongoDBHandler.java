@@ -1,6 +1,7 @@
 package me.wilsonhu.ozzie.core.configuration;
 
 import com.google.gson.Gson;
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
@@ -48,6 +49,7 @@ public class MongoDBHandler {
                 fromProviders(PojoCodecProvider.builder().register(userSchemaClassModelClassModel, serverSchemaClassModelClassModel, serverUserPermissionSchemaClassModel).automatic(true).build()));
         MongoClientSettings settings = MongoClientSettings.builder()
                 .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(new ConnectionString("No man! Get your own database"))
                 .build();
         setMongoClient(MongoClients.create(settings));
         log.info("MongoDB Handler built!");
@@ -61,9 +63,9 @@ public class MongoDBHandler {
             collection = db.getCollection(USER_COLLECTION, UserSchema.class);
             UserSchema userSchema = new UserSchema(userId, getOzzie());
             collection.insertOne(userSchema);
-            log.info("Single Document Insert Successfully...");
+            log.info("User Insert Successfully...");
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while insert **Single Document** : " + e, e);
+            log.error("Exception occurred while insert **User** : " + e, e);
         }
     }
 
@@ -82,7 +84,7 @@ public class MongoDBHandler {
                 return retrieveUser(userId);
             }
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while query **Single Document** : " + e, e);
+            log.error("Exception occurred while query **User** : " + e, e);
         }
         return new Gson().fromJson(result.toJson(), UserSchema.class);
     }
@@ -98,10 +100,9 @@ public class MongoDBHandler {
             filter = eq("userId", userSchema.getUserId());
             query = combine(set("userLocale", userSchema.getUserLocale()), set("customCommandPrefix", userSchema.getCustomCommandPrefix()), set("password", userSchema.getPassword()), currentDate("lastModified"));
             UpdateResult result = collection.updateOne(filter, query);
-            log.info("UpdateOne Status : " + result.wasAcknowledged());
-            log.info("No of Record Modified : " + result.getModifiedCount());
+            log.info("User Update One Status : " + result.wasAcknowledged());
         } catch (MongoException e) {
-            log.error("Exception occurred while update single Document : " + e, e);
+            log.error("Exception occurred while update single user : " + e, e);
         }
     }
 
@@ -115,10 +116,10 @@ public class MongoDBHandler {
             query = eq("userId", userId);
             DeleteResult result = collection.deleteOne(query);
             if (result.wasAcknowledged()) {
-                log.info("Single Document deleted successfully \nNo of Document Deleted : " + result.getDeletedCount());
+                log.info("User deleted successfully \nNo of User Deleted : " + result.getDeletedCount());
             }
         } catch (MongoException e) {
-            log.error("Exception occurred while delete Single Document : " + e, e);
+            log.error("Exception occurred while deleteUser : " + e, e);
         }
     }
 
@@ -130,9 +131,9 @@ public class MongoDBHandler {
             collection = db.getCollection(SERVER_COLLECTION, ServerSchema.class);
             ServerSchema serverSchema = new ServerSchema(serverId, getOzzie());
             collection.insertOne(serverSchema).wasAcknowledged();
-            log.info("Single Document Insert Successfully...");
+            log.info("Server Insert Successfully...");
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while insert **Single Document** : " + e, e);
+            log.error("Exception occurred while insert **Server** : " + e, e);
         }
     }
 
@@ -151,7 +152,7 @@ public class MongoDBHandler {
                 return retrieveServer(serverId);
             }
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while query **Single Document** : " + e, e);
+            log.error("Exception occurred while query **Server** : " + e, e);
         }
         return new Gson().fromJson(result.toJson(), ServerSchema.class);
     }
@@ -169,10 +170,9 @@ public class MongoDBHandler {
                     set("customCommandPrefix", serverSchema.getCustomCommandPrefix()), set("allowUserCustomCommandPrefix", serverSchema.isAllowUserCustomCommandPrefix()),
                     set("serverLocale", serverSchema.getServerLocale()), set("allowUserLocale", serverSchema.isAllowUserLocale()), currentDate("lastModified"));
             UpdateResult result = collection.updateOne(filter, query);
-            log.info("UpdateOne Status : " + result.wasAcknowledged());
-            log.info("No of Record Modified : " + result.getModifiedCount());
+            log.info("Server Update One Status : " + result.wasAcknowledged());
         } catch (MongoException e) {
-            log.error("Exception occurred while update single Document : " + e, e);
+            log.error("Exception occurred while update server : " + e, e);
         }
     }
 
@@ -186,10 +186,10 @@ public class MongoDBHandler {
             query = eq("serverId", serverId);
             DeleteResult result = collection.deleteOne(query);
             if (result.wasAcknowledged()) {
-                log.info("Single Document deleted successfully \nNo of Document Deleted : " + result.getDeletedCount());
+                log.info("Server deleted successfully \nNo of Server Deleted : " + result.getDeletedCount());
             }
         } catch (MongoException e) {
-            log.error("Exception occurred while delete Single Document : " + e, e);
+            log.error("Exception occurred while delete server : " + e, e);
         }
     }
 
@@ -201,9 +201,9 @@ public class MongoDBHandler {
             collection = db.getCollection(SERVER_USER_PERMISSIONS_COLLECTION, ServerUserPermissionSchema.class);
             ServerUserPermissionSchema serverUserPermissionSchema = new ServerUserPermissionSchema(serverId, userId);
             collection.insertOne(serverUserPermissionSchema).wasAcknowledged();
-            log.info("Single Document Insert Successfully...");
+            log.info("ServerUserPermission Insert Successfully...");
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while insert **Single Document** : " + e, e);
+            log.error("Exception occurred while insert **ServerUserPermission** : " + e, e);
         }
     }
 
@@ -222,7 +222,7 @@ public class MongoDBHandler {
                 return retrieveServerUserPermission(serverId, userId);
             }
         } catch (MongoException | ClassCastException e) {
-            log.error("Exception occurred while query **Single Document** : " + e, e);
+            log.error("Exception occurred while query **ServerUserPermission** : " + e, e);
         }
         return new Gson().fromJson(result.toJson(), ServerUserPermissionSchema.class);
     }
@@ -238,10 +238,9 @@ public class MongoDBHandler {
             filter = and(eq("serverId", serverUserPermissionSchema.getServerId()), eq("userId", serverUserPermissionSchema.getUserId()));
             query = combine(set("permissions", serverUserPermissionSchema.getPermissions()), currentDate("lastModified"));
             UpdateResult result = collection.updateOne(filter, query);
-            log.info("UpdateOne Status : " + result.wasAcknowledged());
-            log.info("No of Record Modified : " + result.getModifiedCount());
+            log.info("ServerUserPermission Update One Status : " + result.wasAcknowledged());
         } catch (MongoException e) {
-            log.error("Exception occurred while update single Document : " + e, e);
+            log.error("Exception occurred while update ServerUserPermission : " + e, e);
         }
     }
 
@@ -255,10 +254,10 @@ public class MongoDBHandler {
             query = and(eq("serverId", serverId), eq("userId", userId));
             DeleteResult result = collection.deleteOne(query);
             if (result.wasAcknowledged()) {
-                log.info("Single Document deleted successfully \nNo of Document Deleted : " + result.getDeletedCount());
+                log.info("ServerUserPermission deleted successfully \nNo of ServerUserPermission Deleted : " + result.getDeletedCount());
             }
         } catch (MongoException e) {
-            log.error("Exception occurred while delete Single Document : " + e, e);
+            log.error("Exception occurred while delete ServerUserPermission : " + e, e);
         }
     }
 

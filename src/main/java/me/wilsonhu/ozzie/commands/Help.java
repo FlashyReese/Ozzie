@@ -32,7 +32,7 @@ public class Help extends Command {
                 String line = "";
                 for(Command cmd: allCommands) {
                     if(!cmd.isHidden()) {
-                        if(ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), cmd.getPermission())) {
+                        if(ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), cmd.getPermission())) {//Fixme: because of this line seek times are off the charts Figure how to run mongodb local probably on linux and check if this shit still disconnects from the socket xddddddddddd
                             if(cmd.getAsCategory().equalsIgnoreCase(cc)) {
                                 if(event.isFromGuild()) {
                                     line = line + String.format("`%s` ", cmd.getNames()[0]);

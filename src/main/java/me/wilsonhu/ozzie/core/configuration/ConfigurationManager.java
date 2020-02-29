@@ -18,11 +18,7 @@ public class ConfigurationManager {
     private static final Logger log = LogManager.getLogger(ConfigurationManager.class);
     public static final String LOCALE_FOLDER = "locale";
     private static final String SETTINGS_FOLDER = "settings";
-    private static final String SERVERS_SETTINGS_FOLDER = SETTINGS_FOLDER + File.separator + "servers";
-    private static final String USERS_PERMISSIONS_SERVER_SETTINGS = "permissions";
-    private static final String USERS_SETTINGS_FOLDER = SETTINGS_FOLDER + File.separator + "users";
     private static final String PLUGINS_SETTINGS_FOLDER = SETTINGS_FOLDER + File.separator + "plugins";
-    private static final String SERVER_SETTINGS_FILE_NAME = "settings";
 
     private Ozzie ozzie;
     private MongoDBHandler mongoDBHandler;
@@ -61,13 +57,13 @@ public class ConfigurationManager {
                 serverUserPermissionSchema.getPermissions().add(perm);
             }
         }
+        for(String perms: serverUserPermissionSchema.getPermissions()){
+            System.out.println(perms);
+        }
         getMongoDBHandler().updateServerUserPermission(serverUserPermissionSchema);
     }
 
     public boolean hasPermission(long serverID, long userID, String permission) {
-        if(!doesFileExist(SERVERS_SETTINGS_FOLDER + File.separator + serverID + File.separator + USERS_PERMISSIONS_SERVER_SETTINGS, String.valueOf(userID))){
-            updateUserPermissions(serverID, userID, new String[]{"*.default"});
-        }
         ArrayList<String> userPerms = getUserPermissions(serverID, userID);
         if(userPerms.contains(permission)) {
             return true;
