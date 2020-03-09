@@ -11,7 +11,7 @@ import java.util.Set;
 
 
 public class RConServer {
-    //Todo: Understand this shit better with closing sockets and i/o streams; fucking abandon ship
+    //Todo: Understand this shit better with closing sockets and i/o streams; fucking abandon ship; might unabandon due to linux lol restart on service
     private static final Logger log = LogManager.getLogger(RConServer.class);
 
     private int port;

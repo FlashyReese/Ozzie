@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+ *
+ * Ozzie is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Ozzie is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ *
+ */
 package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
@@ -5,6 +21,7 @@ import me.wilsonhu.ozzie.core.command.Command;
 import me.wilsonhu.ozzie.core.command.CommandType;
 import me.wilsonhu.ozzie.core.i18n.ParsableText;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
+import me.wilsonhu.ozzie.schemas.ServerUserPermissionSchema;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -21,6 +38,7 @@ public class Help extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
+        ServerUserPermissionSchema serverUserPermissionSchema = ozzie.getConfigurationManager().getMongoDBHandler().retrieveServerUserPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong());
         ArrayList<Command> allCommands = new ArrayList<Command>();
         allCommands.addAll(ozzie.getCommandManager().getCommands());
         allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
@@ -32,7 +50,7 @@ public class Help extends Command {
                 String line = "";
                 for(Command cmd: allCommands) {
                     if(!cmd.isHidden()) {
-                        if(ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), cmd.getPermission())) {//Fixme: because of this line seek times are off the charts Figure how to run mongodb local probably on linux and check if this shit still disconnects from the socket xddddddddddd
+                        if(ozzie.getConfigurationManager().hasPermission(cmd.getPermission(), serverUserPermissionSchema)) {
                             if(cmd.getAsCategory().equalsIgnoreCase(cc)) {
                                 if(event.isFromGuild()) {
                                     line = line + String.format("`%s` ", cmd.getNames()[0]);

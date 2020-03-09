@@ -18,30 +18,32 @@ package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
-import me.wilsonhu.ozzie.core.command.CommandType;
+import me.wilsonhu.ozzie.utilities.Helper;
+import me.wilsonhu.ozzie.utilities.SystemSensor;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.io.PrintWriter;
-
-public class Reload extends Command {
-    public Reload() {
-        super(new String[] {"reload"}, "reloading plugins without restarting", "%s");
+public class SystemInformation extends Command {
+    public SystemInformation() {
+        super(new String[]{"sysinfo"}, "", "%s");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
     }
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        event.getChannel().sendMessage("Reloading").queue();
-        ozzie.pluginsReload();
-        event.getChannel().sendMessage("Reload Complete!").queue();
-    }
-
-    @Override
-    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
-        writer.println("Reloading");
-        ozzie.pluginsReload();
-        writer.println("Reload Complete!");
+        SystemSensor ss = new SystemSensor();
+        /*EmbedBuilder embed = new EmbedBuilder();
+        embed.setAuthor(new ParsableText(new TranslatableText("ozzie.aboutbot", event), ozzie.getBotName()).toString(), "https://cutt.ly/Ozzie", event.getJDA().getSelfUser().getAvatarUrl());
+        embed.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
+        int count = 0;
+        for(String s: Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1000)){
+            if(count > 6000)break;
+            embed.addField(" ", "```markdown\n" + s + "```", false);
+            count += 1024;
+        }
+        event.getChannel().sendMessage(embed.build()).queue();*/
+        for(String s: Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1900)){
+            event.getChannel().sendMessage("```markdown\n" + s + "```").queue();
+        }
     }
 }

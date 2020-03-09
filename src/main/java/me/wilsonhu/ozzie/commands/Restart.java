@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+ *
+ * Ozzie is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Ozzie is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ *
+ */
 package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Application;
@@ -26,7 +42,7 @@ public class Restart extends Command {
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         event.getChannel().sendMessage("Restarting").queue();
-        ozzie.restart();//Fixme: Doesn't take in params v: temporal built in fix
+        ozzie.restart();//Fixme: Doesn't take in params v: temporal built in fix behaves weird on Linux Systemctl service
         /*if(args.length != 0) {
             StringBuilder programArguments = new StringBuilder();
             for(int i = 1; i < args.length; i++){

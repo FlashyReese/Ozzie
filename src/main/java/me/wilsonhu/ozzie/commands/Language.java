@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+ *
+ * Ozzie is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Ozzie is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ *
+ */
 package me.wilsonhu.ozzie.commands;
 
 import com.jagrosh.jdautilities.menu.OrderedMenu;
@@ -33,7 +49,7 @@ public class Language extends Command {
             }else{
                 defaultServerLocaleCheck(event, ozzie, serverSchema);
             }
-        }else if(isCommand(args, "set", "allowuser")){
+        }else if(isCommand(args, "set", "allowuser") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             boolean prefix = Boolean.parseBoolean(args[2]);
             if(serverSchema.isAllowUserLocale() == prefix){

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+ *
+ * Ozzie is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Ozzie is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ *
+ */
 package me.wilsonhu.ozzie.commands;
 
 import me.wilsonhu.ozzie.Ozzie;
@@ -9,7 +25,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import oshi.SystemInfo;
 
 import java.awt.*;
 import java.lang.management.ManagementFactory;
@@ -33,7 +48,6 @@ public class About extends Command {
         }
         String dev = "FlashyReese";
         String codev = "Anyone?";
-        SystemInfo si = new SystemInfo();
         if(event.isFromGuild()) {
             for(Member m: event.getGuild().getMembers()){
                 if(m.getUser().getIdLong() == 141594071033577472L){
@@ -65,7 +79,6 @@ public class About extends Command {
                 .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
                 .addField(new TranslatableText("ozzie.shard", event).toString(), ozzie.getShardManager().getShardsRunning() + "/" + ozzie.getShardManager().getShardsTotal(), true)//Fixme: Queue Shards, too lazy atm xd
-                //.addField("System Information", "```markdown\n" + si.getHardware().toString() + "```", false)//Todo: Seperate this for only dev
                 .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
         event.getChannel().sendMessage(embed.build()).queue();
     }
