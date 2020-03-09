@@ -15,15 +15,10 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__net_dv8tion_JDA_4_1_1_108.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__net_dv8tion_JDA_4_1_1_108.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/CommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +154,7 @@
       <workItem from="1583346672056" duration="194000" />
       <workItem from="1583346868277" duration="734000" />
       <workItem from="1583624313915" duration="2603000" />
-      <workItem from="1583731414613" duration="5988000" />
+      <workItem from="1583731414613" duration="6579000" />
     </task>
     <servers />
   </component>
@@ -203,22 +198,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1582942773871" />
-    <state width="1877" height="374" key="GridCell.Tab.0.bottom" timestamp="1583736315954">
+    <state width="1877" height="374" key="GridCell.Tab.0.bottom" timestamp="1583737791367">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="374" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583736315954" />
-    <state width="1877" height="374" key="GridCell.Tab.0.center" timestamp="1583736315954">
+    <state width="1877" height="374" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583737791367" />
+    <state width="1877" height="374" key="GridCell.Tab.0.center" timestamp="1583737791367">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="374" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583736315954" />
-    <state width="1877" height="374" key="GridCell.Tab.0.left" timestamp="1583736315954">
+    <state width="1877" height="374" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583737791367" />
+    <state width="1877" height="374" key="GridCell.Tab.0.left" timestamp="1583737791367">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="374" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583736315954" />
-    <state width="1877" height="374" key="GridCell.Tab.0.right" timestamp="1583736315954">
+    <state width="1877" height="374" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583737791367" />
+    <state width="1877" height="374" key="GridCell.Tab.0.right" timestamp="1583737791367">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="374" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583736315954" />
+    <state width="1877" height="374" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583737791367" />
     <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1583646156382">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

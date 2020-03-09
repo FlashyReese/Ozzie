@@ -42,7 +42,6 @@ public class ConfigurationManager {
     public ConfigurationManager(Ozzie ozzie){
         log.info("Building Configuration Manager...");
         setOzzie(ozzie);
-        setMongoDBHandler(new MongoDBHandler(ozzie));
         log.info("Configuration Manager built!");
     }
 
@@ -177,6 +176,7 @@ public class ConfigurationManager {
     }
 
     public MongoDBHandler getMongoDBHandler() {
+        if (mongoDBHandler == null)setMongoDBHandler(new MongoDBHandler(getOzzie()));
         return mongoDBHandler;
     }
 

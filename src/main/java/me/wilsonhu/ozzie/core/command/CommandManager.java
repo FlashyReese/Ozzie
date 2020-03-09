@@ -126,7 +126,7 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
     public void onCommandValidator(ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event) {
         for (Command c: list){
             for (String name: c.getNames()){
-                if (full.toLowerCase().startsWith(name.toLowerCase())){
+                if (full.toLowerCase().startsWith(name.toLowerCase())){//Fixme: fucking hardcode my ID lol
                     if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission()) || ozzie.getConfigurationManager().isOwner(event.getGuild().getIdLong(), event.getAuthor().getIdLong()) || event.getAuthor().getIdLong() == 141594071033577472L) {
                         //String args = full.substring(name.length()).trim();//I am an idiot wtf why did I do this I had s
                         try{
