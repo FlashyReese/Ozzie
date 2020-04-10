@@ -8,9 +8,11 @@ If you're comfortable getting up and running from a `git clone`, this method is 
 The [master](https://github.com/FlashyReese/Ozzie/) branch which contains the the most stable releases.
 
 #### Prerequisites:
-Java 8 or Higher.
-Gradle 6 or Higher.
-Discord Bot Token.
+Java `8` or above
+
+Gradle `6` or above
+
+Discord bot token
 
 #### Quickstart:
 1. Clone this project
