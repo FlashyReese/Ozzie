@@ -38,7 +38,15 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
+/**
+ * Used to start new instances of {@link net.dv8tion.jda.api.JDA JDA}.
+ *
+ * <p> Default class for starting {@link me.wilsonhu.ozzie.Ozzie Ozzie} Core Modules and {@link net.dv8tion.jda.api.JDA JDA} instance.
+ *
+ * @author Yao Chung Hu
+ *
+ * @since  20.01.09
+ */
 public class Ozzie {
 
     private static final Logger log = LogManager.getLogger(Ozzie.class);
@@ -60,9 +68,16 @@ public class Ozzie {
     /*private RConServer RConServer;*/
 
     private EventWaiter eventWaiter;
-
     private static Ozzie ozzie;
 
+    /**
+     * Creates a Ozzie with the given parameters.
+     * <br>This is the default constructor for Ozzie.
+     *
+     * @param args
+     *        Ozzie parameters
+     * @throws Exception
+     */
     public Ozzie(String[] args) throws Exception {
         log.info("Building client...");
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
@@ -75,6 +90,17 @@ public class Ozzie {
         log.info("Client built!");
     }
 
+    /**
+     * Starts the instance of Ozzie using the {@link net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder DefaultShardManagerBuilder} and it's core modules, also loading found plugins.
+     * <br>This method can throw an exception on the first time running the application, caused by empty configurations.</br>
+     * @throws LoginException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
     public void start() throws LoginException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         if(isRunning()){
             log.warn("Client already running!");
@@ -107,6 +133,16 @@ public class Ozzie {
         }
     }
 
+    /**
+     * Loads plugins into core components.
+     *
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
     private void loadPlugins() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException   {
         for(PluginModule pluginModule : getPluginLoader().getConfiguredPlugins()){
             Plugin currentPlugin = pluginModule.getPlugin();
@@ -117,24 +153,63 @@ public class Ozzie {
         }
     }
 
-    public void pluginsReload() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        log.warn("Reloading Plugins!");
+    /**
+     * Unloads plugins from core components.
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    private void unloadPlugins() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (PluginModule pluginModule : getPluginLoader().getConfiguredPlugins()) {
             Plugin currentPlugin = pluginModule.getPlugin();
             log.info(String.format("Disabling [%s]%s %s", pluginModule.getSchema().getId(), pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion()));
             currentPlugin.onDisable(this);
             getShardManager().removeEventListener(currentPlugin);
         }
+    }
+
+    /**
+     * Reloads plugins this method is only used in {@link me.wilsonhu.ozzie.commands.Reload Reload}.
+     *
+     * <br>Useful for loading new plugins without restarting Ozzie</br>.
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
+    public void pluginsReload() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        log.warn("Reloading Plugins!");
+        unloadPlugins();
         getCommandManager().getPluginCommands().clear();
         pluginLoader = new PluginLoader(getDirectory().getAbsolutePath(), this);
         loadPlugins();
         log.info("Plugins reloaded!");
     }
 
-    public void stop(){
+    /**
+     * Shuts down Ozzie calling {@link Ozzie#unloadPlugins() unloadPlugins()} and {@link ShardManager#shutdown()}.
+     *
+     * <br>This method is used on {@link me.wilsonhu.ozzie.commands.Shutdown Shutdown} and the shutdown hook.</br>
+     *
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws ClassNotFoundException
+     */
+    public void stop() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         if(isRunning()){
             log.info("Stopping client...");
             this.setRunning(false);
+            unloadPlugins();
             this.getShardManager().shutdown();
             shardManager = null;
             log.info("Client stopped!");
@@ -143,6 +218,19 @@ public class Ozzie {
         }
     }
 
+    /**
+     * Soft restarts Ozzie calling on {@link Ozzie#stop() stop()} and {@link Ozzie#start()}.
+     *
+     * <br>This does not create a new instance of Ozzie.</br>
+     *
+     * @throws LoginException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
     public void restart() throws LoginException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, NoSuchMethodException, InvocationTargetException {
         if (isRunning()){
             log.info("Restarting client...");

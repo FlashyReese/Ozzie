@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 
 public class Restart extends Command {
@@ -84,7 +85,11 @@ public class Restart extends Command {
                 assert currentJar != null;
                 if(!currentJar.getName().endsWith(".jar"))
                     return;
-                ozzie.stop();
+                try {
+                    ozzie.stop();
+                } catch (NoSuchMethodException | InstantiationException | IOException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 String cmd = "java -jar " + currentJar.getPath() + " " + args;//Fixme: Hmmm odd behaviour in Linux may be due to users
                 String os_name = ozzie.getOperatingSystemName().toLowerCase();
                 String[] cmd_exec = new String[]{};
