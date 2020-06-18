@@ -37,7 +37,7 @@ public class ParsableText {
     }
 
     private String format(String text, String... args) { //Fixme:  This can be improved to String.format level, Update: Also throw exception for easier diagnostic(wasn't hard for me but probably going to be hard for others)
-        for(int i = 0; i < args.length; i++) {//Todo: Add custom expression support xd #toLower, #toTitle, #.2f,
+        for(int i = 0; i < args.length; i++) {//Todo: Add custom expression support xd #toLower, #toTitle, #.2f, this is probably hard since I haven't fully mastered regex
             if(!text.contains("{" + (i+1) + "}")) {
                 System.out.println("Missing notation to parse: " + args[i]);
                 continue;

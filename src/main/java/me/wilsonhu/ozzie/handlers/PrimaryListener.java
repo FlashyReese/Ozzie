@@ -40,7 +40,7 @@ public class PrimaryListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        getOzzie().getCommandManager().onCommand(event, null);
+        getOzzie().getCommandManager().onMessageReceived(event, null);
     }
 
     public Ozzie getOzzie(){

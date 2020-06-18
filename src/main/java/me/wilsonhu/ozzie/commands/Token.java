@@ -37,7 +37,7 @@ public class Token extends Command {
             if(args.length == 3) {
                 String name = args[1];
                 String token = args[2];
-                ozzie.getTokenManager().addToken(name, token, ozzie);//getTokenList().put(name, token);
+                ozzie.getTokenManager().addToken(name, token);//getTokenList().put(name, token);
                 event.getChannel().sendMessage(String.format("The token `%s` with the value `%s` has been added.", name, token)).queue();
             }else {
                 event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
@@ -47,14 +47,14 @@ public class Token extends Command {
             if(args.length == 2) {
                 String name = args[1];
                 String tokenValue = ozzie.getTokenManager().getToken(name);
-                ozzie.getTokenManager().removeToken(name, ozzie);
+                ozzie.getTokenManager().removeToken(name);
                 event.getChannel().sendMessage(String.format("The token `%s` with the value `%s` has been removed.", name, tokenValue)).queue();
             }else {
                 event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
             }
         }if(isCommand(args, "reload")){
             event.getChannel().sendMessage("Reloading saved tokens...").queue();
-            ozzie.getTokenManager().loadSavedTokens(ozzie);
+            ozzie.getTokenManager().loadSavedTokens();
             event.getChannel().sendMessage("Saved tokens reloaded.").queue();
         }
     }

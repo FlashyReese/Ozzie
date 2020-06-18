@@ -45,7 +45,7 @@ public abstract class Command {
         this.important = "Nothing is important at this point";
         this.setPermission("ozzie.default");
         this.setCategory("Default");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER);
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);
     }
 
     public abstract void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception;

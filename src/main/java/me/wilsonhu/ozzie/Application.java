@@ -51,8 +51,11 @@ public class Application {
         });
         //Todo: Add back fucking quotes, it's not Ozzie without her quotes qq, Laura Ily pls love me - Update: quotes added but find a way to schedule changes look at TodoList xd
         //Todo: Start Documenting this shit
-        //Todo: Get started on Vaadin WebApp(Maybe Laravel if I do implement what's below xdxd) so I can fully deploy this shit
-        //Todo: add a shutdown hook and fucking link those plugins to disable every single one of them xd
+        //Todo: Get started on Vaadin WebApp(Maybe Laravel) so I can fully deploy this shit
         //Todo: ScheduledExecutorService
+        //Todo: Bot Settings yaml(honestly I like json more)
+        //Todo: Add Console into the bot, so I can call commands from the cmd, this is why I have CommandTypes.
+        //Todo: DB Fallback, add support for MySQL, H2 and more
     }
+
 }

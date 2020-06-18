@@ -33,7 +33,7 @@ public class Help extends Command {
 
     public Help() {
         super(new String[]{"help"}, "ozzie.helpdesc", "%s | %s <commandname>");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER);
     }
 
     @Override
@@ -77,20 +77,6 @@ public class Help extends Command {
             }
         }
     }
-
-   /* @Override
-    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception {
-        ArrayList<Command> allCommands = new ArrayList<Command>();
-        allCommands.addAll(ozzie.getCommandManager().getCommands());
-        allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
-        String commands = "Available Commands: ";
-        for(Command c: allCommands){
-            if(c.isCommandType(CommandType.RCON)){
-                commands += c.getNames()[0] + ", ";
-            }
-        }
-        writer.println(commands);
-    }*/
 
     @Override
     public boolean isHidden()

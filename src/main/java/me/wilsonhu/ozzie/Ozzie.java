@@ -35,8 +35,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 /**
  * Used to start new instances of {@link net.dv8tion.jda.api.JDA JDA}.
@@ -109,14 +111,21 @@ public class Ozzie {
             this.setRunning(true);
             if(shardManager == null){
                 log.info("Building ShardManager...");
-                DefaultShardManagerBuilder shardManagerBuilder = new DefaultShardManagerBuilder();
-                shardManagerBuilder.setAutoReconnect(true);
-                if(getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
+                DefaultShardManagerBuilder shardManagerBuilder;
+                if(getTokenManager().getToken("discord") == null || getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
                     log.error("Couldn't find discordapi token!");
-                    //Todo: Probably bad idea to read it, but sure why not
-                    return;
+                    BufferedReader bufferedReader;
+                    bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+                    while (getTokenManager().getToken("discord") == null || getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
+                        log.info("Please input a discord token: ");
+                        String token = bufferedReader.readLine();
+                        getTokenManager().addToken("discord", token.trim());
+                        //Todo: Add precheck for getOzzie().getTokenManager().getToken("mongodb") dsn also add a param check
+                    }
+                    bufferedReader.close();
                 }
-                shardManagerBuilder.setToken(getTokenManager().getToken("discord"));
+                shardManagerBuilder = DefaultShardManagerBuilder.createDefault(getTokenManager().getToken("discord"));
+                shardManagerBuilder.setAutoReconnect(true);
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
@@ -332,9 +341,4 @@ public class Ozzie {
     private static void setOzzie(Ozzie ozzie){
         Ozzie.ozzie = ozzie;
     }
-
-    /*public RConServer getRConServer(){
-        if (RConServer == null) RConServer = new RConServer(this, 27015);
-        return RConServer;
-    }*/
 }

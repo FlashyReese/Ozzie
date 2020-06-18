@@ -37,7 +37,7 @@ public class Restart extends Command {
         super(new String[] {"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);
     }
 
     @Override

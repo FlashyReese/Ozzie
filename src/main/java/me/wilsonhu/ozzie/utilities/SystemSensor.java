@@ -57,7 +57,7 @@ public class SystemSensor {
         printDisplays(hal.getDisplays());
         printUsbDevices(hal.getUsbDevices(true));
 
-        printSoundCards(hal.getSoundCards());
+        //printSoundCards(hal.getSoundCards());
 
         return oshi;
     }

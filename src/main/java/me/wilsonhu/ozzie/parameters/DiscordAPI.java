@@ -27,6 +27,6 @@ public class DiscordAPI extends Parameter {
 
     @Override
     public void onRun(String full, String split, Ozzie ozzie) throws Exception {
-        ozzie.getTokenManager().addToken("discord", split, ozzie);
+        ozzie.getTokenManager().addToken("discord", split);
     }
 }

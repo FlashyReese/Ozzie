@@ -28,12 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -68,7 +63,7 @@ public class InstallPlugin extends Command {
             }
         }else if(full.equalsIgnoreCase(args[0])){
             event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
-        }else if(!full.equalsIgnoreCase(args[0]) && event.getMessage().getAttachments().isEmpty()){
+        }/*else if(!full.equalsIgnoreCase(args[0]) && event.getMessage().getAttachments().isEmpty()){
             Random r = new Random();
             int code = r.nextInt(9999);
             event.getChannel().sendMessage("Installing Plugin: `" + args[0] + "`. To confirm action please enter: `"+ code + "`.").queue();
@@ -78,8 +73,8 @@ public class InstallPlugin extends Command {
                             && !e.getMessage().equals(event.getMessage()),
                     e -> pinConfirmFiles(ozzie, event, e, code, args[0]),
                     1, TimeUnit.MINUTES, () -> event.getChannel().sendMessage("Sorry, you took too long.").queue());
-            //Please attach a file TODO: Adapt wget for this v:
-        }
+            //Please attach a file Fixme: still broken xd
+        }*/
     }
 
     public void pinConfirmAttachments(Ozzie ozzie, MessageReceivedEvent event, MessageReceivedEvent e, int code) {
@@ -94,7 +89,7 @@ public class InstallPlugin extends Command {
         }
     }
 
-    public void pinConfirmFiles(Ozzie ozzie, MessageReceivedEvent event, MessageReceivedEvent e, int code, String url) {
+    /*public void pinConfirmFiles(Ozzie ozzie, MessageReceivedEvent event, MessageReceivedEvent e, int code, String url) {
         if(code == Integer.parseInt(e.getMessage().getContentRaw())) {
             try {
                 downloadFile(ozzie, event, url);
@@ -152,7 +147,7 @@ public class InstallPlugin extends Command {
             event.getChannel().sendMessage("File not a valid Plugin").queue();
         }
         jf.close();
-    }
+    }*/
 
 
     public void downloadAttachment(Ozzie ozzie, MessageReceivedEvent event) throws Exception{

@@ -28,7 +28,7 @@ public class Shutdown extends Command {
         super(new String[] {"shutdown"}, "Stops bot", "%s");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);
     }
 
     @Override

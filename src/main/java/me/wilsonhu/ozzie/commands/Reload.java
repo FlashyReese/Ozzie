@@ -28,7 +28,7 @@ public class Reload extends Command {
         super(new String[] {"reload"}, "reloading plugins without restarting", "%s");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.RCON);
+        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);
     }
 
     @Override

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CommandManager {//Fixme: This can literally be cleaned up way better
+public class CommandManager {//Fixme: Rewrite this due to mongo implementations I need something faster, and more optimized. Instead of non-returnable method of onCommand from Command.class, I do returnable json format like REST response to do stuff, will need to rewrite most of the plugins but just small changes
 
     private static final Logger log = LogManager.getLogger(CommandManager.class);
     private ArrayList<Command> commands;
@@ -56,10 +56,11 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
 
     private Command[] commands(){
         return new Command[]{
-                //Todo: Channel, permission, changelang(should I seperate changing to another class or just keep as is)
+                //Todo: Permission(Might need to fix permission system xd get it up to LuckPerms standards)
                 new About(),
                 new Channel(),
                 new Clara(),
+                new EasterEgg(),
                 new Evaluate(),
                 new Help(),
                 new InstallPlugin(),
@@ -75,9 +76,11 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
         };
     }
 
-    public void onCommand(MessageReceivedEvent event, String full){
-        if(event.getAuthor().isBot() || event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())return;
-        if(full == null) {
+    public void onMessageReceived(MessageReceivedEvent event, String full){
+        if(event.getAuthor().isBot() || event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()){
+            return;
+        }
+        if(full == null || full.isEmpty()){
             full = event.getMessage().getContentRaw();
         }
         full = full.trim();
@@ -92,15 +95,11 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
                         onCommandPrefix(event, full, userSchema.getCustomCommandPrefix());
                     }
                 }
-            }else{
-                //Todo: Non Guild Commands precheck lol this will never get touch I know
             }
-        }catch (Exception e){
+        }catch(Exception e){
             e.printStackTrace();
         }
-
     }
-
     private void onCommandPrefix(MessageReceivedEvent event, String full, String customCommandPrefix) {
         if(!full.equals(customCommandPrefix)){
             if(event.getMessage().getContentRaw().startsWith(customCommandPrefix)){
@@ -126,9 +125,8 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
     public void onCommandValidator(ArrayList<Command> list, String[] s, String full, MessageReceivedEvent event) {
         for (Command c: list){
             for (String name: c.getNames()){
-                if (full.toLowerCase().startsWith(name.toLowerCase())){//Fixme: fucking hardcode my ID lol
-                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission()) || ozzie.getConfigurationManager().isOwner(event.getGuild().getIdLong(), event.getAuthor().getIdLong()) || event.getAuthor().getIdLong() == 141594071033577472L) {
-                        //String args = full.substring(name.length()).trim();//I am an idiot wtf why did I do this I had s
+                if (full.toLowerCase().startsWith(name.toLowerCase())){
+                    if(getOzzie().getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), c.getPermission())) {
                         try{
                             c.onCommand(full, s, event, getOzzie());
                         }catch (Exception e){
@@ -141,30 +139,8 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
                     }
                 }
             }
-            //TODO: add Type of Chats, Update: I don't remember why I wrote this lol.
         }
     }
-    //Fixme: Ehmmm new way of doing this via webapp using Vaadin new idea xd
-    /*public void onRConCommand(ArrayList<Command> list, String full, PrintWriter writer, long userId, long serverId) throws Exception {
-        String[] s;
-        if (full.contains(" ")) {
-            s = full.split(" ");
-        }else{
-            s = new String[]{full};
-        }
-        for(Command cmd: list){
-            if(cmd.isCommandType(CommandType.RCON)){
-                if(getOzzie().getConfigurationManager().hasPermission(serverId, userId, cmd.getPermission())){
-                    for(String name : cmd.getNames()){
-                        if(name.equalsIgnoreCase(s[0])){
-                            String args = full.substring(name.length()).trim();
-                            cmd.onCommand(full, args, writer, getOzzie());
-                        }
-                    }
-                }
-            }
-        }
-    }*/
 
     public ArrayList<Command> getCommands()
     {
@@ -209,7 +185,7 @@ public class CommandManager {//Fixme: This can literally be cleaned up way bette
             if(cmd.getPermission().equalsIgnoreCase("ozzie.default")) {
                 cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), "default").toLowerCase());
             }else {
-                cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), cmd.getPermission()).toLowerCase());//Fixme: nigga what?, this works for permission can i do this for translatabletext? I mean should i? cause fucking different types of plugins plus it's safer that way this is too risky
+                cmd.setPermission(String.format("%s.%s", pl.getSchema().getName(), cmd.getPermission()).toLowerCase());
             }
             this.getPluginCommands().add(cmd);
             log.info(String.format("[%s] Loading command %s", pl.getSchema().getName(), cmd.getNames()[0]));
