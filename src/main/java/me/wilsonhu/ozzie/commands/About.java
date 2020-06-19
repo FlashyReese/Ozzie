@@ -19,6 +19,7 @@ package me.wilsonhu.ozzie.commands;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
 import me.wilsonhu.ozzie.core.i18n.ParsableText;
+import me.wilsonhu.ozzie.core.i18n.ParsableTranslatableText;
 import me.wilsonhu.ozzie.core.i18n.TranslatableText;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -39,8 +40,9 @@ public class About extends Command {
     @Override
     public void onCommand(String full, String[] split, MessageReceivedEvent event, Ozzie ozzie) throws Exception  {
         long users = 0;
-        for(Guild guild: ozzie.getShardManager().getGuilds()){
-            for(Member member: guild.getMembers()){
+        for(Guild guild: event.getJDA().getGuildCache()){
+            guild.retrieveMembers();
+            for(Member member: guild.getMemberCache()){
                 if(member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE) || member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)){
                     users+=1;
                 }
@@ -77,9 +79,10 @@ public class About extends Command {
                 .addField(new TranslatableText("ozzie.svs", event).toString(), ozzie.getShardManager().getGuilds().size() + "", true)
                 .addField(new TranslatableText("ozzie.vcs", event).toString(), ozzie.getShardManager().getVoiceChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
-                .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
-                .addField(new TranslatableText("ozzie.shard", event).toString(), ozzie.getShardManager().getShardsRunning() + "/" + ozzie.getShardManager().getShardsTotal(), true)//Fixme: Queue Shards, too lazy atm xd
+                .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)///Todo: somewhat fucked
+                .addField(new TranslatableText("ozzie.shard", event).toString(), String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued())))), true)
                 .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
+        //String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued()))));
         event.getChannel().sendMessage(embed.build()).queue();
     }
 }

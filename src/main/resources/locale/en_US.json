@@ -46,5 +46,7 @@
   "tcsdisallowalready":"Commands are already not allowed on `{1}`",
   "tcsdisallow":"Commands are now not allowed on `{1}`",
   "setserverlocaletext": "Please select a language for `{1}`",
-  "setuserlocaletext": "Please select a language, `{1}`"
+  "setuserlocaletext": "Please select a language, `{1}`",
+  "singleinstance": "Single Instance",
+  "queuedshards": "({1} Queued)"
 }

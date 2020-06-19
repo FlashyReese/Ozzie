@@ -23,6 +23,7 @@ import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.schemas.PluginSchema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,10 +38,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 public class PluginLoader {
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
     private static final Logger log = LogManager.getLogger(PluginLoader.class);
 
     final ArrayList<PluginModule> pluginsRaw = new ArrayList<PluginModule>();
@@ -66,9 +68,12 @@ public class PluginLoader {
         final JarEntry je = jf.getJarEntry("ozzie.plugin.json");
         if(je != null) {
             final BufferedReader br = new BufferedReader(new InputStreamReader(jf.getInputStream(je), StandardCharsets.UTF_8));
-            PluginSchema pluginSchema = new Gson().fromJson(br, new TypeToken<PluginSchema>(){}.getType());//Saved for future lang references v:
+            JSONObject jsonObject = new JSONObject(br.lines().collect(Collectors.joining()));
             br.close();
-            if(pluginSchema.getSchemaVersion() == SCHEMA_VERSION){
+            int pluginSchemaVersion = jsonObject.getInt("schemaVersion");
+            String pluginName = jsonObject.getString("name");
+            if(pluginSchemaVersion == SCHEMA_VERSION){
+                PluginSchema pluginSchema = new Gson().fromJson(jsonObject.toString(), new TypeToken<PluginSchema>(){}.getType());
                 Class<?> c = Class.forName(pluginSchema.getEntrypoint(), true, new URLClassLoader(new URL[]{dir.toURI().toURL()}));
                 addPlugin(pluginSchema, c);
                 if(getOzzie().getI18nManager().getPluginLocalizationControl().containsKey(pluginSchema.getId())){
@@ -81,7 +86,8 @@ public class PluginLoader {
                 loadLocale(jf, pluginSchema);
                 getOzzie().getI18nManager().updateSavedSettings();
             }else{
-                log.warn("{}: Incompatible schema version: {} current version: {} ", pluginSchema.getName(), pluginSchema.getSchemaVersion(), SCHEMA_VERSION);
+                log.warn("{}: Incompatible schema version: {} current schema version: {}", pluginName, pluginSchemaVersion, SCHEMA_VERSION);
+                log.info("Please update your client if plugin schema version is higher than current schema version!!!");
             }
         }
         jf.close();

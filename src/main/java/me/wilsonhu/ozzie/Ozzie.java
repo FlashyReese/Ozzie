@@ -17,6 +17,7 @@
 package me.wilsonhu.ozzie;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import me.wilsonhu.ozzie.core.command.CommandManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.core.i18n.I18nManager;
@@ -29,6 +30,7 @@ import me.wilsonhu.ozzie.handlers.PrimaryListener;
 import me.wilsonhu.ozzie.parameters.DisablePlugins;
 import me.wilsonhu.ozzie.utilities.ActivityHelper;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.logging.log4j.LogManager;
@@ -125,7 +127,9 @@ public class Ozzie {
                     bufferedReader.close();
                 }
                 shardManagerBuilder = DefaultShardManagerBuilder.createDefault(getTokenManager().getToken("discord"));
+                shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING);//DefaultShardManagerBuilder.createDefault(, GatewayIntent.ALL_INTENTS);
                 shardManagerBuilder.setAutoReconnect(true);
+                shardManagerBuilder.setAudioSendFactory(new NativeAudioSendFactory());
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
@@ -217,9 +221,9 @@ public class Ozzie {
     public void stop() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
         if(isRunning()){
             log.info("Stopping client...");
-            this.setRunning(false);
             unloadPlugins();
             this.getShardManager().shutdown();
+            this.setRunning(false);
             shardManager = null;
             log.info("Client stopped!");
         }else{

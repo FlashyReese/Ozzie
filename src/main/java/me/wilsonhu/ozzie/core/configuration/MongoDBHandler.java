@@ -55,7 +55,7 @@ public class MongoDBHandler {
     private MongoClient mongoClient;
     private Ozzie ozzie;
 
-    public MongoDBHandler(Ozzie ozzie){
+    public MongoDBHandler(Ozzie ozzie){//Todo: Build this better with graphql and proper "non-query"
         log.info("Building MongoDB Handler...");
         setOzzie(ozzie);
         ClassModel<UserSchema> userSchemaClassModelClassModel = ClassModel.builder(UserSchema.class).enableDiscriminator(true).build();

@@ -24,7 +24,7 @@ public class PluginSchema {
     private String version;
     private String name;
     private String description;
-    private String[] authors;
+    private HashMap<String, String> authors;
     private HashMap<String, String> contact;
     private String entrypoint;
 
@@ -48,7 +48,7 @@ public class PluginSchema {
         return description;
     }
 
-    public String[] getAuthors() {
+    public HashMap<String, String> getAuthors() {
         return authors;
     }
 

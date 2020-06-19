@@ -66,7 +66,8 @@ public class Plugins extends Command {
             }
             PluginModule pluginModule = ozzie.getPluginLoader().getConfiguredPlugins().get(linetrackn - 1);
             if(pluginModule == null) break;
-            line.append(String.format("%s. [%s %s](%s) by %s\n", linetrackn, pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion(), pluginModule.getSchema().getContact().get("homepage"), pluginModule.getSchema().getAuthors()[0]));
+            //Todo: Just fucked the line below after modifying plugin Schema xd it's for the greater good
+            //line.append(String.format("%s. [%s %s](%s) by %s\n", linetrackn, pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion(), pluginModule.getSchema().getContact().get("homepage"), pluginModule.getSchema().getAuthors()[0]));
             //line = line + linetrackn + ". [" + au.getInfo().title.trim() + "](" + au.getInfo().uri + ") - `" + getLength(au.getDuration()) + "` - Requested by **" + au.getDJ().getName() + "**\n";
             if(i >= 10)break;
             i++;
