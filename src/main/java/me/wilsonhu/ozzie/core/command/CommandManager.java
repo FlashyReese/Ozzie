@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CommandManager {//Fixme: Rewrite this due to mongo implementations I need something faster, and more optimized. Instead of non-returnable method of onCommand from Command.class, I do returnable json format like REST response to do stuff, will need to rewrite most of the plugins but just small changes
-
+    //Fixme: Due to using eventwaiter, I can't make it like a rest response but I can rewrite mongodb handler for faster access
     private static final Logger log = LogManager.getLogger(CommandManager.class);
     private ArrayList<Command> commands;
     private ArrayList<Command> pluginCommands;
@@ -65,6 +65,7 @@ public class CommandManager {//Fixme: Rewrite this due to mongo implementations 
                 new Help(),
                 new InstallPlugin(),
                 new Language(),
+                new Permission(),
                 new Ping(),
                 new Plugins(),
                 new Prefix(),

@@ -40,7 +40,7 @@
   "bydev":"By FlashyReese",
   "shard":"Shard",
   "aboutbot":"About {1}",
-  "aboutinfo":"Howdy, I am {1}, some call me Clara or Oswin. I'm currently being worked on :heart:. Born on 2019-09-17. Try using `{2}help` to start using my features! \n **[Add Me to A Server]({3})** !!",
+  "aboutinfo":"Howdy, I am {1}, some call me Clara or Oswin. I'm currently being worked on :heart:. I am an open source project if you would like to contribute, here is my [GitHub Repo](https://github.com/FlashyReese/Ozzie). Born on 2019-09-17. Try using `{2}help` to start using my features! \n **[Add Me to A Server]({3})** !!",
   "tcsallowalready":"Commands are already allowed on `{1}`",
   "tcsallow":"Commands are now allowed on `{1}`",
   "tcsdisallowalready":"Commands are already not allowed on `{1}`",

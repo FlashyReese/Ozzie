@@ -74,15 +74,14 @@ public class About extends Command {
                         "%d days, %02d hrs, %02d min",
                         days, hours % 24, minutes % 60
                 ), false)//Todo: Figure a way to mirage a custom datetime format per region using settings. orrrrr... using custom cron format
-                //.addField("Version", ozzie.getOzzieManager().getBotVersion().getVersion(), false)//Fixme: Build date
+                .addField("Version", ozzie.getClientVersion().toString(), false)
                 //.addBlankField(true)
                 .addField(new TranslatableText("ozzie.svs", event).toString(), ozzie.getShardManager().getGuilds().size() + "", true)
                 .addField(new TranslatableText("ozzie.vcs", event).toString(), ozzie.getShardManager().getVoiceChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
-                .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)///Todo: somewhat fucked
+                .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
                 .addField(new TranslatableText("ozzie.shard", event).toString(), String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued())))), true)
                 .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
-        //String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued()))));
         event.getChannel().sendMessage(embed.build()).queue();
     }
 }

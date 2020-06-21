@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
 import me.wilsonhu.ozzie.core.plugin.PluginLoader;
+import me.wilsonhu.ozzie.core.plugin.PluginModule;
 import me.wilsonhu.ozzie.schemas.PluginSchema;
 import me.wilsonhu.ozzie.utilities.ConfirmationMenu;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
@@ -46,7 +48,7 @@ public class InstallPlugin extends Command {
     private PluginSchema currentSchema;
     private static final Logger log = LogManager.getLogger(InstallPlugin.class);
 
-    public InstallPlugin() {//Todo: Rewrite for multi plugin installation, well web and desktop client doesn't support multi files altho mobile does watttt
+    public InstallPlugin() {
         super(new String[] {"installplugin", "installplugins"}, "Installs plugins via direct upload or URL", "%s\n%s <URL>");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
@@ -71,10 +73,16 @@ public class InstallPlugin extends Command {
                     br.close();
                     int pluginSchemaVersion = jsonObject.getInt("schemaVersion");
                     jf.close();
-                    if (pluginSchemaVersion == PluginLoader.SCHEMA_VERSION) {//Todo: semantic versioning
+                    if (pluginSchemaVersion == PluginLoader.SCHEMA_VERSION) {
                         PluginSchema pluginSchema = new Gson().fromJson(jsonObject.toString(), new TypeToken<PluginSchema>(){}.getType());
                         isValid = true;
                         currentSchema = pluginSchema;
+                        //Todo: semantic versioning checking for installed plugins when installing updated plugins
+                        for(PluginModule pluginModule : ozzie.getPluginLoader().getConfiguredPlugins()){
+                            if(pluginModule.getSchema().getId().equalsIgnoreCase(pluginSchema.getId())){
+                                
+                            }
+                        }
                         boolean success = newFile.delete();
                         if (!success) {
                             event.getChannel().sendMessage("Something went wrong :'(").queue();
@@ -91,6 +99,8 @@ public class InstallPlugin extends Command {
                 stringBuilder.append(String.format("%s `%s`", attachment.getFileName(), "Unsupported File Type"));
             }
             if (isValid) {
+
+
                 EmbedBuilder embedBuilder = new EmbedBuilder()
                         .setColor(Color.orange)
                         .setTitle("Plugin Info")
@@ -100,8 +110,26 @@ public class InstallPlugin extends Command {
                         .addField("Name", currentSchema.getName(), true)
                         .addField("Version", currentSchema.getVersion(), true)
                         .addField("Description", currentSchema.getDescription(), false)
-                        .addField("Contact", "", true)
+
                         .setFooter("Continue with installation?");
+                if(currentSchema.getContact().size() > 0){
+                    StringBuilder contactString = new StringBuilder();
+                    for (Map.Entry<String, String> entry: currentSchema.getContact().entrySet()){
+                        contactString.append(String.format("[%s](%s) ", entry.getKey(), entry.getValue()));
+                    }
+                    embedBuilder.addField("Contact", contactString.toString(), true);
+                }
+                if(currentSchema.getAuthors().size() > 0){
+                    StringBuilder authorsString = new StringBuilder();
+                    for (Map.Entry<String, String> entry: currentSchema.getAuthors().entrySet()){
+                        authorsString.append(String.format("[%s](%s) ", entry.getKey(), entry.getValue()));
+                    }
+                    if(currentSchema.getAuthors().size() > 1){
+                        embedBuilder.addField("Authors", authorsString.toString(), false);
+                    }else{
+                        embedBuilder.addField("Author", authorsString.toString(), false);
+                    }
+                }
                 ConfirmationMenu.Builder builder = new ConfirmationMenu.Builder();
                 builder.allowTextInput(true)
                         .useCustomEmbed(true)

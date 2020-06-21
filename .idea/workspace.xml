@@ -7,6 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="317c7c98-4b42-49e7-95bb-365ed9f3e3a9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_vdurmont_semver4j_3_1_0.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -18,27 +19,28 @@
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jagrosh_jda_utilities_commons_3_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jagrosh_jda_utilities_menu_3_0_32.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_sedmelluq_lavaplayer_1_3_48.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__net_dv8tion_JDA_4_1_1_153.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_jagrosh_jda_utilities_menu_3_0_3.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Ozzie.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/me.wilsonhu.Ozzie.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/Ozzie-20.06.18-all.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/Ozzie-20.06.18-all.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/resources/main/locale/en_US.json" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/locale/en_US.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locale/en_US/ozzie.json" beforeDir="false" afterPath="$PROJECT_DIR$/locale/en_US/ozzie.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/locale/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/locale/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/ozzie-weather.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/Application.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/Ozzie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/Ozzie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/About.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/About.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/InstallPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/InstallPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Plugins.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Plugins.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/MongoDBHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/MongoDBHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/plugin/PluginLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/plugin/PluginLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/PluginSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/schemas/PluginSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Language.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Language.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Reload.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Reload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Restart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Restart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Shutdown.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/commands/Shutdown.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/command/CommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/configuration/ConfigurationManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/i18n/I18nManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/core/i18n/I18nManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/handlers/PrimaryListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/wilsonhu/ozzie/handlers/PrimaryListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/locale/en_US.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/locale/en_US.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,6 +98,7 @@
       <list>
         <option value="Enum" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -122,6 +125,11 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="me.wilsonhu.ozzie.core.command" />
+    </key>
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
@@ -264,7 +272,12 @@
       <workItem from="1592459855616" duration="766000" />
       <workItem from="1592460950833" duration="3648000" />
       <workItem from="1592504516982" duration="3420000" />
-      <workItem from="1592537679628" duration="11381000" />
+      <workItem from="1592537679628" duration="12843000" />
+      <workItem from="1592554786332" duration="3858000" />
+      <workItem from="1592601290160" duration="599000" />
+      <workItem from="1592612788759" duration="1181000" />
+      <workItem from="1592622208258" duration="7689000" />
+      <workItem from="1592771952345" duration="4774000" />
     </task>
     <servers />
   </component>
@@ -280,14 +293,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589968815678" />
-    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser" timestamp="1592539204141">
+    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser" timestamp="1592589073833">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1592539204141" />
-    <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1592507761454">
+    <state x="730" y="221" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1592589073833" />
+    <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1592600676421">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592507761454" />
+    <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1592600676421" />
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1590130399704">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -296,22 +309,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1587963525472" />
-    <state width="938" height="219" key="GridCell.Tab.0.bottom" timestamp="1592548196443">
+    <state width="1876" height="219" key="GridCell.Tab.0.bottom" timestamp="1592775403603">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="219" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1592548196443" />
-    <state width="938" height="219" key="GridCell.Tab.0.center" timestamp="1592548196443">
+    <state width="1876" height="219" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1592775403603" />
+    <state width="1876" height="219" key="GridCell.Tab.0.center" timestamp="1592775403603">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="219" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1592548196443" />
-    <state width="938" height="219" key="GridCell.Tab.0.left" timestamp="1592548196443">
+    <state width="1876" height="219" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1592775403603" />
+    <state width="1876" height="219" key="GridCell.Tab.0.left" timestamp="1592775403603">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="219" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1592548196443" />
-    <state width="938" height="219" key="GridCell.Tab.0.right" timestamp="1592548196443">
+    <state width="1876" height="219" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1592775403603" />
+    <state width="1876" height="219" key="GridCell.Tab.0.right" timestamp="1592775403603">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="938" height="219" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1592548196443" />
+    <state width="1876" height="219" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1592775403603" />
     <state width="1876" height="280" key="GridCell.Tab.1.bottom" timestamp="1592464600474">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -340,10 +353,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1589969884740" />
-    <state x="1068" y="229" width="672" height="678" key="search.everywhere.popup" timestamp="1583911609655">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1592775031162">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1068" y="229" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1583911609655" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1592775031162" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

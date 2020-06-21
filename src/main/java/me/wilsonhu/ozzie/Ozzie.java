@@ -18,6 +18,7 @@ package me.wilsonhu.ozzie;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
+import com.vdurmont.semver4j.Semver;
 import me.wilsonhu.ozzie.core.command.CommandManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.core.i18n.I18nManager;
@@ -35,6 +36,7 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
@@ -42,6 +44,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.stream.Collectors;
+
 /**
  * Used to start new instances of {@link net.dv8tion.jda.api.JDA JDA}.
  *
@@ -74,6 +79,8 @@ public class Ozzie {
     private EventWaiter eventWaiter;
     private static Ozzie ozzie;
 
+    private final Semver CLIENT_VERSION = new Semver("0.5.0-SNAPSHOT+build-20202006",Semver.SemverType.STRICT);
+
     /**
      * Creates a Ozzie with the given parameters.
      * <br>This is the default constructor for Ozzie.
@@ -83,9 +90,11 @@ public class Ozzie {
      * @throws Exception
      */
     public Ozzie(String[] args) throws Exception {
+        this.checkForUpdates();
         log.info("Building client...");
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
         this.setDirectory(new File(System.getProperty("user.dir")));
+        //Todo: YAML Settings
         this.getParameterManager().runParameters(args, this);
         this.setBotName("Ozzie");
         this.setRunning(false);
@@ -127,13 +136,13 @@ public class Ozzie {
                     bufferedReader.close();
                 }
                 shardManagerBuilder = DefaultShardManagerBuilder.createDefault(getTokenManager().getToken("discord"));
-                shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING);//DefaultShardManagerBuilder.createDefault(, GatewayIntent.ALL_INTENTS);
+                shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING);
                 shardManagerBuilder.setAutoReconnect(true);
                 shardManagerBuilder.setAudioSendFactory(new NativeAudioSendFactory());
                 shardManager = shardManagerBuilder.build();
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
-                getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
+                getShardManager().setActivity(/*Activity.streaming("Just Chatting","https://twitch.tv/theflashyreese"));*/Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
                 if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
                     log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
                 }else{
@@ -248,10 +257,32 @@ public class Ozzie {
         if (isRunning()){
             log.info("Restarting client...");
             this.stop();
+            this.setEventWaiter(new EventWaiter());
             this.start();
             log.info("Client restarted!");
         }else{
             log.warn("Client not running!");
+        }
+    }
+
+    /**
+     * Checks for updates with a url provided from the repository.
+     *
+     * @throws IOException
+     */
+    public void checkForUpdates() throws IOException{
+        log.info("Checking for updates...");
+        URL url = new URL("https://raw.githubusercontent.com/FlashyReese/Ozzie/master/update/latest.json");
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        String json = in.lines().collect(Collectors.joining());
+        in.close();
+        JSONObject jsonObject = new JSONObject(json);
+        Semver latest = new Semver(jsonObject.getString("latest"), Semver.SemverType.STRICT);
+        if(getClientVersion().isLowerThan(latest)){
+            log.warn("*** Error, this build is outdated ***");
+            log.warn("*** Please download a new build from https://github.com/FlashyReese/Ozzie/releases ***");
+        }else{
+            log.info("Up to date!");
         }
     }
 
@@ -344,5 +375,9 @@ public class Ozzie {
 
     private static void setOzzie(Ozzie ozzie){
         Ozzie.ozzie = ozzie;
+    }
+
+    public Semver getClientVersion(){
+        return CLIENT_VERSION;
     }
 }

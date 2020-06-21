@@ -65,16 +65,9 @@ public class ConfigurationManager {
         return getMongoDBHandler().retrieveServerUserPermission(serverId, userId).getPermissions();
     }
 
-    public void updateUserPermissions(long serverId, long userId, String[] permissions){
+    public void updateUserPermissions(long serverId, long userId, ArrayList<String> permissions){
         ServerUserPermissionSchema serverUserPermissionSchema = new ServerUserPermissionSchema(serverId, userId);
-        for(String perm: permissions){
-            if(!serverUserPermissionSchema.getPermissions().contains(perm)){
-                serverUserPermissionSchema.getPermissions().add(perm);
-            }
-        }
-        for(String perms: serverUserPermissionSchema.getPermissions()){
-            System.out.println(perms);
-        }
+        serverUserPermissionSchema.setPermissions(permissions);
         getMongoDBHandler().updateServerUserPermission(serverUserPermissionSchema);
     }
 

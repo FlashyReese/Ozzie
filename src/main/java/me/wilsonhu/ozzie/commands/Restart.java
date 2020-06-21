@@ -16,18 +16,12 @@
  */
 package me.wilsonhu.ozzie.commands;
 
-import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.command.Command;
 import me.wilsonhu.ozzie.core.command.CommandType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 
 public class Restart extends Command {
 
@@ -44,6 +38,7 @@ public class Restart extends Command {
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         event.getChannel().sendMessage("Restarting").queue();
         ozzie.restart();//Fixme: Doesn't take in params v: temporal built in fix behaves weird on Linux Systemctl service
+        // Use Heavy restart creating new instance on top of ozzie
         /*if(args.length != 0) {
             StringBuilder programArguments = new StringBuilder();
             for(int i = 1; i < args.length; i++){
@@ -73,7 +68,7 @@ public class Restart extends Command {
         }
     }*/
 
-    public void restartApplication(String args, Ozzie ozzie) throws IOException, URISyntaxException{
+    /*public void restartApplication(String args, Ozzie ozzie) throws IOException, URISyntaxException{
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 File currentJar = null;
@@ -113,5 +108,5 @@ public class Restart extends Command {
             }
         });
         System.exit(0);
-    }
+    }*/
 }

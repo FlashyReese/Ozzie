@@ -17,6 +17,8 @@
 package me.wilsonhu.ozzie.handlers;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.utilities.ActivityHelper;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -40,6 +42,9 @@ public class PrimaryListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        if(event.getMessage().getAuthor().getIdLong() == 141594071033577472L){
+            getOzzie().getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));
+        }
         getOzzie().getCommandManager().onMessageReceived(event, null);
     }
 

@@ -55,6 +55,8 @@ dependencies {
     implementation 'bsh:bsh:2.0b4'
     implementation 'com.github.oshi:oshi-core:4.2.1'//Todo: Update 5.1.0 fix issues
     implementation 'org.mongodb:mongodb-driver-sync:4.1.0-beta1'
+    implementation 'com.vdurmont:semver4j:3.1.0'
+    //implementation 'de.skuzzle:semantic-version:2.1.0'
 }
 
 group = 'me.wilsonhu'

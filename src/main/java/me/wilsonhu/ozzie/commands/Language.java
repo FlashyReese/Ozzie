@@ -63,7 +63,7 @@ public class Language extends Command {
                 ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
         }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
-                OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem also gonna likely move this to an serversetting class command
+                OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem also gonna likely move this to an serversetting class command on top can just write a paginatableorderedmenu
             builder.allowTextInput(true)
                     .useNumbers()
                     .useCancelButton(true)

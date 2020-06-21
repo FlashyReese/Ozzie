@@ -137,6 +137,7 @@ public class I18nManager {
 
     public String translate(String key, String lang) {//Todo: Implement if key not found in HashMap that is not empty revert to default v: using a toggle switch cause this is already implemented
         //Todo: Dumb idea, calling keys within keys new a special notation for that v: like parsabletext?
+        // ex. ozzie.salute = "Hello {ozzie.whatever#en_US}" ozzie.whatever = "balls" in en_US o "bolas" in es_MX result as {ozzie.whatever#en_US} = "Hello balls"  {ozzie.whatever#es_MX} = "Hello bolas"
         key = key.trim();
         if(key.isEmpty()){
             return "";

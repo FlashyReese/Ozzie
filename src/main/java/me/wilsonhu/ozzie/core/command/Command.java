@@ -24,7 +24,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -49,10 +48,6 @@ public abstract class Command {
     }
 
     public abstract void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception;
-
-    public void onCommand(String full, String split, PrintWriter writer, Ozzie ozzie) throws Exception{
-
-    }
 
     public MessageEmbed getHelpEmblem(MessageReceivedEvent event) {
         EmbedBuilder embed = new EmbedBuilder()
