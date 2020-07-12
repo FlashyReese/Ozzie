@@ -22,13 +22,13 @@ import com.vdurmont.semver4j.Semver;
 import me.wilsonhu.ozzie.core.command.CommandManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.core.i18n.I18nManager;
-import me.wilsonhu.ozzie.core.parameter.ParameterManager;
+import me.wilsonhu.ozzie.core.runtimeoption.RuntimeOptionManager;
 import me.wilsonhu.ozzie.core.plugin.Plugin;
 import me.wilsonhu.ozzie.core.plugin.PluginLoader;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
 import me.wilsonhu.ozzie.core.token.TokenManager;
 import me.wilsonhu.ozzie.handlers.PrimaryListener;
-import me.wilsonhu.ozzie.parameters.DisablePlugins;
+import me.wilsonhu.ozzie.runtimeoptions.DisablePlugins;
 import me.wilsonhu.ozzie.utilities.ActivityHelper;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -68,7 +68,7 @@ public class Ozzie {
     private String operatingSystemName;
     private File directory;
 
-    private ParameterManager parameterManager;
+    private RuntimeOptionManager runtimeOptionManager;
     private TokenManager tokenManager;
     private ConfigurationManager configurationManager;
     private PluginLoader pluginLoader;
@@ -79,15 +79,14 @@ public class Ozzie {
     private EventWaiter eventWaiter;
     private static Ozzie ozzie;
 
-    private final Semver CLIENT_VERSION = new Semver("0.5.0-SNAPSHOT+build-20202006",Semver.SemverType.STRICT);
+    private final Semver CLIENT_VERSION = new Semver("0.5.1-SNAPSHOT+build-20201207",Semver.SemverType.STRICT);
 
     /**
      * Creates a Ozzie with the given parameters.
      * <br>This is the default constructor for Ozzie.
      *
-     * @param args
-     *        Ozzie parameters
-     * @throws Exception
+     * @param args Ozzie parameters
+     * @throws Exception If an error occur while performing a parameter method.
      */
     public Ozzie(String[] args) throws Exception {
         this.checkForUpdates();
@@ -95,7 +94,8 @@ public class Ozzie {
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
         this.setDirectory(new File(System.getProperty("user.dir")));
         //Todo: YAML Settings
-        this.getParameterManager().runParameters(args, this);
+        //this.getConfigurationManager().loadClientConfiguration();
+        this.getRuntimeOptionManager().initRuntimeOptions(args, this);
         this.setBotName("Ozzie");
         this.setRunning(false);
         this.setDefaultCommandPrefix("-");
@@ -143,7 +143,7 @@ public class Ozzie {
                 getShardManager().addEventListener(new PrimaryListener(this));
                 getShardManager().addEventListener(getEventWaiter());
                 getShardManager().setActivity(/*Activity.streaming("Just Chatting","https://twitch.tv/theflashyreese"));*/Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
-                if(((DisablePlugins)getParameterManager().getParameter(DisablePlugins.class)).isPluginsDisabled()){
+                if(((DisablePlugins) getRuntimeOptionManager().getRuntimeOption(DisablePlugins.class)).isPluginsDisabled()){
                     log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
                 }else{
                     loadPlugins();
@@ -339,9 +339,9 @@ public class Ozzie {
     }
 
 
-    public ParameterManager getParameterManager() {
-        if(parameterManager == null) parameterManager = new ParameterManager();
-        return parameterManager;
+    public RuntimeOptionManager getRuntimeOptionManager() {
+        if(runtimeOptionManager == null) runtimeOptionManager = new RuntimeOptionManager();
+        return runtimeOptionManager;
     }
 
     public TokenManager getTokenManager() {

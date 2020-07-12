@@ -16,7 +16,11 @@
  */
 package me.wilsonhu.ozzie.core.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
 import me.wilsonhu.ozzie.schemas.ServerUserPermissionSchema;
@@ -26,8 +30,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class ConfigurationManager {
 
@@ -36,6 +47,7 @@ public class ConfigurationManager {
     private static final String SETTINGS_FOLDER = "settings";
     private static final String PLUGINS_SETTINGS_FOLDER = SETTINGS_FOLDER + File.separator + "plugins";
 
+    private ClientConfiguration clientConfiguration;
     private Ozzie ozzie;
     private MongoDBHandler mongoDBHandler;
 
@@ -43,6 +55,55 @@ public class ConfigurationManager {
         log.info("Building Configuration Manager...");
         setOzzie(ozzie);
         log.info("Configuration Manager built!");
+    }
+
+
+    public void loadClientConfiguration() throws IOException, URISyntaxException {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        File clientConfigurationFile = new File("OzzieClientConfiguration.yml");
+        if(clientConfigurationFile.exists()){
+            ClientConfiguration config = objectMapper.readValue(clientConfigurationFile, ClientConfiguration.class);
+            this.setClientConfiguration(config);
+        }else{
+            final String path = "config";
+            final File jarFile = new File(Application.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            if(jarFile.getAbsolutePath().endsWith(".jar")) {
+                final JarFile jar = new JarFile(jarFile);
+                final Enumeration<JarEntry> entries = jar.entries();
+                while(entries.hasMoreElements()) {
+                    final JarEntry entry = entries.nextElement();
+                    final String name = entry.getName();
+                    if (name.startsWith(path + "/") && name.endsWith(".yml")) {
+                        HashMap<String, String> locale = new Gson().fromJson(new BufferedReader(new InputStreamReader(jar.getInputStream(entry), StandardCharsets.UTF_8)), new TypeToken<HashMap<String, String>>(){}.getType());
+                        String localeName = name.replaceAll("locale/", "").replaceAll(".json", "");
+                        getOzzie().getConfigurationManager().writeJson(ConfigurationManager.LOCALE_FOLDER + File.separator + localeName, "ozzie", locale);
+                    }
+                }
+                jar.close();
+            } else {
+                final URL url = Application.class.getResource("/" + path);
+                if (url != null) {
+                    try {
+                        final File apps = new File(url.toURI());
+                        for (File app : Objects.requireNonNull(apps.listFiles())) {
+                            String lang = app.getName().replaceAll(".json", "");
+                            HashMap<String, String> locale = new Gson().fromJson(new BufferedReader(new InputStreamReader(new FileInputStream(app), StandardCharsets.UTF_8)), new TypeToken<HashMap<String, String>>(){}.getType());
+                            getOzzie().getConfigurationManager().writeJson(ConfigurationManager.LOCALE_FOLDER + File.separator + lang, "ozzie", locale);
+                        }
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public ClientConfiguration getClientConfiguration(){
+        return clientConfiguration;
+    }
+
+    public void setClientConfiguration(ClientConfiguration clientConfiguration){
+        this.clientConfiguration = clientConfiguration;
     }
 
     public ServerSchema getServerSettings(long id){

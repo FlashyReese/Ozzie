@@ -37,6 +37,7 @@
   "leaddev":"Lead Developer",
   "codev":"Co-Developer",
   "uptime":"Uptime",
+  "uptimeformat": "%d days, %02d hrs, %02d min",
   "bydev":"By FlashyReese",
   "shard":"Shard",
   "aboutbot":"About {1}",

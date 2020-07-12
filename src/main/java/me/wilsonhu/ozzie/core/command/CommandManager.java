@@ -60,7 +60,6 @@ public class CommandManager {//Fixme: Rewrite this due to mongo implementations 
                 new About(),
                 new Channel(),
                 new Clara(),
-                new EasterEgg(),
                 new Evaluate(),
                 new Help(),
                 new InstallPlugin(),
@@ -84,7 +83,7 @@ public class CommandManager {//Fixme: Rewrite this due to mongo implementations 
         if(full == null || full.isEmpty()){
             full = event.getMessage().getContentRaw();
         }
-        full = full.trim();
+        full = full.replaceAll("\\s{2,}", " ").trim();//Trim ends and replace all more than 2 spaces with single space
         try{
             if(event.getChannelType().isGuild()){
                 ServerSchema serverSchema = getOzzie().getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
@@ -106,7 +105,6 @@ public class CommandManager {//Fixme: Rewrite this due to mongo implementations 
             if(event.getMessage().getContentRaw().startsWith(customCommandPrefix)){
                 full = full.substring(customCommandPrefix.length());
             }
-            full = full.trim();
             String[] s;
             if (full.contains(" ")) {
                 String[] args = new String[full.split(" ").length-1];

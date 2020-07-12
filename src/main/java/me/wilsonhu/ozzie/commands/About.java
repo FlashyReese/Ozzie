@@ -41,7 +41,7 @@ public class About extends Command {
     public void onCommand(String full, String[] split, MessageReceivedEvent event, Ozzie ozzie) throws Exception  {
         long users = 0;
         for(Guild guild: event.getJDA().getGuildCache()){
-            guild.retrieveMembers();
+            guild.loadMembers();
             for(Member member: guild.getMemberCache()){
                 if(member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE) || member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)){
                     users+=1;
@@ -71,7 +71,7 @@ public class About extends Command {
                 .addField(new TranslatableText("ozzie.codev", event).toString(), codev, true)
                 //.addBlankField(true)
                 .addField(new TranslatableText("ozzie.uptime", event).toString(), String.format(
-                        "%d days, %02d hrs, %02d min",
+                        new TranslatableText("ozzie.uptimeformat", event).toString(),
                         days, hours % 24, minutes % 60
                 ), false)//Todo: Figure a way to mirage a custom datetime format per region using settings. orrrrr... using custom cron format
                 .addField("Version", ozzie.getClientVersion().toString(), false)

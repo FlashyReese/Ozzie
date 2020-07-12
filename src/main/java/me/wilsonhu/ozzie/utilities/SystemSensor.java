@@ -1,18 +1,25 @@
-/*
- * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+/**
+ * MIT License
  *
- * Ozzie is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * Ozzie is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Copyright (c) 2010 - 2020 The OSHI Project Contributors: https://github.com/oshi/oshi/graphs/contributors
  *
- * You should have received a copy of the GNU General Public License
- * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package me.wilsonhu.ozzie.utilities;
 
@@ -29,13 +36,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * A demonstration of access to many of OSHI's capabilities
  */
 public class SystemSensor {
 
-    private List<String> oshi = new ArrayList<>();
+    static List<String> oshi = new ArrayList<>();
+
 
     public List<String> getSystemInfo() {
         SystemInfo si = new SystemInfo();
@@ -54,45 +61,49 @@ public class SystemSensor {
         printFileSystem(os.getFileSystem());
         printNetworkInterfaces(hal.getNetworkIFs());
         printNetworkParameters(os.getNetworkParams());
+        printInternetProtocolStats(os.getInternetProtocolStats());
         printDisplays(hal.getDisplays());
         printUsbDevices(hal.getUsbDevices(true));
-
-        //printSoundCards(hal.getSoundCards());
-
+        printSoundCards(hal.getSoundCards());
+        printGraphicsCards(hal.getGraphicsCards());
         return oshi;
     }
 
-    private void printOperatingSystem(final OperatingSystem os) {
+    private static void printOperatingSystem(final OperatingSystem os) {
         oshi.add(String.valueOf(os));
         oshi.add("Booted: " + Instant.ofEpochSecond(os.getSystemBootTime()));
         oshi.add("Uptime: " + FormatUtil.formatElapsedSecs(os.getSystemUptime()));
         oshi.add("Running with" + (os.isElevated() ? "" : "out") + " elevated permissions.");
+        oshi.add("Sessions:");
+        for (OSSession s : os.getSessions()) {
+            oshi.add(" " + s.toString());
+        }
     }
 
-    private void printComputerSystem(final ComputerSystem computerSystem) {
-        oshi.add("system: " + computerSystem.toString());
-        oshi.add(" firmware: " + computerSystem.getFirmware().toString());
-        oshi.add(" baseboard: " + computerSystem.getBaseboard().toString());
+    private static void printComputerSystem(final ComputerSystem computerSystem) {
+        oshi.add("System: " + computerSystem.toString());
+        oshi.add(" Firmware: " + computerSystem.getFirmware().toString());
+        oshi.add(" Baseboard: " + computerSystem.getBaseboard().toString());
     }
 
-    private void printProcessor(CentralProcessor processor) {
+    private static void printProcessor(CentralProcessor processor) {
         oshi.add(processor.toString());
     }
 
-    private void printMemory(GlobalMemory memory) {
-        oshi.add("Memory: \n " + memory.toString());
+    private static void printMemory(GlobalMemory memory) {
+        oshi.add("Physical Memory: \n " + memory.toString());
         VirtualMemory vm = memory.getVirtualMemory();
-        oshi.add("Swap: \n " + vm.toString());
-        PhysicalMemory[] pmArray = memory.getPhysicalMemory();
-        if (pmArray.length > 0) {
+        oshi.add("Virtual Memory: \n " + vm.toString());
+        List<PhysicalMemory> pmList = memory.getPhysicalMemory();
+        if (!pmList.isEmpty()) {
             oshi.add("Physical Memory: ");
-            for (PhysicalMemory pm : pmArray) {
+            for (PhysicalMemory pm : pmList) {
                 oshi.add(" " + pm.toString());
             }
         }
     }
 
-    private void printCpu(CentralProcessor processor) {
+    private static void printCpu(CentralProcessor processor) {
         oshi.add("Context Switches/Interrupts: " + processor.getContextSwitches() + " / " + processor.getInterrupts());
 
         long[] prevTicks = processor.getSystemCpuLoadTicks();
@@ -149,13 +160,13 @@ public class SystemSensor {
         }
     }
 
-    private void printProcesses(OperatingSystem os, GlobalMemory memory) {
-        oshi.add("My PID: " + os.getProcessId() + " with affinity "
-                + Long.toBinaryString(os.getProcessAffinityMask(os.getProcessId())));
+    private static void printProcesses(OperatingSystem os, GlobalMemory memory) {
+        OSProcess myProc = os.getProcess(os.getProcessId());
+        oshi.add(
+                "My PID: " + myProc.getProcessID() + " with affinity " + Long.toBinaryString(myProc.getAffinityMask()));
         oshi.add("Processes: " + os.getProcessCount() + ", Threads: " + os.getThreadCount());
         // Sort by highest CPU
-        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, ProcessSort.CPU));
-
+        List<OSProcess> procs = os.getProcesses(5, ProcessSort.CPU);
         oshi.add("   PID  %CPU %MEM       VSZ       RSS Name");
         for (int i = 0; i < procs.size() && i < 5; i++) {
             OSProcess p = procs.get(i);
@@ -166,7 +177,7 @@ public class SystemSensor {
         }
     }
 
-    private void printServices(OperatingSystem os) {
+    private static void printServices(OperatingSystem os) {
         oshi.add("Services: ");
         oshi.add("   PID   State   Name");
         // DO 5 each of running and stopped
@@ -184,27 +195,27 @@ public class SystemSensor {
         }
     }
 
-    private void printSensors(Sensors sensors) {
+    private static void printSensors(Sensors sensors) {
         oshi.add("Sensors: " + sensors.toString());
     }
 
-    private void printPowerSources(PowerSource[] powerSources) {
+    private static void printPowerSources(List<PowerSource> list) {
         StringBuilder sb = new StringBuilder("Power Sources: ");
-        if (powerSources.length == 0) {
+        if (list.isEmpty()) {
             sb.append("Unknown");
         }
-        for (PowerSource powerSource : powerSources) {
+        for (PowerSource powerSource : list) {
             sb.append("\n ").append(powerSource.toString());
         }
         oshi.add(sb.toString());
     }
 
-    private void printDisks(HWDiskStore[] diskStores) {
+    private static void printDisks(List<HWDiskStore> list) {
         oshi.add("Disks:");
-        for (HWDiskStore disk : diskStores) {
+        for (HWDiskStore disk : list) {
             oshi.add(" " + disk.toString());
 
-            HWPartition[] partitions = disk.getPartitions();
+            List<HWPartition> partitions = disk.getPartitions();
             for (HWPartition part : partitions) {
                 oshi.add(" |-- " + part.toString());
             }
@@ -212,14 +223,13 @@ public class SystemSensor {
 
     }
 
-    private void printFileSystem(FileSystem fileSystem) {
+    private static void printFileSystem(FileSystem fileSystem) {
         oshi.add("File System:");
 
         oshi.add(String.format(" File Descriptors: %d/%d", fileSystem.getOpenFileDescriptors(),
                 fileSystem.getMaxFileDescriptors()));
 
-        OSFileStore[] fsArray = fileSystem.getFileStores();
-        for (OSFileStore fs : fsArray) {
+        for (OSFileStore fs : fileSystem.getFileStores()) {
             long usable = fs.getUsableSpace();
             long total = fs.getTotalSpace();
             oshi.add(String.format(
@@ -234,42 +244,62 @@ public class SystemSensor {
         }
     }
 
-    private void printNetworkInterfaces(NetworkIF[] networkIFs) {
+    private static void printNetworkInterfaces(List<NetworkIF> list) {
         StringBuilder sb = new StringBuilder("Network Interfaces:");
-        if (networkIFs.length == 0) {
+        if (list.isEmpty()) {
             sb.append(" Unknown");
-        }
-        for (NetworkIF net : networkIFs) {
-            sb.append("\n ").append(net.toString());
+        } else {
+            for (NetworkIF net : list) {
+                sb.append("\n ").append(net.toString());
+            }
         }
         oshi.add(sb.toString());
     }
 
-    private void printNetworkParameters(NetworkParams networkParams) {
+    private static void printNetworkParameters(NetworkParams networkParams) {
         oshi.add("Network parameters:\n " + networkParams.toString());
     }
 
-    private void printDisplays(Display[] displays) {
+    private static void printInternetProtocolStats(InternetProtocolStats ip) {
+        oshi.add("Internet Protocol statistics:");
+        oshi.add(" TCPv4: " + ip.getTCPv4Stats());
+        oshi.add(" TCPv6: " + ip.getTCPv6Stats());
+        oshi.add(" UDPv4: " + ip.getUDPv4Stats());
+        oshi.add(" UDPv6: " + ip.getUDPv6Stats());
+    }
+
+    private static void printDisplays(List<Display> list) {
         oshi.add("Displays:");
         int i = 0;
-        for (Display display : displays) {
+        for (Display display : list) {
             oshi.add(" Display " + i + ":");
             oshi.add(String.valueOf(display));
             i++;
         }
     }
 
-    private void printUsbDevices(UsbDevice[] usbDevices) {
+    private static void printUsbDevices(List<UsbDevice> list) {
         oshi.add("USB Devices:");
-        for (UsbDevice usbDevice : usbDevices) {
+        for (UsbDevice usbDevice : list) {
             oshi.add(String.valueOf(usbDevice));
         }
     }
 
-    private void printSoundCards(SoundCard[] cards) {
+    private static void printSoundCards(List<SoundCard> list) {
         oshi.add("Sound Cards:");
-        for (SoundCard card : cards) {
+        for (SoundCard card : list) {
             oshi.add(" " + String.valueOf(card));
+        }
+    }
+
+    private static void printGraphicsCards(List<GraphicsCard> list) {
+        oshi.add("Graphics Cards:");
+        if (list.isEmpty()) {
+            oshi.add(" None detected.");
+        } else {
+            for (GraphicsCard card : list) {
+                oshi.add(" " + String.valueOf(card));
+            }
         }
     }
 }

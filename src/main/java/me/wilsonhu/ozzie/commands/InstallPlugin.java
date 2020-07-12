@@ -80,7 +80,7 @@ public class InstallPlugin extends Command {
                         //Todo: semantic versioning checking for installed plugins when installing updated plugins
                         for(PluginModule pluginModule : ozzie.getPluginLoader().getConfiguredPlugins()){
                             if(pluginModule.getSchema().getId().equalsIgnoreCase(pluginSchema.getId())){
-                                
+
                             }
                         }
                         boolean success = newFile.delete();
@@ -156,7 +156,7 @@ public class InstallPlugin extends Command {
         if(newFile.exists()){
             boolean success = newFile.delete();
             if(!success){
-                event.getChannel().sendMessage("Something went wrong! :')").queue();//Todo: weirdly I can delete it but I can modify it I think
+                event.getChannel().sendMessage("Something went wrong! :')").queue();//Todo: weirdly I cant delete it but I can modify it I think
             }
         }
         CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(newFile);

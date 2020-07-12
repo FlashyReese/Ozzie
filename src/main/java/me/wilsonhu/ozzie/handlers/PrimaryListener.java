@@ -45,7 +45,10 @@ public class PrimaryListener extends ListenerAdapter {
         if(event.getMessage().getAuthor().getIdLong() == 141594071033577472L){
             getOzzie().getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));
         }
+        long start = System.nanoTime();
         getOzzie().getCommandManager().onMessageReceived(event, null);
+        long end = System.nanoTime();
+        System.out.println("Difference: " + Long.toString(end-start));
     }
 
     public Ozzie getOzzie(){

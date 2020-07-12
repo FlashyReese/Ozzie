@@ -32,16 +32,6 @@ public class SystemInformation extends Command {
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         SystemSensor ss = new SystemSensor();
-        /*EmbedBuilder embed = new EmbedBuilder();
-        embed.setAuthor(new ParsableText(new TranslatableText("ozzie.aboutbot", event), ozzie.getBotName()).toString(), "https://cutt.ly/Ozzie", event.getJDA().getSelfUser().getAvatarUrl());
-        embed.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
-        int count = 0;
-        for(String s: Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1000)){
-            if(count > 6000)break;
-            embed.addField(" ", "```markdown\n" + s + "```", false);
-            count += 1024;
-        }
-        event.getChannel().sendMessage(embed.build()).queue();*/
         for(String s: Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1900)){
             event.getChannel().sendMessage("```markdown\n" + s + "```").queue();
         }
