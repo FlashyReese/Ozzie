@@ -22,10 +22,10 @@ import com.vdurmont.semver4j.Semver;
 import me.wilsonhu.ozzie.core.command.CommandManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.core.i18n.I18nManager;
-import me.wilsonhu.ozzie.core.runtimeoption.RuntimeOptionManager;
 import me.wilsonhu.ozzie.core.plugin.Plugin;
 import me.wilsonhu.ozzie.core.plugin.PluginLoader;
 import me.wilsonhu.ozzie.core.plugin.PluginModule;
+import me.wilsonhu.ozzie.core.runtimeoption.RuntimeOptionManager;
 import me.wilsonhu.ozzie.core.token.TokenManager;
 import me.wilsonhu.ozzie.handlers.PrimaryListener;
 import me.wilsonhu.ozzie.runtimeoptions.DisablePlugins;
@@ -36,7 +36,7 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
@@ -272,12 +272,12 @@ public class Ozzie {
      */
     public void checkForUpdates() throws IOException{
         log.info("Checking for updates...");
-        URL url = new URL("https://raw.githubusercontent.com/FlashyReese/Ozzie/master/update/latest.json");
+        URL url = new URL("https://api.github.com/repos/FlashyReese/Ozzie/releases");
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         String json = in.lines().collect(Collectors.joining());
         in.close();
-        JSONObject jsonObject = new JSONObject(json);
-        Semver latest = new Semver(jsonObject.getString("latest"), Semver.SemverType.STRICT);
+        JSONArray jsonArray = new JSONArray(json);
+        Semver latest = new Semver(jsonArray.getJSONObject(0).getString("tag_name"), Semver.SemverType.STRICT);
         if(getClientVersion().isLowerThan(latest)){
             log.warn("*** Error, this build is outdated ***");
             log.warn("*** Please download a new build from https://github.com/FlashyReese/Ozzie/releases ***");

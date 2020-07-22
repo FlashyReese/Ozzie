@@ -14,7 +14,7 @@
  * along with Ozzie.  If not, see http://www.gnu.org/licenses/
  *
  */
-package me.wilsonhu.ozzie.core.configuration;
+package me.wilsonhu.ozzie.core.database.mongodb;
 
 import com.google.gson.Gson;
 import com.mongodb.ConnectionString;
@@ -44,8 +44,8 @@ import static com.mongodb.client.model.Updates.*;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public class MongoDBHandler {
-    private static Logger log = LogManager.getLogger(MongoDBHandler.class);
+public class MongoDBConnectionFactory {
+    private static Logger log = LogManager.getLogger(MongoDBConnectionFactory.class);
 
     private final String DATABASE = "ozzie";
     private final String USER_COLLECTION = "users";
@@ -55,7 +55,7 @@ public class MongoDBHandler {
     private MongoClient mongoClient;
     private Ozzie ozzie;
 
-    public MongoDBHandler(Ozzie ozzie){//Todo: Build this better with graphql and proper "non-query"
+    public MongoDBConnectionFactory(Ozzie ozzie){//Todo: Build this better with graphql and proper "non-query"
         log.info("Building MongoDB Handler...");
         setOzzie(ozzie);
         ClassModel<UserSchema> userSchemaClassModelClassModel = ClassModel.builder(UserSchema.class).enableDiscriminator(true).build();

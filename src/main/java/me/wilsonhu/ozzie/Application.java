@@ -49,7 +49,7 @@ public class Application {
                 }
             }
         });
-        //Todo: Add back fucking quotes, it's not Ozzie without her quotes qq, Laura Ily pls love me - Update: quotes added but find a way to schedule changes look at TodoList xd
+        //Todo: Add back fucking quotes - Update: quotes added but find a way to schedule changes look at TodoList xd
         //Todo: Start Documenting this shit
         //Todo: ~Get started on Vaadin WebApp(Maybe Laravel) so I can fully deploy this shit~ fuck this shit back to basics
         //Todo: ScheduledExecutorService

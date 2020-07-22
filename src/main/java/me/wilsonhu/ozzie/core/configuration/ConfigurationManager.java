@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.database.mongodb.MongoDBConnectionFactory;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
 import me.wilsonhu.ozzie.schemas.ServerUserPermissionSchema;
 import me.wilsonhu.ozzie.schemas.UserSchema;
@@ -49,7 +50,7 @@ public class ConfigurationManager {
 
     private ClientConfiguration clientConfiguration;
     private Ozzie ozzie;
-    private MongoDBHandler mongoDBHandler;
+    private MongoDBConnectionFactory mongoDBConnectionFactory;
 
     public ConfigurationManager(Ozzie ozzie){
         log.info("Building Configuration Manager...");
@@ -107,29 +108,29 @@ public class ConfigurationManager {
     }
 
     public ServerSchema getServerSettings(long id){
-        return getMongoDBHandler().retrieveServer(id);
+        return getMongoDBConnectionFactory().retrieveServer(id);
     }
 
     public void updateServerSettings(ServerSchema schema){
-        getMongoDBHandler().updateServer(schema);
+        getMongoDBConnectionFactory().updateServer(schema);
     }
 
     public UserSchema getUserSettings(long id){
-        return getMongoDBHandler().retrieveUser(id);
+        return getMongoDBConnectionFactory().retrieveUser(id);
     }
 
     public void updateUserSettings(UserSchema schema){
-        getMongoDBHandler().updateUser(schema);
+        getMongoDBConnectionFactory().updateUser(schema);
     }
 
     public ArrayList<String> getUserPermissions(long serverId, long userId){
-        return getMongoDBHandler().retrieveServerUserPermission(serverId, userId).getPermissions();
+        return getMongoDBConnectionFactory().retrieveServerUserPermission(serverId, userId).getPermissions();
     }
 
     public void updateUserPermissions(long serverId, long userId, ArrayList<String> permissions){
         ServerUserPermissionSchema serverUserPermissionSchema = new ServerUserPermissionSchema(serverId, userId);
         serverUserPermissionSchema.setPermissions(permissions);
-        getMongoDBHandler().updateServerUserPermission(serverUserPermissionSchema);
+        getMongoDBConnectionFactory().updateServerUserPermission(serverUserPermissionSchema);
     }
 
     public boolean hasPermission(long serverID, long userID, String permission) {
@@ -231,13 +232,13 @@ public class ConfigurationManager {
         return ozzie;
     }
 
-    public MongoDBHandler getMongoDBHandler() {
-        if (mongoDBHandler == null)setMongoDBHandler(new MongoDBHandler(getOzzie()));
-        return mongoDBHandler;
+    public MongoDBConnectionFactory getMongoDBConnectionFactory() {
+        if (mongoDBConnectionFactory == null) setMongoDBConnectionFactory(new MongoDBConnectionFactory(getOzzie()));
+        return mongoDBConnectionFactory;
     }
 
-    public void setMongoDBHandler(MongoDBHandler mongoDBHandler) {
-        this.mongoDBHandler = mongoDBHandler;
+    public void setMongoDBConnectionFactory(MongoDBConnectionFactory mongoDBConnectionFactory) {
+        this.mongoDBConnectionFactory = mongoDBConnectionFactory;
     }
 
 }

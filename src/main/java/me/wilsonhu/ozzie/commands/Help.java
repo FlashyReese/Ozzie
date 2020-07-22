@@ -38,7 +38,7 @@ public class Help extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        ServerUserPermissionSchema serverUserPermissionSchema = ozzie.getConfigurationManager().getMongoDBHandler().retrieveServerUserPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong());
+        ServerUserPermissionSchema serverUserPermissionSchema = ozzie.getConfigurationManager().getMongoDBConnectionFactory().retrieveServerUserPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong());
         ArrayList<Command> allCommands = new ArrayList<Command>();
         allCommands.addAll(ozzie.getCommandManager().getCommands());
         allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
