@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: Ozzie Gradle Jar File
-Implementation-Version: 20.02.26
-Main-Class: me.wilsonhu.ozzie.Application
-
