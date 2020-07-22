@@ -1,3 +1,4 @@
+![Project Logo](logo.png)
 # Ozzie
 A modular Discord bot made in Java with JDA.
  
