@@ -1,4 +1,6 @@
 ![Project Logo](logo.png)
+
+![Java CI with Gradle](https://github.com/FlashyReese/Ozzie/workflows/Java%20CI%20with%20Gradle/badge.svg)
 # Ozzie
 A modular Discord bot made in Java with JDA.
  
