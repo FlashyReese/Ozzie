@@ -42,19 +42,19 @@ public class Help extends Command {
         ArrayList<Command> allCommands = new ArrayList<Command>();
         allCommands.addAll(ozzie.getCommandManager().getCommands());
         allCommands.addAll(ozzie.getCommandManager().getPluginCommands());
-        if(full.equalsIgnoreCase(args[0])) {
+        if (full.equalsIgnoreCase(args[0])) {
             EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle(new ParsableText(new TranslatableText("ozzie.helpfollowing", event), ozzie.getBotName()).toString());
             int adder = 0;
-            for(String cc : ozzie.getCommandManager().getCategoryList()) {
+            for (String cc : ozzie.getCommandManager().getCategoryList()) {
                 String name = cc.substring(0, 1).toUpperCase() + cc.substring(1).toLowerCase();
                 String line = "";
-                for(Command cmd: allCommands) {
-                    if(!cmd.isHidden()) {
-                        if(ozzie.getConfigurationManager().hasPermission(cmd.getPermission(), serverUserPermissionSchema)) {
-                            if(cmd.getAsCategory().equalsIgnoreCase(cc)) {
-                                if(event.isFromGuild()) {
+                for (Command cmd : allCommands) {
+                    if (!cmd.isHidden()) {
+                        if (ozzie.getConfigurationManager().hasPermission(cmd.getPermission(), serverUserPermissionSchema)) {
+                            if (cmd.getAsCategory().equalsIgnoreCase(cc)) {
+                                if (event.isFromGuild()) {
                                     line = line + String.format("`%s` ", cmd.getNames()[0]);
-                                }else if(event.isFromType(ChannelType.PRIVATE) /*&& !cmd.isGuildOnly()*/){
+                                } else if (event.isFromType(ChannelType.PRIVATE) /*&& !cmd.isGuildOnly()*/) {
                                     line = line + String.format("`%s` ", cmd.getNames()[0]);
                                 }
                                 adder++;
@@ -62,16 +62,16 @@ public class Help extends Command {
                         }
                     }
                 }
-                if(!line.isEmpty()) {
+                if (!line.isEmpty()) {
                     embed.addField(new ParsableText(new TranslatableText("ozzie.cmds", event), name).toString(), line, false);
                 }
             }
             embed.setFooter(new ParsableText(new TranslatableText("ozzie.helptotal", event), Integer.toString(adder)).toString(), null);
             event.getChannel().sendMessage(embed.build()).queue();
-        }else{
+        } else {
             String cmdName = args[0];
-            for(Command c: allCommands){
-                if(cmdName.startsWith(c.getNames()[0].toLowerCase())){
+            for (Command c : allCommands) {
+                if (cmdName.startsWith(c.getNames()[0].toLowerCase())) {
                     event.getChannel().sendMessage(c.getHelpEmblem(event)).queue();
                 }
             }
@@ -79,8 +79,7 @@ public class Help extends Command {
     }
 
     @Override
-    public boolean isHidden()
-    {
+    public boolean isHidden() {
         return true;
     }
 

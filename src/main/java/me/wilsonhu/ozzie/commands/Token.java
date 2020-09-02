@@ -29,30 +29,31 @@ public class Token extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(full.equalsIgnoreCase(args[0])) {
+        if (full.equalsIgnoreCase(args[0])) {
             event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
             return;
         }
-        if(isCommand(args, "add")){
-            if(args.length == 3) {
+        if (isCommand(args, "add")) {
+            if (args.length == 3) {
                 String name = args[1];
                 String token = args[2];
                 ozzie.getTokenManager().addToken(name, token);//getTokenList().put(name, token);
                 event.getChannel().sendMessage(String.format("The token `%s` with the value `%s` has been added.", name, token)).queue();
-            }else {
+            } else {
                 event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
                 return;
             }
-        }else if(isCommand(args, "remove")){
-            if(args.length == 2) {
+        } else if (isCommand(args, "remove")) {
+            if (args.length == 2) {
                 String name = args[1];
                 String tokenValue = ozzie.getTokenManager().getToken(name);
                 ozzie.getTokenManager().removeToken(name);
                 event.getChannel().sendMessage(String.format("The token `%s` with the value `%s` has been removed.", name, tokenValue)).queue();
-            }else {
+            } else {
                 event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
             }
-        }if(isCommand(args, "reload")){
+        }
+        if (isCommand(args, "reload")) {
             event.getChannel().sendMessage("Reloading saved tokens...").queue();
             ozzie.getTokenManager().loadSavedTokens();
             event.getChannel().sendMessage("Saved tokens reloaded.").queue();

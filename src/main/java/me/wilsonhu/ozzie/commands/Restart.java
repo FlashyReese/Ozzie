@@ -28,7 +28,7 @@ public class Restart extends Command {
     private static final Logger log = LogManager.getLogger(Restart.class);
 
     public Restart() {
-        super(new String[] {"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
+        super(new String[]{"restart"}, "Restarts bot really helpful for loading plugins", "%s\n%s <Custom Parameters>");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
         this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);

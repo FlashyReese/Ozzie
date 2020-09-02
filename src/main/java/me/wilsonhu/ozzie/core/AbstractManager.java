@@ -14,25 +14,32 @@
  * along with Ozzie.  If not, see http://www.gnu.org/licenses/
  *
  */
-package me.wilsonhu.ozzie.runtimeoptions;
+package me.wilsonhu.ozzie.core;
 
 import me.wilsonhu.ozzie.Ozzie;
-import me.wilsonhu.ozzie.core.runtimeoption.RuntimeOption;
+import org.aperlambda.lambdacommon.utils.Nameable;
 
-public class DisablePlugins extends RuntimeOption {
+public abstract class AbstractManager implements Nameable {
 
-    private boolean isPluginsDisabled = false;
+    private final Ozzie ozzie;
 
-    public DisablePlugins() {
-        super("disableplugins", "disableplugins");
+    protected AbstractManager(Ozzie ozzie) {
+        this.ozzie = ozzie;
     }
 
-    @Override
-    public void onRun(String full, String split, Ozzie ozzie) throws Exception {
-        this.isPluginsDisabled = true;
+    protected Ozzie getOzzie() {
+        return this.ozzie;
     }
 
-    public boolean isPluginsDisabled() {
-        return this.isPluginsDisabled;
+    protected void info(String message) {
+        this.getOzzie().getLogger().info(String.format("%s - %s", getName(), message));
+    }
+
+    protected void warn(String message) {
+        this.getOzzie().getLogger().warn(String.format("%s - %s", getName(), message));
+    }
+
+    protected void error(String message) {
+        this.getOzzie().getLogger().error(String.format("%s - %s", getName(), message));
     }
 }

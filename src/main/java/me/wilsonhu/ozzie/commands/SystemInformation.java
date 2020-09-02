@@ -32,7 +32,7 @@ public class SystemInformation extends Command {
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         SystemSensor ss = new SystemSensor();
-        for(String s: Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1900)){
+        for (String s : Helper.asyncListStringWithMaxSize(ss.getSystemInfo(), 1900)) {
             event.getChannel().sendMessage("```markdown\n" + s + "```").queue();
         }
     }

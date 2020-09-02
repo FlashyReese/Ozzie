@@ -20,11 +20,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Locale;
 
-/*
-Create by @author flashyreese
-Created @since 5/21/20
-Created @version 1.0
-*/
 public class ParsableTranslatableText {
 
     private String key;
@@ -34,49 +29,49 @@ public class ParsableTranslatableText {
     private long id;
     private String[] args;
 
-    public ParsableTranslatableText(String key, String... args){
+    public ParsableTranslatableText(String key, String... args) {
         this.key = key;
         this.args = args;
     }
 
-    public ParsableTranslatableText(MessageReceivedEvent event, String key, String... args){
+    public ParsableTranslatableText(MessageReceivedEvent event, String key, String... args) {
         this.event = event;
         this.key = key;
         this.args = args;
     }
 
-    public ParsableTranslatableText(String lang, String key, String... args){
+    public ParsableTranslatableText(String lang, String key, String... args) {
         this.lang = lang;
         this.key = key;
         this.args = args;
     }
 
-    public ParsableTranslatableText(TranslatableText.TranslationType type, long id, String key, String... args){
+    public ParsableTranslatableText(TranslatableText.TranslationType type, long id, String key, String... args) {
         this.type = type;
         this.id = id;
         this.key = key;
         this.args = args;
     }
 
-    public ParsableTranslatableText(TranslatableText.TranslationType type, String key, String... args){
+    public ParsableTranslatableText(TranslatableText.TranslationType type, String key, String... args) {
         this.type = type;
         this.key = key;
         this.args = args;
     }
 
-    public String toString(){
+    public String toString() {
         String lang = Locale.getDefault().toString();
-        if(type != null && id != 0L){
-            if(type == TranslatableText.TranslationType.DEFAULT){
+        if (type != null && id != 0L) {
+            if (type == TranslatableText.TranslationType.DEFAULT) {
                 return new ParsableText(new TranslatableText(lang, key), args).toString();
-            }else {
+            } else {
                 return new ParsableText(new TranslatableText(key, type, id), args).toString();
             }
         }
-        if(event != null){
+        if (event != null) {
             return new ParsableText(new TranslatableText(key, event), args).toString();
         }
-        if(this.lang != null){
+        if (this.lang != null) {
             return new ParsableText(new TranslatableText(key, this.lang), args).toString();
         }
         return new ParsableText(new TranslatableText(key), args).toString();

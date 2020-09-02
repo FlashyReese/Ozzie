@@ -22,18 +22,18 @@ public abstract class RuntimeOption {
     private String command;
     private String syntax;
 
-    public RuntimeOption(String command, String syntax){
+    public RuntimeOption(String command, String syntax) {
         this.command = command;
         this.syntax = syntax;
     }
 
     public abstract void onRun(String full, String split, Ozzie ozzie) throws Exception;
 
-    public String getCommand(){
-        return command;
+    public String getCommand() {
+        return this.command;
     }
 
-    public String getSyntax(){
-        return syntax;
+    public String getSyntax() {
+        return this.syntax;
     }
 }

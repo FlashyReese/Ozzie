@@ -21,12 +21,12 @@ public class ParsableText {
     private String parsableText;
     private String[] args;
 
-    public ParsableText(String parsableText, String... args){
+    public ParsableText(String parsableText, String... args) {
         this.parsableText = parsableText;
         this.args = args;
     }
 
-    public ParsableText(TranslatableText translatableText, String... args){
+    public ParsableText(TranslatableText translatableText, String... args) {
         this.parsableText = translatableText.toString();
         this.args = args;
     }
@@ -37,15 +37,15 @@ public class ParsableText {
     }
 
     private String format(String text, String... args) { //Fixme:  This can be improved to String.format level, Update: Also throw exception for easier diagnostic(wasn't hard for me but probably going to be hard for others)
-        for(int i = 0; i < args.length; i++) {//Todo: Add custom expression support xd #toLower, #toTitle, #.2f, this is probably hard since I haven't fully mastered regex
-            if(!text.contains("{" + (i+1) + "}")) {
+        for (int i = 0; i < args.length; i++) {//Todo: Add custom expression support xd #toLower, #toTitle, #.2f, this is probably hard since I haven't fully mastered regex
+            if (!text.contains("{" + (i + 1) + "}")) {
                 System.out.println("Missing notation to parse: " + args[i]);
                 continue;
             }
-            if(text.contains("{" + (i+2) + "}") && i+1 == args.length){//this is technically useless xd only checks for 1 after args.length
-                System.out.println("Missing object to parse: {" + (i+2) + "}");
+            if (text.contains("{" + (i + 2) + "}") && i + 1 == args.length) {//this is technically useless xd only checks for 1 after args.length
+                System.out.println("Missing object to parse: {" + (i + 2) + "}");
             }
-            text = text.replaceAll("\\{" + (i+1) + "}", args[i]);
+            text = text.replaceAll("\\{" + (i + 1) + "}", args[i]);
         }
         return text;
     }

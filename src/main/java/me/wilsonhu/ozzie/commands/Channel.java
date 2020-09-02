@@ -36,44 +36,44 @@ public class Channel extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(full.equalsIgnoreCase(args[0])){
+        if (full.equalsIgnoreCase(args[0])) {
             event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
             return;
         }
-        if(!event.getMessage().getMentionedChannels().isEmpty() && isCommand(args, "add")){
+        if (!event.getMessage().getMentionedChannels().isEmpty() && isCommand(args, "add")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            for(TextChannel tc: event.getMessage().getMentionedChannels()){
-                if(serverSchema.isAllowedCommandTextChannel(tc.getIdLong())){
+            for (TextChannel tc : event.getMessage().getMentionedChannels()) {
+                if (serverSchema.isAllowedCommandTextChannel(tc.getIdLong())) {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsallowalready", event), tc.getName()).toString()).queue();
-                }else{
+                } else {
                     serverSchema.addCommandTextChannel(tc.getIdLong());
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsallow", event), tc.getName()).toString()).queue();
                 }
             }
             ozzie.getConfigurationManager().updateServerSettings(serverSchema);
-        }else if (!event.getMessage().getMentionedChannels().isEmpty() && isCommand(args, "remove")){
+        } else if (!event.getMessage().getMentionedChannels().isEmpty() && isCommand(args, "remove")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            for(TextChannel tc: event.getMessage().getMentionedChannels()){
-                if(!serverSchema.isAllowedCommandTextChannel(tc.getIdLong())){
+            for (TextChannel tc : event.getMessage().getMentionedChannels()) {
+                if (!serverSchema.isAllowedCommandTextChannel(tc.getIdLong())) {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsdisallowalready", event), tc.getName()).toString()).queue();
-                }else{
+                } else {
                     serverSchema.removeCommandTextChannel(tc.getIdLong());
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.tcsdisallow", event), tc.getName()).toString()).queue();
                 }
             }
             ozzie.getConfigurationManager().updateServerSettings(serverSchema);
-        }else if(isCommand(args, "list")){
+        } else if (isCommand(args, "list")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("List of Allowed Text Channels");
             StringBuilder line = new StringBuilder();
-            for (long id: serverSchema.getAllowedCommandTextChannel()){
-                if(event.getGuild().getTextChannelById(id) != null){
+            for (long id : serverSchema.getAllowedCommandTextChannel()) {
+                if (event.getGuild().getTextChannelById(id) != null) {
                     line.append(Objects.requireNonNull(event.getGuild().getTextChannelById(id)).getAsMention()).append("\n");
                 }
             }
             embedBuilder.addField("Channels", line.toString(), false);
             event.getChannel().sendMessage(embedBuilder.build()).queue();
-        }else{
+        } else {
             event.getChannel().sendMessage(this.getHelpEmblem(event)).queue();
         }
     }

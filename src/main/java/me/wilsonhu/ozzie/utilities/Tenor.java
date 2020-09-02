@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class Tenor {
 
-    public ArrayList<String> getItems(String search, Ozzie ozzie){
+    public ArrayList<String> getItems(String search, Ozzie ozzie) {
         ArrayList<String> items = new ArrayList<String>();
         Thread t = new Thread() {
             @Override
@@ -44,7 +44,7 @@ public class Tenor {
                 }
                 JSONObject searchResult = getSearchResults(searchTerm, 50, ozzie);
 
-                for(int i = 0; i < 50; i++) {
+                for (int i = 0; i < 50; i++) {
                     JSONObject results = searchResult.getJSONArray("results").getJSONObject(i);
                     items.add(results.getString("itemurl"));
                 }

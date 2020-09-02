@@ -17,71 +17,75 @@
 package me.wilsonhu.ozzie.core.runtimeoption;
 
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.AbstractManager;
 import me.wilsonhu.ozzie.runtimeoptions.DisablePlugins;
 import me.wilsonhu.ozzie.runtimeoptions.DiscordAPI;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class RuntimeOptionManager {
-
-    private static final Logger log = LogManager.getLogger(RuntimeOptionManager.class);
+public class RuntimeOptionManager extends AbstractManager {
 
     private ArrayList<RuntimeOption> runtimeOptions = new ArrayList<RuntimeOption>();
 
-    public RuntimeOptionManager(){
-        log.info("Building Runtime Option Manager...");
-        loadRuntimeOptions();
-        log.info("Runtime Option Manager built!");
+    public RuntimeOptionManager(Ozzie ozzie) {
+        super(ozzie);
+        this.info("Building Runtime Option Manager...");
+        this.loadRuntimeOptions();
+        this.info("Runtime Option Manager built!");
     }
 
-    private void loadRuntimeOptions(){
-        getRuntimeOptions().add(new DiscordAPI());
-        getRuntimeOptions().add(new DisablePlugins());
+    private void loadRuntimeOptions() {
+        this.getRuntimeOptions().add(new DiscordAPI());
+        this.getRuntimeOptions().add(new DisablePlugins());
     }
 
-    public void initRuntimeOptions(String[] args, Ozzie ozzie) throws Exception {
-        ArrayList<String> formattedCommandList = new ArrayList<String>();
+    public void initRuntimeOptions(String[] args) throws Exception {
+        List<String> formattedCommandList = new ArrayList<>();
         StringBuilder temp = new StringBuilder();
-        for(String arg: args){
-            if(arg.startsWith("-")){
-                if(temp.length() > 0){
+        for (String arg : args) {
+            if (arg.startsWith("-")) {
+                if (temp.length() > 0) {
                     formattedCommandList.add(temp.toString());
                 }
                 temp = new StringBuilder();
                 temp.append(arg).append(" ");
-            }else{
+            } else {
                 temp.append(arg).append(" ");
             }
         }
-        if(temp.length() > 0)formattedCommandList.add(temp.toString());
-        for(String cmd: formattedCommandList){
+        if (temp.length() > 0) formattedCommandList.add(temp.toString());
+        for (String cmd : formattedCommandList) {
             cmd = cmd.trim().substring(1);
             String full = cmd;
             String split = cmd;
-            if(cmd.contains(" ")){
+            if (cmd.contains(" ")) {
                 split = cmd.substring(cmd.indexOf(" ")).trim();
             }
-            for(RuntimeOption runtimeOption : getRuntimeOptions()){
-                if(full.toLowerCase().startsWith(runtimeOption.getCommand().toLowerCase())){
-                    runtimeOption.onRun(full, split, ozzie);
+            for (RuntimeOption runtimeOption : this.getRuntimeOptions()) {
+                if (full.toLowerCase().startsWith(runtimeOption.getCommand().toLowerCase())) {
+                    runtimeOption.onRun(full, split, getOzzie());
                 }
             }
         }
     }
 
-    public RuntimeOption getRuntimeOption(Class<?extends RuntimeOption> leCommandClass){
-        for (RuntimeOption c: getRuntimeOptions()){
-            if (c.getClass() == leCommandClass){
+    public RuntimeOption getRuntimeOption(Class<? extends RuntimeOption> leCommandClass) {
+        for (RuntimeOption c : this.getRuntimeOptions()) {
+            if (c.getClass() == leCommandClass) {
                 return c;
             }
         }
         return null;
     }
 
-    public ArrayList<RuntimeOption> getRuntimeOptions(){
-        return runtimeOptions;
+    public ArrayList<RuntimeOption> getRuntimeOptions() {
+        return this.runtimeOptions;
     }
 
+    @Override
+    public @NotNull String getName() {
+        return "Runtime Option Manager";
+    }
 }

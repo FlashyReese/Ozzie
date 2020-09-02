@@ -18,25 +18,25 @@ package me.wilsonhu.ozzie.core.plugin;
 
 import me.wilsonhu.ozzie.schemas.PluginSchema;
 
-public class PluginModule{
+public class PluginModule {
 
     private Plugin plugin;
     private PluginSchema schema;
     private Class<?> clazz;
 
-    public PluginModule(Plugin plugin, PluginSchema schema, Class<?> clazz){
+    public PluginModule(Plugin plugin, PluginSchema schema, Class<?> clazz) {
         this.setPlugin(plugin);
         this.setSchema(schema);
         this.setClazz(clazz);
     }
 
-    public PluginModule(PluginSchema schema, Class<?> clazz){
+    public PluginModule(PluginSchema schema, Class<?> clazz) {
         this.setSchema(schema);
         this.setClazz(clazz);
     }
 
     public Plugin getPlugin() {
-        return plugin;
+        return this.plugin;
     }
 
     public void setPlugin(Plugin plugin) {
@@ -44,7 +44,7 @@ public class PluginModule{
     }
 
     public PluginSchema getSchema() {
-        return schema;
+        return this.schema;
     }
 
     public void setSchema(PluginSchema schema) {
@@ -52,7 +52,7 @@ public class PluginModule{
     }
 
     public Class<?> getClazz() {
-        return clazz;
+        return this.clazz;
     }
 
     public void setClazz(Class<?> clazz) {

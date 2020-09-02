@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019-2020 Yao Chung Hu / FlashyReese
+ *
+ * Ozzie is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Ozzie is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Ozzie.  If not, see http://www.gnu.org/licenses/
+ *
+ */
 package me.wilsonhu.ozzie.utilities;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -51,38 +67,34 @@ public class ConfirmationMenu extends Menu {
      * Shows the ConfirmationMenu as a new {@link net.dv8tion.jda.api.entities.Message Message}
      * in the provided {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}.
      *
-     * @param  channel
-     *         The MessageChannel to send the new Message to
-     *
-     * @throws java.lang.IllegalArgumentException
-     *         If <b>all</b> of the following are violated simultaneously:
-     *         <ul>
-     *             <li>Being sent to a {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}.</li>
-     *             <li>This OrderedMenu does not allow typed input.</li>
-     *             <li>The bot doesn't have {@link net.dv8tion.jda.api.Permission#MESSAGE_ADD_REACTION
-     *             Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.</li>
-     *         </ul>
+     * @param channel The MessageChannel to send the new Message to
+     * @throws java.lang.IllegalArgumentException If <b>all</b> of the following are violated simultaneously:
+     *                                            <ul>
+     *                                                <li>Being sent to a {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}.</li>
+     *                                                <li>This OrderedMenu does not allow typed input.</li>
+     *                                                <li>The bot doesn't have {@link net.dv8tion.jda.api.Permission#MESSAGE_ADD_REACTION
+     *                                                Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.</li>
+     *                                            </ul>
      */
     @Override
     public void display(MessageChannel channel) {
-        if(channel.getType()== ChannelType.TEXT
+        if (channel.getType() == ChannelType.TEXT
                 && !allowTypedInput
-                && !((TextChannel)channel).getGuild().getSelfMember().hasPermission((TextChannel) channel, Permission.MESSAGE_ADD_REACTION))
+                && !((TextChannel) channel).getGuild().getSelfMember().hasPermission((TextChannel) channel, Permission.MESSAGE_ADD_REACTION))
             throw new PermissionException("Must be able to add reactions if not allowing typed input!");
         initialize(channel.sendMessage(getMessage()));
     }
 
     @Override
     public void display(Message message) {
-        if(message.getChannelType() == ChannelType.TEXT
+        if (message.getChannelType() == ChannelType.TEXT
                 && !allowTypedInput
                 && !message.getGuild().getSelfMember().hasPermission(message.getTextChannel(), Permission.MESSAGE_ADD_REACTION))
             throw new PermissionException("Must be able to add reactions if not allowing typed input!");
         initialize(message.editMessage(getMessage()));
     }
 
-    private void initialize(RestAction<Message> ra)
-    {
+    private void initialize(RestAction<Message> ra) {
         ra.queue(m -> {
             try {
                 RestAction<Void> re = m.addReaction(CONTINUE);
@@ -91,15 +103,15 @@ public class ConfirmationMenu extends Menu {
                 re.queue(v -> {
                     // Depending on whether we are allowing text input,
                     // we call a different method.
-                    if(allowTypedInput)
+                    if (allowTypedInput)
                         waitGeneric(m);
                     else
                         waitReactionOnly(m);
                 });
-            } catch(PermissionException ex) {
+            } catch (PermissionException ex) {
                 // If there is a permission exception mid process, we'll still
                 // attempt to make due with what we have.
-                if(allowTypedInput)
+                if (allowTypedInput)
                     waitGeneric(m);
                 else
                     waitReactionOnly(m);
@@ -107,53 +119,49 @@ public class ConfirmationMenu extends Menu {
         });
     }
 
-    private void waitGeneric(Message m)
-    {
+    private void waitGeneric(Message m) {
         // Wait for a GenericMessageEvent
         waiter.waitForEvent(GenericMessageEvent.class, e -> {
             // If we're dealing with a message reaction being added we return whether it's valid
-            if(e instanceof MessageReactionAddEvent)
-                return isValidReaction(m, (MessageReactionAddEvent)e);
+            if (e instanceof MessageReactionAddEvent)
+                return isValidReaction(m, (MessageReactionAddEvent) e);
             // If we're dealing with a received message being added we return whether it's valid
-            if(e instanceof MessageReceivedEvent)
-                return isValidMessage(m, (MessageReceivedEvent)e);
+            if (e instanceof MessageReceivedEvent)
+                return isValidMessage(m, (MessageReceivedEvent) e);
             // Otherwise return false
             return false;
         }, e -> {
             m.delete().queue();
             // If it's a valid MessageReactionAddEvent
-            if(e instanceof MessageReactionAddEvent)
-            {
-                MessageReactionAddEvent event = (MessageReactionAddEvent)e;
+            if (e instanceof MessageReactionAddEvent) {
+                MessageReactionAddEvent event = (MessageReactionAddEvent) e;
                 // Process which reaction it is
-                if(event.getReaction().getReactionEmote().getName().equals(CANCEL))
+                if (event.getReaction().getReactionEmote().getName().equals(CANCEL))
                     cancel.accept(m);
                 else
                     confirm.accept(m);
             }
             // If it's a valid MessageReceivedEvent
-            else if (e instanceof MessageReceivedEvent)
-            {
-                MessageReceivedEvent event = (MessageReceivedEvent)e;
+            else if (e instanceof MessageReceivedEvent) {
+                MessageReceivedEvent event = (MessageReceivedEvent) e;
                 // Get the number in the message and process
                 String msg = event.getMessage().getContentRaw().trim();
-                if(msg.equalsIgnoreCase("cancel"))//Todo: Add custom cancellation text and confirmation
+                if (msg.equalsIgnoreCase("cancel"))//Todo: Add custom cancellation text and confirmation
                     cancel.accept(m);
-                else if(msg.equalsIgnoreCase("confirm"))
+                else if (msg.equalsIgnoreCase("confirm"))
                     confirm.accept(m);
             }
         }, timeout, unit, () -> cancel.accept(m));
     }
 
     // Waits only for reaction input
-    private void waitReactionOnly(Message m)
-    {
+    private void waitReactionOnly(Message m) {
         // This one is only for reactions
         waiter.waitForEvent(MessageReactionAddEvent.class, e -> {
             return isValidReaction(m, e);
         }, e -> {
             m.delete().queue();
-            if(e.getReaction().getReactionEmote().getName().equals(CANCEL))
+            if (e.getReaction().getReactionEmote().getName().equals(CANCEL))
                 cancel.accept(m);
             else
                 confirm.accept(m);
@@ -162,41 +170,38 @@ public class ConfirmationMenu extends Menu {
 
 
     // This is where the displayed message for the ConfirmationMenu is built.
-    private Message getMessage()
-    {
+    private Message getMessage() {
         MessageBuilder messageBuilder = new MessageBuilder();
-        if(text!=null)
+        if (text != null)
             messageBuilder.append(text);
-        if (useCustomEmbed && customEmbed != null){
+        if (useCustomEmbed && customEmbed != null) {
             messageBuilder.setEmbed(customEmbed);
-        }else{
+        } else {
             messageBuilder.setEmbed(new EmbedBuilder().setColor(color)
-                    .setDescription(description==null ? "" : description).build());//Todo: should fix this
+                    .setDescription(description == null ? "" : description).build());//Todo: should fix this
         }
         return messageBuilder.build();
     }
 
-    private boolean isValidReaction(Message m, MessageReactionAddEvent e)
-    {
+    private boolean isValidReaction(Message m, MessageReactionAddEvent e) {
         // The message is not the same message as the menu
-        if(!e.getMessageId().equals(m.getId()))
+        if (!e.getMessageId().equals(m.getId()))
             return false;
         // The user is not valid
-        if(!isValidUser(e.getUser(), e.isFromGuild() ? e.getGuild() : null))
+        if (!isValidUser(e.getUser(), e.isFromGuild() ? e.getGuild() : null))
             return false;
         // The reaction is the cancel reaction
-        if(e.getReaction().getReactionEmote().getName().equals(CANCEL))
+        if (e.getReaction().getReactionEmote().getName().equals(CANCEL))
             return true;
 
-       if(e.getReaction().getReactionEmote().getName().equals(CONTINUE))
-           return true;
+        if (e.getReaction().getReactionEmote().getName().equals(CONTINUE))
+            return true;
         return false;
     }
 
-    private boolean isValidMessage(Message m, MessageReceivedEvent e)
-    {
+    private boolean isValidMessage(Message m, MessageReceivedEvent e) {
         // If the channel is not the same channel
-        if(!e.getChannel().equals(m.getChannel()))
+        if (!e.getChannel().equals(m.getChannel()))
             return false;
         // Otherwise if it's a valid user or not
         return isValidUser(e.getAuthor(), e.isFromGuild() ? e.getGuild() : null);
@@ -208,51 +213,47 @@ public class ConfirmationMenu extends Menu {
      *
      * @author Yao Chung Hu
      */
-    public static class Builder extends Menu.Builder<ConfirmationMenu.Builder, ConfirmationMenu>
-    {
+    public static class Builder extends Menu.Builder<ConfirmationMenu.Builder, ConfirmationMenu> {
 
         private Color color;
         private String text;
         private String description;
-        private Consumer<Message> confirm = (m) -> {};
-        private Consumer<Message> cancel = (m) -> {};
+        private Consumer<Message> confirm = (m) -> {
+        };
+        private Consumer<Message> cancel = (m) -> {
+        };
         private boolean allowTypedInput = true;
         private boolean useCustomEmbed = false;
         private MessageEmbed customEmbed = null;
+
         /**
          * Builds the {@link me.wilsonhu.ozzie.utilities.ConfirmationMenu ConfirmationMenu}
          * with this Builder.
          *
          * @return The ConfirmationMenu built from this Builder.
-         *
-         * @throws java.lang.IllegalArgumentException
-         *         If one of the following is violated:
-         *         <ul>
-         *             <li>No {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter EventWaiter} was set.</li>
-         *             <li>No action {@link java.util.function.Consumer Consumer} was set.</li>
-         *             <li>Neither text nor description were set.</li>
-         *         </ul>
+         * @throws java.lang.IllegalArgumentException If one of the following is violated:
+         *                                            <ul>
+         *                                                <li>No {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter EventWaiter} was set.</li>
+         *                                                <li>No action {@link java.util.function.Consumer Consumer} was set.</li>
+         *                                                <li>Neither text nor description were set.</li>
+         *                                            </ul>
          */
         @Override
-        public ConfirmationMenu build()
-        {
+        public ConfirmationMenu build() {
             Checks.check(waiter != null, "Must set an EventWaiter");
             Checks.check(confirm != null, "Must provide an confirmation consumer");
             Checks.check(useCustomEmbed && customEmbed != null, "Must provide an custom embed");
             Checks.check(useCustomEmbed || (text != null || description != null), "Either text or description must be set");
-            return new ConfirmationMenu(waiter,users,roles,timeout,unit,color,text,description,confirm,cancel,allowTypedInput, useCustomEmbed, customEmbed);
+            return new ConfirmationMenu(waiter, users, roles, timeout, unit, color, text, description, confirm, cancel, allowTypedInput, useCustomEmbed, customEmbed);
         }
 
         /**
          * Sets the {@link java.awt.Color Color} of the {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
          *
-         * @param  color
-         *         The Color of the MessageEmbed
-         *
+         * @param color The Color of the MessageEmbed
          * @return This builder
          */
-        public ConfirmationMenu.Builder setColor(Color color)
-        {
+        public ConfirmationMenu.Builder setColor(Color color) {
             this.color = color;
             return this;
         }
@@ -261,13 +262,10 @@ public class ConfirmationMenu extends Menu {
          * If {@code true}, {@link net.dv8tion.jda.api.entities.User User}s can type the number or
          * letter of the input to make their selection, in addition to the reaction option.
          *
-         * @param  allow
-         *         {@code true} if raw text input is allowed, {@code false} if it is not
-         *
+         * @param allow {@code true} if raw text input is allowed, {@code false} if it is not
          * @return This builder
          */
-        public ConfirmationMenu.Builder allowTextInput(boolean allow)
-        {
+        public ConfirmationMenu.Builder allowTextInput(boolean allow) {
             this.allowTypedInput = allow;
             return this;
         }
@@ -278,13 +276,10 @@ public class ConfirmationMenu extends Menu {
          *
          * <p>This is displayed directly above the embed.
          *
-         * @param  text
-         *         The Message content to be displayed above the embed when the OrderedMenu is built
-         *
+         * @param text The Message content to be displayed above the embed when the OrderedMenu is built
          * @return This builder
          */
-        public ConfirmationMenu.Builder setText(String text)
-        {
+        public ConfirmationMenu.Builder setText(String text) {
             this.text = text;
             return this;
         }
@@ -293,13 +288,10 @@ public class ConfirmationMenu extends Menu {
          * Sets the description to be placed in an {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
          * <br>If this is {@code null}, no MessageEmbed will be displayed
          *
-         * @param  description
-         *         The content of the MessageEmbed's description
-         *
+         * @param description The content of the MessageEmbed's description
          * @return This builder
          */
-        public ConfirmationMenu.Builder setDescription(String description)
-        {
+        public ConfirmationMenu.Builder setDescription(String description) {
             this.description = description;
             return this;
         }
@@ -308,12 +300,10 @@ public class ConfirmationMenu extends Menu {
          * Sets the {@link java.util.function.Consumer Consumer} to perform if the
          * {@link me.wilsonhu.ozzie.utilities.ConfirmationMenu ConfirmationMenu} is confirmed.
          *
-         * @param  confirm
-         *         The Consumer action to perform if the ButtonMenu is cancelled
-         *
+         * @param confirm The Consumer action to perform if the ButtonMenu is cancelled
          * @return This builder
          */
-        public ConfirmationMenu.Builder setConfirm(Consumer<Message> confirm){
+        public ConfirmationMenu.Builder setConfirm(Consumer<Message> confirm) {
             this.confirm = confirm;
             return this;
         }
@@ -322,23 +312,20 @@ public class ConfirmationMenu extends Menu {
          * Sets the {@link java.util.function.Consumer Consumer} to perform if the
          * {@link com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu} is cancelled.
          *
-         * @param  cancel
-         *         The Consumer action to perform if the ButtonMenu is cancelled
-         *
+         * @param cancel The Consumer action to perform if the ButtonMenu is cancelled
          * @return This builder
          */
-        public ConfirmationMenu.Builder setCancel(Consumer<Message> cancel)
-        {
+        public ConfirmationMenu.Builder setCancel(Consumer<Message> cancel) {
             this.cancel = cancel;
             return this;
         }
 
-        public ConfirmationMenu.Builder useCustomEmbed(boolean use){
+        public ConfirmationMenu.Builder useCustomEmbed(boolean use) {
             this.useCustomEmbed = use;
             return this;
         }
 
-        public ConfirmationMenu.Builder setCustomEmbed(MessageEmbed embed){
+        public ConfirmationMenu.Builder setCustomEmbed(MessageEmbed embed) {
             useCustomEmbed(true);
             this.customEmbed = embed;
             return this;

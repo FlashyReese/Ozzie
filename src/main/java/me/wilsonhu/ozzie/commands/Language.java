@@ -37,33 +37,33 @@ public class Language extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {//Fixme: Definitely can make this look nicer xd
-        if(full.equalsIgnoreCase(args[0])){
+        if (full.equalsIgnoreCase(args[0])) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            if(serverSchema.isAllowUserLocale()){
+            if (serverSchema.isAllowUserLocale()) {
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-                if(!userSchema.getUserLocale().equals("default")){
+                if (!userSchema.getUserLocale().equals("default")) {
                     String message = new ParsableTranslatableText(event, "ozzie.currentlocaleuser", event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString();
                     event.getChannel().sendMessage(message).queue();
-                }else{
+                } else {
                     defaultServerLocaleCheck(event, ozzie, serverSchema);
                 }
-            }else{
+            } else {
                 defaultServerLocaleCheck(event, ozzie, serverSchema);
             }
-        }else if(isCommand(args, "set", "allowuser") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
+        } else if (isCommand(args, "set", "allowuser") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             boolean prefix = Boolean.parseBoolean(args[2]);
-            if(serverSchema.isAllowUserLocale() == prefix){
+            if (serverSchema.isAllowUserLocale() == prefix) {
                 String message = new ParsableTranslatableText(event, "ozzie.servercustomlocalealready", (serverSchema.isAllowUserLocale() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString();
                 event.getChannel().sendMessage(message).queue();
-            }else{
+            } else {
                 serverSchema.setAllowUserLocale(prefix);
                 String message = new ParsableTranslatableText(event, "ozzie.servercustomlocale", (serverSchema.isAllowUserLocale() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString();
                 event.getChannel().sendMessage(message).queue();
                 ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
-        }else if(isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
-                OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem also gonna likely move this to an serversetting class command on top can just write a paginatableorderedmenu
+        } else if (isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))) {
+            OrderedMenu.Builder builder = new OrderedMenu.Builder();//Fixme: Gonna be careful with this since it only allows up to 10 items as the locales grow, it will likely be a problem also gonna likely move this to an serversetting class command on top can just write a paginatableorderedmenu
             builder.allowTextInput(true)
                     .useNumbers()
                     .useCancelButton(true)
@@ -72,16 +72,17 @@ public class Language extends Command {
                     .setTimeout(1, TimeUnit.MINUTES)
                     .setColor(Objects.requireNonNull(event.getMember()).getColor())
                     .addChoices(getLocaleChoices(ozzie))
-                    .setSelection((msg,i) ->
+                    .setSelection((msg, i) ->
                     {
                         setServerLocale(ozzie, event, i);
                     })
-                    .setCancel((msg) -> {})
+                    .setCancel((msg) -> {
+                    })
                     .setUsers(event.getAuthor());
             builder.build().display(event.getChannel());
-        }else if(isCommand(args, "set")){
+        } else if (isCommand(args, "set")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            if(serverSchema.isAllowUserLocale()){
+            if (serverSchema.isAllowUserLocale()) {
                 OrderedMenu.Builder builder = new OrderedMenu.Builder();
                 builder.allowTextInput(true)
                         .useNumbers()
@@ -91,46 +92,47 @@ public class Language extends Command {
                         .setTimeout(1, TimeUnit.MINUTES)
                         .setColor(Objects.requireNonNull(event.getMember()).getColor())
                         .addChoices(getLocaleChoices(ozzie))
-                        .setSelection((msg,i) ->
+                        .setSelection((msg, i) ->
                         {
                             setUserLocale(ozzie, event, i);
                         })
-                        .setCancel((msg) -> {})
+                        .setCancel((msg) -> {
+                        })
                         .setUsers(event.getAuthor());
                 builder.build().display(event.getChannel());
-            }else{
+            } else {
                 event.getChannel().sendMessage(new TranslatableText("ozzie.serverlocaledisabled", event).toString()).queue();
             }
         }
     }
 
     private void defaultServerLocaleCheck(MessageReceivedEvent event, Ozzie ozzie, ServerSchema serverSchema) {
-        if(!serverSchema.getServerLocale().equals("default")){
+        if (!serverSchema.getServerLocale().equals("default")) {
             String message = new ParsableTranslatableText(event, "ozzie.currentlocaleserver", ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString();
             event.getChannel().sendMessage(message).queue();
-        }else{
+        } else {
             String message = new ParsableTranslatableText(event, "ozzie.currentlocale", ozzie.getI18nManager().getLocaleDisplayName(Locale.getDefault().toString())).toString();
             event.getChannel().sendMessage(message).queue();
         }
     }
 
-    public String[] getLocaleChoices(Ozzie ozzie){
+    public String[] getLocaleChoices(Ozzie ozzie) {
         Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
         String[] choices = new String[locales.length];
-        for(int i = 0; i < locales.length; i++){
+        for (int i = 0; i < locales.length; i++) {
             choices[i] = locales[i].getDisplayName();
         }
         return choices;
     }
 
-    public void setServerLocale(Ozzie ozzie, MessageReceivedEvent event, int selection){
+    public void setServerLocale(Ozzie ozzie, MessageReceivedEvent event, int selection) {
         Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
         ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-        String locale = locales[selection-1].toString();
-        if(serverSchema.getServerLocale().equalsIgnoreCase(locale)){
+        String locale = locales[selection - 1].toString();
+        if (serverSchema.getServerLocale().equalsIgnoreCase(locale)) {
             String message = new ParsableTranslatableText(event, "ozzie.serversetlocalealready", ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString();
             event.getChannel().sendMessage(message).queue();
-        }else{
+        } else {
             serverSchema.setServerLocale(locale);
             String message = new ParsableTranslatableText(event, "ozzie.serversetlocale", ozzie.getI18nManager().getLocaleDisplayName(serverSchema.getServerLocale())).toString();
             event.getChannel().sendMessage(message).queue();
@@ -138,14 +140,14 @@ public class Language extends Command {
         }
     }
 
-    public void setUserLocale(Ozzie ozzie, MessageReceivedEvent event, int selection){
+    public void setUserLocale(Ozzie ozzie, MessageReceivedEvent event, int selection) {
         Locale[] locales = ozzie.getI18nManager().getAvailableLocales();
         UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-        String locale = locales[selection-1].toString();
-        if(userSchema.getUserLocale().equalsIgnoreCase(locale)){
+        String locale = locales[selection - 1].toString();
+        if (userSchema.getUserLocale().equalsIgnoreCase(locale)) {
             String message = new ParsableTranslatableText(event, "ozzie.usersetlocalealready", event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString();
             event.getChannel().sendMessage(message).queue();
-        }else{
+        } else {
             userSchema.setUserLocale(locale);
             String message = new ParsableTranslatableText(event, "ozzie.usersetlocale", event.getAuthor().getName(), ozzie.getI18nManager().getLocaleDisplayName(userSchema.getUserLocale())).toString();
             event.getChannel().sendMessage(message).queue();

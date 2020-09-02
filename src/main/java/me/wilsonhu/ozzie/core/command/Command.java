@@ -36,8 +36,7 @@ public abstract class Command {
     private String category;
     private CommandType[] commandTypes;
 
-    public Command(String[] names, String description, String syntax)
-    {
+    public Command(String[] names, String description, String syntax) {
         this.names = names;
         this.description = description;
         this.syntax = syntax;
@@ -93,23 +92,19 @@ public abstract class Command {
         return titleCase.toString();
     }
 
-    public String[] getNames()
-    {
+    public String[] getNames() {
         return names;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public String getSyntax()
-    {
+    public String getSyntax() {
         return syntax;
     }
 
-    public boolean isHidden()
-    {
+    public boolean isHidden() {
         return false;
     }
 
@@ -145,7 +140,7 @@ public abstract class Command {
         this.commandTypes = commandTypes;
     }
 
-    public boolean isCommandType(CommandType type){
+    public boolean isCommandType(CommandType type) {
         return Arrays.stream(getCommandTypes()).collect(Collectors.toList()).contains(type);
     }
 }

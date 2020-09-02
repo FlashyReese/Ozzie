@@ -31,27 +31,24 @@ public class PrimaryListener extends ListenerAdapter {
     private static final Logger log = LogManager.getLogger(PrimaryListener.class);
     private Ozzie ozzie;
 
-    public PrimaryListener(Ozzie ozzie){
+    public PrimaryListener(Ozzie ozzie) {
         this.ozzie = ozzie;
     }
 
     @Override
-    public void onReady(@NotNull ReadyEvent event){
+    public void onReady(@NotNull ReadyEvent event) {
         log.info("Ready to go!");
     }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if(event.getMessage().getAuthor().getIdLong() == 141594071033577472L){
+        if (event.getMessage().getAuthor().getIdLong() == 141594071033577472L) {
             getOzzie().getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));
         }
-        long start = System.nanoTime();
         getOzzie().getCommandManager().onMessageReceived(event, null);
-        long end = System.nanoTime();
-        System.out.println("Difference: " + Long.toString(end-start));
     }
 
-    public Ozzie getOzzie(){
-        return ozzie;
+    public Ozzie getOzzie() {
+        return this.ozzie;
     }
 }

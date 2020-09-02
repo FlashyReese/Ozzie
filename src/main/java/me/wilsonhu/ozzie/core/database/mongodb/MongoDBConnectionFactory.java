@@ -27,6 +27,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.database.AbstractConnectionFactory;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
 import me.wilsonhu.ozzie.schemas.ServerUserPermissionSchema;
 import me.wilsonhu.ozzie.schemas.UserSchema;
@@ -37,6 +38,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
+import org.jetbrains.annotations.NotNull;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
@@ -44,7 +46,7 @@ import static com.mongodb.client.model.Updates.*;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-public class MongoDBConnectionFactory {
+public class MongoDBConnectionFactory extends AbstractConnectionFactory {
     private static Logger log = LogManager.getLogger(MongoDBConnectionFactory.class);
 
     private final String DATABASE = "ozzie";
@@ -53,11 +55,10 @@ public class MongoDBConnectionFactory {
     private final String SERVER_USER_PERMISSIONS_COLLECTION = "server_user_permissions";
 
     private MongoClient mongoClient;
-    private Ozzie ozzie;
 
     public MongoDBConnectionFactory(Ozzie ozzie){//Todo: Build this better with graphql and proper "non-query"
+        super(ozzie);
         log.info("Building MongoDB Handler...");
-        setOzzie(ozzie);
         ClassModel<UserSchema> userSchemaClassModelClassModel = ClassModel.builder(UserSchema.class).enableDiscriminator(true).build();
         ClassModel<ServerSchema> serverSchemaClassModelClassModel = ClassModel.builder(ServerSchema.class).enableDiscriminator(true).build();
         ClassModel<ServerUserPermissionSchema> serverUserPermissionSchemaClassModel = ClassModel.builder(ServerUserPermissionSchema.class).enableDiscriminator(true).build();
@@ -114,7 +115,7 @@ public class MongoDBConnectionFactory {
             db = getMongoClient().getDatabase(DATABASE);
             collection = db.getCollection(USER_COLLECTION, UserSchema.class);
             filter = eq("userId", userSchema.getUserId());
-            query = combine(set("userLocale", userSchema.getUserLocale()), set("customCommandPrefix", userSchema.getCustomCommandPrefix()), set("password", userSchema.getPassword()), currentDate("lastModified"));
+            query = combine(set("userLocale", userSchema.getUserLocale()), set("customCommandPrefix", userSchema.getCustomCommandPrefix()), currentDate("lastModified"));
             UpdateResult result = collection.updateOne(filter, query);
             log.info("User Update One Status : " + result.wasAcknowledged());
         } catch (MongoException e) {
@@ -285,11 +286,8 @@ public class MongoDBConnectionFactory {
         return mongoClient;
     }
 
-    private void setOzzie(Ozzie ozzie){
-        this.ozzie = ozzie;
-    }
-
-    private Ozzie getOzzie(){
-        return ozzie;
+    @Override
+    public @NotNull String getName() {
+        return "MongoDB";
     }
 }

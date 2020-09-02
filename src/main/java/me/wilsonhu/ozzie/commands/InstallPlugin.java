@@ -49,7 +49,7 @@ public class InstallPlugin extends Command {
     private static final Logger log = LogManager.getLogger(InstallPlugin.class);
 
     public InstallPlugin() {
-        super(new String[] {"installplugin", "installplugins"}, "Installs plugins via direct upload or URL", "%s\n%s <URL>");
+        super(new String[]{"installplugin", "installplugins"}, "Installs plugins via direct upload or URL", "%s\n%s <URL>");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
     }
@@ -74,12 +74,13 @@ public class InstallPlugin extends Command {
                     int pluginSchemaVersion = jsonObject.getInt("schemaVersion");
                     jf.close();
                     if (pluginSchemaVersion == PluginLoader.SCHEMA_VERSION) {
-                        PluginSchema pluginSchema = new Gson().fromJson(jsonObject.toString(), new TypeToken<PluginSchema>(){}.getType());
+                        PluginSchema pluginSchema = new Gson().fromJson(jsonObject.toString(), new TypeToken<PluginSchema>() {
+                        }.getType());
                         isValid = true;
                         currentSchema = pluginSchema;
                         //Todo: semantic versioning checking for installed plugins when installing updated plugins
-                        for(PluginModule pluginModule : ozzie.getPluginLoader().getConfiguredPlugins()){
-                            if(pluginModule.getSchema().getId().equalsIgnoreCase(pluginSchema.getId())){
+                        for (PluginModule pluginModule : ozzie.getPluginLoader().getConfiguredPlugins()) {
+                            if (pluginModule.getSchema().getId().equalsIgnoreCase(pluginSchema.getId())) {
 
                             }
                         }
@@ -88,7 +89,7 @@ public class InstallPlugin extends Command {
                             event.getChannel().sendMessage("Something went wrong :'(").queue();
                             return;
                         }
-                    }else{
+                    } else {
                         stringBuilder.append(String.format("%s %s `%s`", jsonObject.getString("name"), jsonObject.getString("version"), "Incompatible Plugin Schema Version"));
                     }
                 } else {
@@ -112,21 +113,21 @@ public class InstallPlugin extends Command {
                         .addField("Description", currentSchema.getDescription(), false)
 
                         .setFooter("Continue with installation?");
-                if(currentSchema.getContact().size() > 0){
+                if (currentSchema.getContact().size() > 0) {
                     StringBuilder contactString = new StringBuilder();
-                    for (Map.Entry<String, String> entry: currentSchema.getContact().entrySet()){
+                    for (Map.Entry<String, String> entry : currentSchema.getContact().entrySet()) {
                         contactString.append(String.format("[%s](%s) ", entry.getKey(), entry.getValue()));
                     }
                     embedBuilder.addField("Contact", contactString.toString(), true);
                 }
-                if(currentSchema.getAuthors().size() > 0){
+                if (currentSchema.getAuthors().size() > 0) {
                     StringBuilder authorsString = new StringBuilder();
-                    for (Map.Entry<String, String> entry: currentSchema.getAuthors().entrySet()){
+                    for (Map.Entry<String, String> entry : currentSchema.getAuthors().entrySet()) {
                         authorsString.append(String.format("[%s](%s) ", entry.getKey(), entry.getValue()));
                     }
-                    if(currentSchema.getAuthors().size() > 1){
+                    if (currentSchema.getAuthors().size() > 1) {
                         embedBuilder.addField("Authors", authorsString.toString(), false);
-                    }else{
+                    } else {
                         embedBuilder.addField("Author", authorsString.toString(), false);
                     }
                 }
@@ -151,22 +152,23 @@ public class InstallPlugin extends Command {
             }
         }
     }
+
     public void installPlugin(Ozzie ozzie, PluginSchema pluginSchema, Message.Attachment attachment, MessageReceivedEvent event) throws Exception {
         File newFile = new File(ozzie.getPluginLoader().getDirectory() + File.separator + pluginSchema.getId() + ".jar");
-        if(newFile.exists()){
+        if (newFile.exists()) {
             boolean success = newFile.delete();
-            if(!success){
+            if (!success) {
                 event.getChannel().sendMessage("Something went wrong! :')").queue();//Todo: weirdly I cant delete it but I can modify it I think
             }
         }
         CompletableFuture<File> downloadFile = event.getMessage().getAttachments().get(0).downloadToFile(newFile);
         newFile = downloadFile.get();
-        if(downloadFile.isDone()){
+        if (downloadFile.isDone()) {
             final JarFile jf = new JarFile(newFile);
             final JarEntry je = jf.getJarEntry("ozzie.plugin.json");
-            if(je != null) {
+            if (je != null) {
                 event.getChannel().sendMessage("Installation Complete!").queue();
-            }else{
+            } else {
                 event.getChannel().sendMessage("Something went wrong! :')").queue();
                 newFile.delete();
             }

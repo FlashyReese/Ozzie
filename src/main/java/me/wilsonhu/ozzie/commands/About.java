@@ -33,26 +33,26 @@ import java.lang.management.ManagementFactory;
 public class About extends Command {
 
     public About() {
-        super(new String[] {"about"}, "Information about the bot", "%s");
+        super(new String[]{"about"}, "Information about the bot", "%s");
         this.setCategory("information");
     }
 
     @Override
-    public void onCommand(String full, String[] split, MessageReceivedEvent event, Ozzie ozzie) throws Exception  {
+    public void onCommand(String full, String[] split, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
         long users = 0;
-        for(Guild guild: event.getJDA().getGuildCache()){
+        for (Guild guild : event.getJDA().getGuildCache()) {
             guild.loadMembers();
-            for(Member member: guild.getMemberCache()){
-                if(member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE) || member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)){
-                    users+=1;
+            for (Member member : guild.getMemberCache()) {
+                if (member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.IDLE) || member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)) {
+                    users += 1;
                 }
             }
         }
         String dev = "FlashyReese";
         String codev = "Anyone?";
-        if(event.isFromGuild()) {
-            for(Member m: event.getGuild().getMembers()){
-                if(m.getUser().getIdLong() == 141594071033577472L){
+        if (event.isFromGuild()) {
+            for (Member m : event.getGuild().getMembers()) {
+                if (m.getUser().getIdLong() == 141594071033577472L) {
                     dev = m.getAsMention();
                 }
             }
@@ -80,7 +80,7 @@ public class About extends Command {
                 .addField(new TranslatableText("ozzie.vcs", event).toString(), ozzie.getShardManager().getVoiceChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.tcs", event).toString(), ozzie.getShardManager().getTextChannels().size() + "", true)
                 .addField(new TranslatableText("ozzie.onlineusers", event).toString(), users + "", true)
-                .addField(new TranslatableText("ozzie.shard", event).toString(), String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued())))), true)
+                .addField(new TranslatableText("ozzie.shard", event).toString(), String.format("%s", ozzie.getShardManager().getShardsTotal() == 1 ? new TranslatableText("ozzie.singleinstance", event).toString() : String.format("%s/%s %s", ozzie.getShardManager().getShardsRunning(), ozzie.getShardManager().getShardsTotal(), ozzie.getShardManager().getShardsQueued() == 0 ? "" : new ParsableTranslatableText(event, "ozzie.queuedshards", Integer.toString(ozzie.getShardManager().getShardsQueued())))), true)
                 .setFooter(new TranslatableText("ozzie.bydev", event).toString(), null);
         event.getChannel().sendMessage(embed.build()).queue();
     }

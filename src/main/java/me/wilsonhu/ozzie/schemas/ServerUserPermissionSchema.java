@@ -24,7 +24,7 @@ public class ServerUserPermissionSchema {
     private long userId;
     private ArrayList<String> permissions;
 
-    public ServerUserPermissionSchema(long serverId, long userId){
+    public ServerUserPermissionSchema(long serverId, long userId) {
         setServerId(serverId);
         setUserId(userId);
         setPermissions(new ArrayList<String>());

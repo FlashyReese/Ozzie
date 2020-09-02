@@ -35,16 +35,16 @@ public class ActivityHelper {
         return quotes;
     }
 
-    private static int getRandomNumberInts(int min, int max){
+    private static int getRandomNumberInts(int min, int max) {
         Random random = new Random();
-        return random.ints(min,(max+1)).findFirst().getAsInt();
+        return random.ints(min, (max + 1)).findFirst().getAsInt();
     }
 
     public static String getRandomQuote() {
         String quote = "Opzzie";
         try {
-            quote = getQuotes().get(getRandomNumberInts(0, getQuotes().size()-1));
-        }catch(IOException e) {
+            quote = getQuotes().get(getRandomNumberInts(0, getQuotes().size() - 1));
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return quote;

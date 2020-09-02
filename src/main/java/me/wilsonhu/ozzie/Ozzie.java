@@ -53,12 +53,11 @@ import java.util.stream.Collectors;
  * <p> Default class for starting {@link me.wilsonhu.ozzie.Ozzie Ozzie} Core Modules and {@link net.dv8tion.jda.api.JDA JDA} instance.
  *
  * @author Yao Chung Hu
- *
- * @since  20.01.09
+ * @since 20.01.09
  */
 public class Ozzie {
 
-    private static final Logger log = LogManager.getLogger(Ozzie.class);
+    private final Logger log = LogManager.getLogger(Ozzie.class);
 
     private ShardManager shardManager;
 
@@ -74,12 +73,11 @@ public class Ozzie {
     private PluginLoader pluginLoader;
     private CommandManager commandManager;
     private I18nManager i18nManager;
-    /*private RConServer RConServer;*/
 
     private EventWaiter eventWaiter;
     private static Ozzie ozzie;
 
-    private final Semver CLIENT_VERSION = new Semver("0.5.1-SNAPSHOT+build-20201207",Semver.SemverType.STRICT);
+    private final Semver CLIENT_VERSION = new Semver("0.5.1-SNAPSHOT+build-20201207", Semver.SemverType.STRICT);
 
     /**
      * Creates a Ozzie with the given parameters.
@@ -90,22 +88,23 @@ public class Ozzie {
      */
     public Ozzie(String[] args) throws Exception {
         this.checkForUpdates();
-        log.info("Building client...");
+        this.log.info("Building client...");
         this.setOperatingSystemName(System.getProperty("os.name").toLowerCase());
         this.setDirectory(new File(System.getProperty("user.dir")));
-        //Todo: YAML Settings
+        //Todo: TOML Settings
         //this.getConfigurationManager().loadClientConfiguration();
-        this.getRuntimeOptionManager().initRuntimeOptions(args, this);
+        this.getRuntimeOptionManager().initRuntimeOptions(args);
         this.setBotName("Ozzie");
         this.setRunning(false);
         this.setDefaultCommandPrefix("-");
         this.setEventWaiter(new EventWaiter());
-        log.info("Client built!");
+        this.log.info("Client built!");
     }
 
     /**
      * Starts the instance of Ozzie using the {@link net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder DefaultShardManagerBuilder} and it's core modules, also loading found plugins.
      * <br>This method can throw an exception on the first time running the application, caused by empty configurations.</br>
+     *
      * @throws LoginException
      * @throws IOException
      * @throws ClassNotFoundException
@@ -115,43 +114,43 @@ public class Ozzie {
      * @throws InvocationTargetException
      */
     public void start() throws LoginException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        if(isRunning()){
-            log.warn("Client already running!");
-        }else{
-            log.info("Starting client...");
+        if (this.isRunning()) {
+            this.log.warn("Client already running!");
+        } else {
+            this.log.info("Starting client...");
             this.setRunning(true);
-            if(shardManager == null){
-                log.info("Building ShardManager...");
+            if (shardManager == null) {
+                this.log.info("Building ShardManager...");
                 DefaultShardManagerBuilder shardManagerBuilder;
-                if(getTokenManager().getToken("discord") == null || getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
-                    log.error("Couldn't find discordapi token!");
+                if (this.getTokenManager().getToken("discord") == null || this.getTokenManager().getToken("discord").isEmpty() || !this.getTokenManager().containsKey("discord")) {
+                    this.log.error("Couldn't find discordapi token!");
                     BufferedReader bufferedReader;
                     bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-                    while (getTokenManager().getToken("discord") == null || getTokenManager().getToken("discord").isEmpty() || !getTokenManager().containsKey("discord")){
-                        log.info("Please input a discord token: ");
+                    while (this.getTokenManager().getToken("discord") == null || this.getTokenManager().getToken("discord").isEmpty() || !this.getTokenManager().containsKey("discord")) {
+                        this.log.info("Please input a discord token: ");
                         String token = bufferedReader.readLine();
-                        getTokenManager().addToken("discord", token.trim());
+                        this.getTokenManager().addToken("discord", token.trim());
                         //Todo: Add precheck for getOzzie().getTokenManager().getToken("mongodb") dsn also add a param check
                     }
                     bufferedReader.close();
                 }
-                shardManagerBuilder = DefaultShardManagerBuilder.createDefault(getTokenManager().getToken("discord"));
+                shardManagerBuilder = DefaultShardManagerBuilder.createDefault(this.getTokenManager().getToken("discord"));
                 shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING);
                 shardManagerBuilder.setAutoReconnect(true);
                 shardManagerBuilder.setAudioSendFactory(new NativeAudioSendFactory());
-                shardManager = shardManagerBuilder.build();
-                getShardManager().addEventListener(new PrimaryListener(this));
-                getShardManager().addEventListener(getEventWaiter());
-                getShardManager().setActivity(/*Activity.streaming("Just Chatting","https://twitch.tv/theflashyreese"));*/Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
-                if(((DisablePlugins) getRuntimeOptionManager().getRuntimeOption(DisablePlugins.class)).isPluginsDisabled()){
-                    log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
-                }else{
-                    loadPlugins();
+                this.shardManager = shardManagerBuilder.build();
+                this.getShardManager().addEventListener(new PrimaryListener(this));
+                this.getShardManager().addEventListener(this.getEventWaiter());
+                this.getShardManager().setActivity(Activity.playing(ActivityHelper.getRandomQuote()));//Fixme: Add me to a ExecutionService
+                if (((DisablePlugins) this.getRuntimeOptionManager().getRuntimeOption(DisablePlugins.class)).isPluginsDisabled()) {
+                    this.log.info("Plugins are disabled!");//Todo: Hmmm Implement a way to disable individually not using params tho
+                } else {
+                    this.loadPlugins();
                 }
-                log.info("ShardManager built!");
+                this.log.info("ShardManager built!");
             }
             setOzzie(this);
-            log.info("Client started!");
+            this.log.info("Client started!");
         }
     }
 
@@ -165,13 +164,13 @@ public class Ozzie {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    private void loadPlugins() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException   {
-        for(PluginModule pluginModule : getPluginLoader().getConfiguredPlugins()){
+    private void loadPlugins() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+        for (PluginModule pluginModule : getPluginLoader().getConfiguredPlugins()) {
             Plugin currentPlugin = pluginModule.getPlugin();
-            log.info(String.format("Enabling [%s]%s %s", pluginModule.getSchema().getId(), pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion()));
+            this.log.info(String.format("Enabling [%s]%s %s", pluginModule.getSchema().getId(), pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion()));
             currentPlugin.onEnable(this);
-            getShardManager().addEventListener(currentPlugin);
-            getCommandManager().addCommands(pluginModule);
+            this.getShardManager().addEventListener(currentPlugin);
+            this.getCommandManager().addCommands(pluginModule);
         }
     }
 
@@ -188,9 +187,9 @@ public class Ozzie {
     private void unloadPlugins() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (PluginModule pluginModule : getPluginLoader().getConfiguredPlugins()) {
             Plugin currentPlugin = pluginModule.getPlugin();
-            log.info(String.format("Disabling [%s]%s %s", pluginModule.getSchema().getId(), pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion()));
+            this.log.info(String.format("Disabling [%s]%s %s", pluginModule.getSchema().getId(), pluginModule.getSchema().getName(), pluginModule.getSchema().getVersion()));
             currentPlugin.onDisable(this);
-            getShardManager().removeEventListener(currentPlugin);
+            this.getShardManager().removeEventListener(currentPlugin);
         }
     }
 
@@ -207,12 +206,12 @@ public class Ozzie {
      * @throws InvocationTargetException
      */
     public void pluginsReload() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        log.warn("Reloading Plugins!");
-        unloadPlugins();
-        getCommandManager().getPluginCommands().clear();
-        pluginLoader = new PluginLoader(getDirectory().getAbsolutePath(), this);
-        loadPlugins();
-        log.info("Plugins reloaded!");
+        this.log.warn("Reloading Plugins!");
+        this.unloadPlugins();
+        this.getCommandManager().getPluginCommands().clear();
+        this.pluginLoader = new PluginLoader(getDirectory().getAbsolutePath(), this);
+        this.loadPlugins();
+        this.log.info("Plugins reloaded!");
     }
 
     /**
@@ -228,15 +227,15 @@ public class Ozzie {
      * @throws ClassNotFoundException
      */
     public void stop() throws NoSuchMethodException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        if(isRunning()){
-            log.info("Stopping client...");
+        if (isRunning()) {
+            this.log.info("Stopping client...");
             unloadPlugins();
             this.getShardManager().shutdown();
             this.setRunning(false);
-            shardManager = null;
-            log.info("Client stopped!");
-        }else{
-            log.warn("Client not running!");
+            this.shardManager = null;
+            this.log.info("Client stopped!");
+        } else {
+            this.log.warn("Client not running!");
         }
     }
 
@@ -254,44 +253,44 @@ public class Ozzie {
      * @throws InvocationTargetException
      */
     public void restart() throws LoginException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, NoSuchMethodException, InvocationTargetException {
-        if (isRunning()){
-            log.info("Restarting client...");
+        if (isRunning()) {
+            this.log.info("Restarting client...");
             this.stop();
             this.setEventWaiter(new EventWaiter());
             this.start();
-            log.info("Client restarted!");
-        }else{
-            log.warn("Client not running!");
+            this.log.info("Client restarted!");
+        } else {
+            this.log.warn("Client not running!");
         }
     }
 
     /**
      * Checks for updates with a url provided from the repository.
      *
-     * @throws IOException
+     * @throws IOException if no connection with Internet or GitHub down
      */
-    public void checkForUpdates() throws IOException{
-        log.info("Checking for updates...");
+    public void checkForUpdates() throws IOException {
+        this.log.info("Checking for updates...");
         URL url = new URL("https://api.github.com/repos/FlashyReese/Ozzie/releases");
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         String json = in.lines().collect(Collectors.joining());
         in.close();
         JSONArray jsonArray = new JSONArray(json);
         Semver latest = new Semver(jsonArray.getJSONObject(0).getString("tag_name"), Semver.SemverType.STRICT);
-        if(getClientVersion().isLowerThan(latest)){
-            log.warn("*** Error, this build is outdated ***");
-            log.warn("*** Please download a new build from https://github.com/FlashyReese/Ozzie/releases ***");
-        }else{
-            log.info("Up to date!");
+        if (this.getClientVersion().isLowerThan(latest)) {
+            this.log.warn("*** Error, this build is outdated ***");
+            this.log.warn("*** Please download a new build from https://github.com/FlashyReese/Ozzie/releases ***");
+        } else {
+            this.log.info("Up to date!");
         }
     }
 
-    public ShardManager getShardManager(){
-        return shardManager;
+    public ShardManager getShardManager() {
+        return this.shardManager;
     }
 
     public String getBotName() {
-        return botName;
+        return this.botName;
     }
 
     public void setBotName(String botName) {
@@ -299,7 +298,7 @@ public class Ozzie {
     }
 
     public boolean isRunning() {
-        return running;
+        return this.running;
     }
 
     public void setRunning(boolean running) {
@@ -307,7 +306,7 @@ public class Ozzie {
     }
 
     public String getDefaultCommandPrefix() {
-        return defaultCommandPrefix;
+        return this.defaultCommandPrefix;
     }
 
     public void setDefaultCommandPrefix(String defaultCommandPrefix) {
@@ -315,7 +314,7 @@ public class Ozzie {
     }
 
     public String getOperatingSystemName() {
-        return operatingSystemName;
+        return this.operatingSystemName;
     }
 
     public void setOperatingSystemName(String operatingSystemName) {
@@ -323,7 +322,7 @@ public class Ozzie {
     }
 
     public File getDirectory() {
-        return directory;
+        return this.directory;
     }
 
     public void setDirectory(File directory) {
@@ -331,7 +330,7 @@ public class Ozzie {
     }
 
     public EventWaiter getEventWaiter() {
-        return eventWaiter;
+        return this.eventWaiter;
     }
 
     public void setEventWaiter(EventWaiter eventWaiter) {
@@ -340,44 +339,49 @@ public class Ozzie {
 
 
     public RuntimeOptionManager getRuntimeOptionManager() {
-        if(runtimeOptionManager == null) runtimeOptionManager = new RuntimeOptionManager();
-        return runtimeOptionManager;
+        if (this.runtimeOptionManager == null) this.runtimeOptionManager = new RuntimeOptionManager(this);
+        return this.runtimeOptionManager;
     }
 
     public TokenManager getTokenManager() {
-        if(tokenManager == null) tokenManager = new TokenManager(this);
-        return tokenManager;
+        if (this.tokenManager == null) this.tokenManager = new TokenManager(this);
+        return this.tokenManager;
     }
 
     public ConfigurationManager getConfigurationManager() {
-        if(configurationManager == null) configurationManager = new ConfigurationManager(this);
-        return configurationManager;
+        if (this.configurationManager == null) this.configurationManager = new ConfigurationManager(this);
+        return this.configurationManager;
     }
 
     public PluginLoader getPluginLoader() throws IOException, ClassNotFoundException {
-        if(pluginLoader == null) pluginLoader = new PluginLoader(getDirectory().getAbsolutePath(), this);
-        return pluginLoader;
+        if (this.pluginLoader == null)
+            this.pluginLoader = new PluginLoader(this.getDirectory().getAbsolutePath(), this);
+        return this.pluginLoader;
     }
 
-    public CommandManager getCommandManager(){
-        if(commandManager == null) commandManager = new CommandManager(this);
-        return commandManager;
+    public CommandManager getCommandManager() {
+        if (this.commandManager == null) this.commandManager = new CommandManager(this);
+        return this.commandManager;
     }
 
-    public I18nManager getI18nManager(){
-        if (i18nManager == null) i18nManager = new I18nManager(this);
-        return i18nManager;
+    public I18nManager getI18nManager() {
+        if (this.i18nManager == null) this.i18nManager = new I18nManager(this);
+        return this.i18nManager;
     }
 
-    public static Ozzie getOzzie(){
+    public Logger getLogger() {
+        return log;
+    }
+
+    public static Ozzie getOzzie() {
         return ozzie;
     }
 
-    private static void setOzzie(Ozzie ozzie){
+    private static void setOzzie(Ozzie ozzie) {
         Ozzie.ozzie = ozzie;
     }
 
-    public Semver getClientVersion(){
-        return CLIENT_VERSION;
+    public Semver getClientVersion() {
+        return this.CLIENT_VERSION;
     }
 }

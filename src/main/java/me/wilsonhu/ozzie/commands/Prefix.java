@@ -31,60 +31,60 @@ public class Prefix extends Command {
 
     @Override
     public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        if(full.equalsIgnoreCase(args[0])){
+        if (full.equalsIgnoreCase(args[0])) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            if(serverSchema.isAllowUserCustomCommandPrefix()){
+            if (serverSchema.isAllowUserCustomCommandPrefix()) {
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
-                if(!userSchema.getCustomCommandPrefix().equals(ozzie.getDefaultCommandPrefix())){
+                if (!userSchema.getCustomCommandPrefix().equals(ozzie.getDefaultCommandPrefix())) {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentprefixuser", event), event.getAuthor().getName(), userSchema.getCustomCommandPrefix()).toString()).queue();
-                }else{
+                } else {
                     defaultServerPrefixCheck(event, ozzie, serverSchema);
                 }
-            }else{
+            } else {
                 defaultServerPrefixCheck(event, ozzie, serverSchema);
             }
-        }else if(isCommand(args, "set", "allowuser")){
+        } else if (isCommand(args, "set", "allowuser")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             boolean prefix = Boolean.parseBoolean(args[2]);
-            if(serverSchema.isAllowUserCustomCommandPrefix() == prefix){
+            if (serverSchema.isAllowUserCustomCommandPrefix() == prefix) {
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.servercustomprefixalready", event), (serverSchema.isAllowUserCustomCommandPrefix() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString()).queue();
-            }else{
+            } else {
                 serverSchema.setAllowUserCustomCommandPrefix(prefix);
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.servercustomprefix", event), (serverSchema.isAllowUserCustomCommandPrefix() ? new TranslatableText("ozzie.true").toString() : new TranslatableText("ozzie.false", event).toString())).toString()).queue();
                 ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
-        }else if(isCommand(args, "set", "server")  && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))){
+        } else if (isCommand(args, "set", "server") && (event.getAuthor().getIdLong() == event.getGuild().getOwnerIdLong() || ozzie.getConfigurationManager().hasPermission(event.getGuild().getIdLong(), event.getAuthor().getIdLong(), "ozzie.developer"))) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
             String prefix = args[2];
-            if(serverSchema.getCustomCommandPrefix().equalsIgnoreCase(prefix)){
+            if (serverSchema.getCustomCommandPrefix().equalsIgnoreCase(prefix)) {
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetprefixalready", event), serverSchema.getServerLocale()).toString()).queue();
-            }else{
+            } else {
                 serverSchema.setCustomCommandPrefix(prefix);
                 event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.serversetprefix", event), serverSchema.getServerLocale()).toString()).queue();
                 ozzie.getConfigurationManager().updateServerSettings(serverSchema);
             }
-        }else if(isCommand(args, "set")){
+        } else if (isCommand(args, "set")) {
             ServerSchema serverSchema = ozzie.getConfigurationManager().getServerSettings(event.getGuild().getIdLong());
-            if(serverSchema.isAllowUserCustomCommandPrefix()){
+            if (serverSchema.isAllowUserCustomCommandPrefix()) {
                 UserSchema userSchema = ozzie.getConfigurationManager().getUserSettings(event.getAuthor().getIdLong());
                 String prefix = args[1];
-                if(userSchema.getCustomCommandPrefix().equalsIgnoreCase(prefix)){
+                if (userSchema.getCustomCommandPrefix().equalsIgnoreCase(prefix)) {
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetcustomprefixalready", event), event.getAuthor().getName(), userSchema.getCustomCommandPrefix()).toString()).queue();
-                }else{
+                } else {
                     userSchema.setCustomCommandPrefix(prefix);
                     event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.usersetcustomprefix", event), event.getAuthor().getName(), userSchema.getCustomCommandPrefix()).toString()).queue();
                     ozzie.getConfigurationManager().updateUserSettings(userSchema);
                 }
-            }else{
+            } else {
                 event.getChannel().sendMessage(new TranslatableText("ozzie.servercustomprefixdisabled", event).toString()).queue();
             }
         }
     }
 
     private void defaultServerPrefixCheck(MessageReceivedEvent event, Ozzie ozzie, ServerSchema serverSchema) {
-        if(!serverSchema.getCustomCommandPrefix().equals(ozzie.getDefaultCommandPrefix())){
+        if (!serverSchema.getCustomCommandPrefix().equals(ozzie.getDefaultCommandPrefix())) {
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentprefixserver", event), serverSchema.getCustomCommandPrefix()).toString()).queue();
-        }else{
+        } else {
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.currentprefix", event), serverSchema.getCustomCommandPrefix()).toString()).queue();
         }
     }

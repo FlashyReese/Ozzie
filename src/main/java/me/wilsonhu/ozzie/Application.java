@@ -25,35 +25,30 @@ import java.lang.reflect.InvocationTargetException;
  * <p> Default class for starting {@link me.wilsonhu.ozzie.Ozzie Ozzie} Core.
  *
  * @author Yao Chung Hu
- *
- * @since  20.01.09
+ * @since 20.01.09
  */
 public class Application {
 
     /**
      * Java's Main Method
      * <br> Creates an instance of {@link me.wilsonhu.ozzie.Ozzie Ozzie} then calls {@link me.wilsonhu.ozzie.Ozzie#start() start()} also a shutdown hook that calls {@link me.wilsonhu.ozzie.Ozzie#stop() stop()}.
-     * @param args
-     *        Ozzie parameters
+     *
+     * @param args Ozzie parameters
      */
     public static void main(String[] args) throws Exception {
         Ozzie ozzie = new Ozzie(args);
         ozzie.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                try {
-                    ozzie.stop();
-                } catch (NoSuchMethodException | InstantiationException | IOException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                ozzie.stop();
+            } catch (NoSuchMethodException | InstantiationException | IOException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        });
-        //Todo: Add back fucking quotes - Update: quotes added but find a way to schedule changes look at TodoList xd
-        //Todo: Start Documenting this shit
-        //Todo: ~Get started on Vaadin WebApp(Maybe Laravel) so I can fully deploy this shit~ fuck this shit back to basics
+        }));
+        //Todo: Add back quotes - Update: quotes added but find a way to schedule changes
+        //Todo: Start Documenting this
         //Todo: ScheduledExecutorService
-        //Todo: Bot Settings yaml(honestly I like json more)
+        //Todo: Bot Settings toml
         //Todo: Add Console into the bot, so I can call commands from the cmd, this is why I have CommandTypes.
         //Todo: DB Fallback, add support for MySQL, H2 and more
     }

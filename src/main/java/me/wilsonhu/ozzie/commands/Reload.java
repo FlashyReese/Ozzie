@@ -23,7 +23,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Reload extends Command {
     public Reload() {
-        super(new String[] {"reload"}, "reloading plugins without restarting", "%s");
+        super(new String[]{"reload"}, "reloading plugins without restarting", "%s");
         this.setCategory("developer");
         this.setPermission("ozzie.developer");
         this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);

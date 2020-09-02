@@ -20,12 +20,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
+import me.wilsonhu.ozzie.core.AbstractManager;
 import me.wilsonhu.ozzie.core.configuration.ConfigurationManager;
 import me.wilsonhu.ozzie.schemas.ServerSchema;
 import me.wilsonhu.ozzie.schemas.UserSchema;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -39,21 +39,20 @@ import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class I18nManager {
+public class I18nManager extends AbstractManager {
 
-    private static final Logger log = LogManager.getLogger(I18nManager.class);
     private HashMap<String, String> pluginLocalizationControl = new HashMap<String, String>();
-    private Ozzie ozzie;
+
     public I18nManager(Ozzie ozzie) {
-        log.info("Building I18nManager...");
-        setOzzie(ozzie);
+        super(ozzie);
+        info("Building I18nManager...");
         loadSavedSettings();
         try {
             loadOzzieLocale();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("I18nManager built!");
+        info("I18nManager built!");
     }
 
     private void loadOzzieLocale() throws IOException, URISyntaxException {
@@ -201,11 +200,8 @@ public class I18nManager {
         this.pluginLocalizationControl = pluginLocalizationControl;
     }
 
-    private Ozzie getOzzie(){
-        return ozzie;
-    }
-
-    private void setOzzie(Ozzie ozzie){
-        this.ozzie = ozzie;
+    @Override
+    public @NotNull String getName() {
+        return "I18nManager";
     }
 }

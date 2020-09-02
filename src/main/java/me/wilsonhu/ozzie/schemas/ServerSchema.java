@@ -32,7 +32,7 @@ public class ServerSchema {
     private boolean allowUserLocale;
     private boolean allowUserCustomCommandPrefix;
 
-    public ServerSchema(long serverId, Ozzie ozzie){
+    public ServerSchema(long serverId, Ozzie ozzie) {
         setServerId(serverId);
         long owner = Objects.requireNonNull(ozzie.getShardManager().getGuildById(serverId)).getOwnerIdLong();
         setOwnerID(owner);
@@ -81,18 +81,18 @@ public class ServerSchema {
         return allowedCommandTextChannel;
     }
 
-    public boolean isAllowedCommandTextChannel(long textChannelId){
-        for(long id: getAllowedCommandTextChannel()){
-            if(id == textChannelId)return true;
+    public boolean isAllowedCommandTextChannel(long textChannelId) {
+        for (long id : getAllowedCommandTextChannel()) {
+            if (id == textChannelId) return true;
         }
         return false;
     }
 
-    public void addCommandTextChannel(long textChannelId){
+    public void addCommandTextChannel(long textChannelId) {
         getAllowedCommandTextChannel().add(textChannelId);
     }
 
-    public void removeCommandTextChannel(long textChannelId){
+    public void removeCommandTextChannel(long textChannelId) {
         getAllowedCommandTextChannel().remove(textChannelId);
     }
 

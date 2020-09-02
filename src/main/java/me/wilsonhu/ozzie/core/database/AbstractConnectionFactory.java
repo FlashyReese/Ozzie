@@ -14,24 +14,14 @@
  * along with Ozzie.  If not, see http://www.gnu.org/licenses/
  *
  */
-package me.wilsonhu.ozzie.commands;
+package me.wilsonhu.ozzie.core.database;
 
 import me.wilsonhu.ozzie.Ozzie;
-import me.wilsonhu.ozzie.core.command.Command;
-import me.wilsonhu.ozzie.core.command.CommandType;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import me.wilsonhu.ozzie.core.AbstractManager;
 
-public class Shutdown extends Command {
-    public Shutdown() {
-        super(new String[]{"shutdown"}, "Stops bot", "%s");
-        this.setCategory("developer");
-        this.setPermission("ozzie.developer");
-        this.setCommandTypes(CommandType.SERVER, CommandType.USER, CommandType.CONSOLE);
-    }
+public abstract class AbstractConnectionFactory extends AbstractManager {
 
-    @Override
-    public void onCommand(String full, String[] args, MessageReceivedEvent event, Ozzie ozzie) throws Exception {
-        ozzie.stop();
-        System.exit(0);
+    protected AbstractConnectionFactory(Ozzie ozzie) {
+        super(ozzie);
     }
 }

@@ -18,67 +18,65 @@ package me.wilsonhu.ozzie.core.token;
 
 import com.google.gson.reflect.TypeToken;
 import me.wilsonhu.ozzie.Ozzie;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import me.wilsonhu.ozzie.core.AbstractManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
-public class TokenManager {
-    private static final Logger log = LogManager.getLogger(TokenManager.class);
-
-    private HashMap<String, String> tokens = new HashMap<String, String>();
-    private Ozzie ozzie;
+public class TokenManager extends AbstractManager {
+    private Map<String, String> tokens = new HashMap<>();
 
     public TokenManager(Ozzie ozzie) {
-        log.info("Building Token Manager...");
-        setOzzie(ozzie);
-        loadSavedTokens();
-        log.info("Token Manager built!");
+        super(ozzie);
+        this.info("Building Token Manager...");
+        this.loadSavedTokens();
+        this.info("Token Manager built!");
     }
 
-    public void loadSavedTokens(){
-        if(!new File("tokens.json").exists()){
+    public void loadSavedTokens() {
+        if (!new File("tokens.json").exists()) {
             return;
         }
-        log.info("Loading saved tokens...");
-        this.setTokens(getOzzie().getConfigurationManager().readJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", new TypeToken<HashMap<String, String>>(){}.getType()));
-        log.info("Loaded saved tokens!");
+        this.info("Loading saved tokens...");
+        this.setTokens(getOzzie().getConfigurationManager().readJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", new TypeToken<HashMap<String, String>>() {
+        }.getType()));
+        this.info("Loaded saved tokens!");
     }
 
-    public String getToken(String key){
+    public String getToken(String key) {
         return this.getTokens().get(key);
     }
 
-    public boolean containsKey(String key){
-        return getTokens().containsKey(key);
+    public boolean containsKey(String key) {
+        return this.getTokens().containsKey(key);
     }
 
-    private Ozzie getOzzie(){return this.ozzie;}
-
-    public void addToken(String key, String token){
+    public void addToken(String key, String token) {
         this.getTokens().put(key, token);
-        log.info("Saving tokens...");
-        getOzzie().getConfigurationManager().writeJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", this.getTokens());
-        log.info("Saved tokens!");
+        this.info("Saving tokens...");
+        this.getOzzie().getConfigurationManager().writeJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", this.getTokens());
+        this.info("Saved tokens!");
     }
 
-    public void removeToken(String key){
+    public void removeToken(String key) {
         this.getTokens().remove(key);
-        log.info("Saving tokens...");
-        getOzzie().getConfigurationManager().writeJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", this.getTokens());
-        log.info("Saved tokens!");
+        this.info("Saving tokens...");
+        this.getOzzie().getConfigurationManager().writeJson(getOzzie().getDirectory().getAbsolutePath(), "tokens", this.getTokens());
+        this.info("Saved tokens!");
     }
 
-    private HashMap<String, String> getTokens() {
-        return tokens;
+    private Map<String, String> getTokens() {
+        return this.tokens;
     }
 
-    private void setTokens(HashMap<String, String> tokens) {
+    private void setTokens(Map<String, String> tokens) {
         this.tokens = tokens;
     }
 
-    private void setOzzie(Ozzie ozzie){
-        this.ozzie = ozzie;
+    @Override
+    public @NotNull String getName() {
+        return "Token Manager";
     }
 }
