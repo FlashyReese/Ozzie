@@ -22,5 +22,5 @@ bin/
 # ozzie
 plugins/
 locale/
-log/
+logs/
 tokens.json
