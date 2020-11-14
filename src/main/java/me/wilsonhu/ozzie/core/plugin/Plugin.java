@@ -22,12 +22,11 @@ import me.wilsonhu.ozzie.schemas.PluginSchema;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public abstract class Plugin extends ListenerAdapter {
 
-    private List<Command> commands = new ArrayList<>();
+    private ArrayList<Command> commands = new ArrayList<>();
     private PluginSchema pluginSchema;
 
     public void onEnable(Ozzie ozzie) {
@@ -36,7 +35,7 @@ public abstract class Plugin extends ListenerAdapter {
     public void onDisable(Ozzie ozzie) {
     }
 
-    public List<Command> getCommands() {
+    public ArrayList<Command> getCommands() {
         return this.commands;
     }
 

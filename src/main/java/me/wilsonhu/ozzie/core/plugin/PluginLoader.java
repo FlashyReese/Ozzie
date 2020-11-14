@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 
 public class PluginLoader extends AbstractManager {
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
     private static final Logger log = LogManager.getLogger(PluginLoader.class);
 
     final ArrayList<PluginModule> pluginsRaw = new ArrayList<PluginModule>();

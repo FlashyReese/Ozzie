@@ -56,7 +56,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
 
     private MongoClient mongoClient;
 
-    public MongoDBConnectionFactory(Ozzie ozzie){//Todo: Build this better with graphql and proper "non-query"
+    public MongoDBConnectionFactory(Ozzie ozzie) {//Todo: Build this better with graphql and proper "non-query"
         super(ozzie);
         log.info("Building MongoDB Handler...");
         ClassModel<UserSchema> userSchemaClassModelClassModel = ClassModel.builder(UserSchema.class).enableDiscriminator(true).build();
@@ -72,7 +72,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         log.info("MongoDB Handler built!");
     }
 
-    public void createUser(long userId){
+    public void createUser(long userId) {
         MongoDatabase db = null;
         MongoCollection<UserSchema> collection = null;
         try {
@@ -86,7 +86,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public UserSchema retrieveUser(long userId){
+    public UserSchema retrieveUser(long userId) {
         MongoDatabase db = null;
         MongoCollection<Document> collection = null;
         Document result = null;
@@ -96,7 +96,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
             collection = db.getCollection(USER_COLLECTION);
             query = eq("userId", userId);
             result = collection.find(query).first();
-            if(result == null){
+            if (result == null) {
                 createUser(userId);
                 return retrieveUser(userId);
             }
@@ -106,7 +106,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         return new Gson().fromJson(result.toJson(), UserSchema.class);
     }
 
-    public void updateUser(UserSchema userSchema){
+    public void updateUser(UserSchema userSchema) {
         MongoDatabase db = null;
         MongoCollection<UserSchema> collection = null;
         Bson filter = null;
@@ -123,7 +123,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void deleteUser(long userId){
+    public void deleteUser(long userId) {
         MongoDatabase db = null;
         MongoCollection<UserSchema> collection = null;
         Bson query = null;
@@ -140,7 +140,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void createServer(long serverId){
+    public void createServer(long serverId) {
         MongoDatabase db = null;
         MongoCollection<ServerSchema> collection = null;
         try {
@@ -154,7 +154,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public ServerSchema retrieveServer(long serverId){
+    public ServerSchema retrieveServer(long serverId) {
         MongoDatabase db = null;
         MongoCollection<Document> collection = null;
         Document result = null;
@@ -164,7 +164,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
             collection = db.getCollection(SERVER_COLLECTION);
             query = eq("serverId", serverId);
             result = collection.find(query).first();
-            if(result == null){
+            if (result == null) {
                 createServer(serverId);
                 return retrieveServer(serverId);
             }
@@ -174,7 +174,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         return new Gson().fromJson(result.toJson(), ServerSchema.class);
     }
 
-    public void updateServer(ServerSchema serverSchema){
+    public void updateServer(ServerSchema serverSchema) {
         MongoDatabase db = null;
         MongoCollection<ServerSchema> collection = null;
         Bson filter = null;
@@ -193,7 +193,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void deleteServer(long serverId){
+    public void deleteServer(long serverId) {
         MongoDatabase db = null;
         MongoCollection<ServerSchema> collection = null;
         Bson query = null;
@@ -210,7 +210,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void createServerUserPermission(long serverId, long userId){
+    public void createServerUserPermission(long serverId, long userId) {
         MongoDatabase db = null;
         MongoCollection<ServerUserPermissionSchema> collection = null;
         try {
@@ -224,7 +224,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public ServerUserPermissionSchema retrieveServerUserPermission(long serverId, long userId){
+    public ServerUserPermissionSchema retrieveServerUserPermission(long serverId, long userId) {
         MongoDatabase db = null;
         MongoCollection<Document> collection = null;
         Document result = null;
@@ -234,7 +234,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
             collection = db.getCollection(SERVER_USER_PERMISSIONS_COLLECTION);
             query = and(eq("serverId", serverId), eq("userId", userId));
             result = collection.find(query).first();
-            if(result == null){
+            if (result == null) {
                 createServerUserPermission(serverId, userId);
                 return retrieveServerUserPermission(serverId, userId);
             }
@@ -244,7 +244,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         return new Gson().fromJson(result.toJson(), ServerUserPermissionSchema.class);
     }
 
-    public void updateServerUserPermission(ServerUserPermissionSchema serverUserPermissionSchema){
+    public void updateServerUserPermission(ServerUserPermissionSchema serverUserPermissionSchema) {
         MongoDatabase db = null;
         MongoCollection<ServerSchema> collection = null;
         Bson filter = null;
@@ -261,7 +261,7 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void deleteServerUserPermission(long serverId, long userId){
+    public void deleteServerUserPermission(long serverId, long userId) {
         MongoDatabase db = null;
         MongoCollection<ServerUserPermissionSchema> collection = null;
         Bson query = null;
@@ -278,11 +278,11 @@ public class MongoDBConnectionFactory extends AbstractConnectionFactory {
         }
     }
 
-    public void setMongoClient(MongoClient mongoClient){
+    public void setMongoClient(MongoClient mongoClient) {
         this.mongoClient = mongoClient;
     }
 
-    public MongoClient getMongoClient(){
+    public MongoClient getMongoClient() {
         return mongoClient;
     }
 

@@ -16,11 +16,7 @@
  */
 package me.wilsonhu.ozzie.core.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import me.wilsonhu.ozzie.Application;
 import me.wilsonhu.ozzie.Ozzie;
 import me.wilsonhu.ozzie.core.AbstractManager;
 import me.wilsonhu.ozzie.core.database.mongodb.MongoDBConnectionFactory;

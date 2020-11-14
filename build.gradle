@@ -44,23 +44,24 @@ publishing {
 }
 
 dependencies {
+    implementation "org.apache.logging.log4j:log4j-api:${project.log4j}"
+    implementation "org.apache.logging.log4j:log4j-core:${project.log4j}"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:${project.log4j}"
 
-    implementation 'net.dv8tion:JDA:4.2.0_173'
-    implementation 'com.jagrosh:jda-utilities-commons:3.0.4'
-    implementation 'com.jagrosh:jda-utilities-menu:3.0.4'
-    implementation 'com.sedmelluq:lavaplayer:1.3.50'
-    implementation 'com.sedmelluq:jda-nas:1.1.0'
+    implementation "net.dv8tion:JDA:${project.jda}"
+    implementation "com.jagrosh:jda-utilities-commons:${project.jda_utilities}"
+    implementation "com.jagrosh:jda-utilities-menu:${project.jda_utilities}"
+    implementation "com.sedmelluq:jda-nas:${project.jda_nas}"
+    implementation "com.sedmelluq:lavaplayer:${project.lavaplayer}"
 
-    implementation 'org.json:json:20200518'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.3'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.3'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
-    implementation 'bsh:bsh:2.0b4'
-    implementation 'com.github.oshi:oshi-core:5.2.0'
-    implementation 'org.mongodb:mongodb-driver-sync:4.1.0-beta2'
-    implementation 'com.h2database:h2:1.4.200'
-    implementation 'com.vdurmont:semver4j:3.1.0'
+    implementation "org.json:json:20200518"
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "bsh:bsh:2.0b4"
+    implementation "com.github.oshi:oshi-core:5.2.0"
+    implementation "org.mongodb:mongodb-driver-sync:4.1.0-beta2"
+    //implementation "org.mongodb:mongodb-driver-reactivestreams:4.1.1"
+    implementation "com.h2database:h2:1.4.200"
+    implementation "com.vdurmont:semver4j:3.1.0"
 
     api("org.aperlambda:lambdajcommon:1.8.0") {
         exclude group: 'com.google.code.gson'
@@ -70,6 +71,6 @@ dependencies {
 }
 
 group = 'me.wilsonhu'
-version = '0.5.1-SNAPSHOT+build-20201207'
+version = '0.5.2-SNAPSHOT+build-20201311'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
