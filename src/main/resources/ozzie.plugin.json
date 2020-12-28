@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "ozzie",
+  "name": "Ozzie",
+  "description": "A Modular Java Discord Bot",
+  "version": "${version}",
+  "authors": {
+    "FlashyReese": "https://github.com/FlashyReese"
+  },
+  "contacts": {
+    "homepage": "https://github.com/FlashyReese/Ozzie",
+    "sources": "https://github.com/FlashyReese/Ozzie",
+    "issues": "https://github.com/FlashyReese/Ozzie/issues"
+  },
+  "entryPoint": {
+    "main": [
+      "me.flashyreese.ozzie.Ozzie"
+    ]
+  }
+}

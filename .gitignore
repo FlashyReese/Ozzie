@@ -20,7 +20,4 @@ bin/
 .project
 
 # ozzie
-plugins/
-locale/
-logs/
-tokens.json
+run/
