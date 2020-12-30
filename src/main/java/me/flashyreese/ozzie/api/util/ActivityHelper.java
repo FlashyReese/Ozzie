@@ -21,11 +21,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ActivityHelper {
-    private static ArrayList<String> getQuotes() throws IOException {
-        ArrayList<String> quotes = new ArrayList<String>();
+    private static List<String> getQuotes() throws IOException {
+        List<String> quotes = new ArrayList<>();
         File file = new File("quotes.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String st;
@@ -35,18 +36,22 @@ public class ActivityHelper {
         return quotes;
     }
 
-    private static int getRandomNumberInts(int min, int max) {
+    private static int getRandomNumberInts(int max) {
         Random random = new Random();
-        return random.ints(min, (max + 1)).findFirst().getAsInt();
+        return random.ints(0, (max + 1)).findFirst().getAsInt();
     }
 
     public static String getRandomQuote() {
         String quote = "Opzzie";
         try {
-            quote = getQuotes().get(getRandomNumberInts(0, getQuotes().size() - 1));
+            quote = getQuotes().get(getRandomNumberInts(getQuotes().size() - 1));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (quote.length() >= 128){
+            quote = quote.substring(0, 124) + "...";
+        }
+
         return quote;
     }
 

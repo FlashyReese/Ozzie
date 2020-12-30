@@ -1,7 +1,6 @@
 package me.flashyreese.ozzie.api.plugin;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +9,11 @@ public class PluginMetadataV1 extends SchematicVersion {
     private String id;
     private String name;
     private String description;
-    private Map<String, String> authors = new Object2ObjectOpenHashMap<>();
-    private Map<String, String> contacts = new Object2ObjectOpenHashMap<>();
+    private Map<String, String> authors = new HashMap<>();
+    private Map<String, String> contacts = new HashMap<>();
     private String license;
     private String version;
-    private Map<String, List<String>> entryPoint = new Object2ObjectOpenHashMap<>();
+    private Map<String, List<String>> entryPoint = new HashMap<>();
 
     public String getId() {
         return id;

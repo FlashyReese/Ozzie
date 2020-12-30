@@ -18,19 +18,19 @@ package me.flashyreese.ozzie.api.token;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.flashyreese.ozzie.api.OzzieApi;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TokenManager {
     private final Gson gson;
     private final File file;
-    private Map<String, String> tokens = new Object2ObjectOpenHashMap<>();
+    private Map<String, String> tokens = new HashMap<>();
 
     public TokenManager(Gson gson, File directory) {
         this.gson = gson;
@@ -67,13 +67,13 @@ public class TokenManager {
 
         if (this.file.exists()) {
             try (FileReader reader = new FileReader(this.file)) {
-                config = this.gson.fromJson(reader, new TypeToken<Object2ObjectOpenHashMap<String, String>>() {
+                config = this.gson.fromJson(reader, new TypeToken<HashMap<String, String>>() {
                 }.getType());
             } catch (IOException e) {
                 throw new RuntimeException("Could not parse tokens", e);
             }
         } else {
-            config = new Object2ObjectOpenHashMap<>();
+            config = new HashMap<>();
             this.writeChanges();
         }
 

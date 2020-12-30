@@ -3,11 +3,9 @@ package me.flashyreese.ozzie.api.l10n;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vdurmont.semver4j.Semver;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.flashyreese.common.util.FileUtil;
 import me.flashyreese.common.util.JarUtil;
-import me.flashyreese.ozzie.api.plugin.OzziePlugin;
+import me.flashyreese.ozzie.api.plugin.Plugin;
 import me.flashyreese.ozzie.api.plugin.PluginLoader;
 
 import java.io.*;
@@ -23,7 +21,7 @@ public class L10nManager {
     private final File file;
     private final String jarLocaleDirectory;
 
-    private final List<LocalizationContainer> localizationContainers = new ObjectArrayList<>();
+    private final List<LocalizationContainer> localizationContainers = new ArrayList<>();
 
     public L10nManager(Gson gson, File directory, String jarLocaleDirectory) {
         this.gson = gson;
@@ -32,7 +30,7 @@ public class L10nManager {
         this.localizationContainers.addAll(this.load());
     }
 
-    public String translate(String key, String lang){
+    public String translate(String key, String lang) {
         key = key.trim();
         if (key.isEmpty() || key.startsWith(".") || key.endsWith(".") || !key.contains(".")) {
             return key;
@@ -40,21 +38,21 @@ public class L10nManager {
 
         String domain = key.substring(0, key.indexOf('.'));
         Optional<LocalizationContainer> optionalLocalizationContainer = this.localizationContainers.stream().filter(container -> container.getIdentifier().equalsIgnoreCase(domain)).findFirst();
-        if (optionalLocalizationContainer.isPresent()){
+        if (optionalLocalizationContainer.isPresent()) {
             LocalizationContainer localizationContainer = optionalLocalizationContainer.get();
-            if (localizationContainer.getLocales().containsKey(lang)){
+            if (localizationContainer.getLocales().containsKey(lang)) {
                 Map<String, String> langMap = localizationContainer.getLocales().get(lang);
                 String name = key.substring(key.indexOf('.') + 1);
                 return langMap.getOrDefault(name, key);
-            }else{
+            } else {
                 return key;
             }
-        }else{
+        } else {
             return key;
         }
     }
 
-    public void loadLocalizableContainerFromPluginEntryContainer(PluginLoader.PluginEntryContainer<OzziePlugin> pluginEntryContainer) throws Exception {
+    public void loadLocalizableContainerFromPluginEntryContainer(PluginLoader.PluginEntryContainer<Plugin> pluginEntryContainer) throws Exception {
         Optional<LocalizationContainer> optionalLocalizableContainer = this.localizationContainers.stream().filter(container -> container.getIdentifier().equals(pluginEntryContainer.getPluginMetadata().getId())).findFirst();
         if (optionalLocalizableContainer.isPresent()) {
             LocalizationContainer localizationContainer = optionalLocalizableContainer.get();
@@ -71,8 +69,8 @@ public class L10nManager {
                     }
                 });
             }
-        }else{
-            Map<String, Map<String, String>> locales = new Object2ObjectOpenHashMap<>();
+        } else {
+            Map<String, Map<String, String>> locales = new HashMap<>();
             List<Locale> validLocales = this.searchValidLocales(pluginEntryContainer.getPluginFile());
             validLocales.forEach(locale -> {
                 try {
@@ -88,7 +86,7 @@ public class L10nManager {
     }
 
     private List<Locale> searchValidLocales(File jarFile) throws Exception {
-        List<Locale> validLocales = new ObjectArrayList<>();
+        List<Locale> validLocales = new ArrayList<>();
         if (jarFile.isFile()) {
             final JarFile jar = new JarFile(jarFile);
             final Enumeration<JarEntry> entries = jar.entries();
@@ -125,7 +123,7 @@ public class L10nManager {
     }
 
     private Map<String, String> getTranslationsForLocale(File jarFile, Locale locale) throws Exception {
-        Map<String, String> translations = new Object2ObjectOpenHashMap<>();
+        Map<String, String> translations = new HashMap<>();
         if (jarFile.isFile()) {
             final JarFile jar = new JarFile(jarFile);
             final Enumeration<JarEntry> entries = jar.entries();
@@ -164,7 +162,7 @@ public class L10nManager {
 
     private void deserializeTranslations(Map<String, String> translations, BufferedReader bufferedReader) throws IOException {
         String json = bufferedReader.lines().collect(Collectors.joining());
-        Map<String, String> map = gson.fromJson(json, new TypeToken<Object2ObjectOpenHashMap<String, String>>() {
+        Map<String, String> map = gson.fromJson(json, new TypeToken<HashMap<String, String>>() {
         }.getType());
         bufferedReader.close();
         translations.putAll(map);
@@ -183,13 +181,13 @@ public class L10nManager {
         List<LocalizationContainer> localizationContainers;
         if (this.file.exists()) {
             try (FileReader reader = new FileReader(this.file)) {
-                localizationContainers = this.gson.fromJson(reader, new TypeToken<ObjectArrayList<LocalizationContainer>>() {
+                localizationContainers = this.gson.fromJson(reader, new TypeToken<ArrayList<LocalizationContainer>>() {
                 }.getType());
             } catch (IOException e) {
                 throw new RuntimeException("Could not parse locales", e);
             }
         } else {
-            localizationContainers = new ObjectArrayList<>();
+            localizationContainers = new ArrayList<>();
             this.writeChanges();
         }
         return localizationContainers;

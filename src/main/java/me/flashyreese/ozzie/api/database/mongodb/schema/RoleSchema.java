@@ -1,20 +1,20 @@
 package me.flashyreese.ozzie.api.database.mongodb.schema;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.flashyreese.common.permission.Permissible;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RoleSchema implements Permissible {
 
     private long roleIdentifier;
-    private Map<String, Boolean> permissions = new Object2ObjectOpenHashMap<>();
+    private Map<String, Boolean> permissions = new HashMap<>();
 
-    public RoleSchema(){
+    public RoleSchema() {
 
     }
 
-    public RoleSchema(long roleIdentifier){
+    public RoleSchema(long roleIdentifier) {
         this.roleIdentifier = roleIdentifier;
     }
 

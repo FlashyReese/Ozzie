@@ -18,7 +18,6 @@ package me.flashyreese.ozzie.api.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.flashyreese.ozzie.api.OzzieApi;
 
 import java.io.*;
@@ -27,12 +26,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tenor {
 
     public List<String> getItems(String search) {
-        List<String> items = new ObjectArrayList<>();
+        List<String> items = new ArrayList<>();
         Thread t = new Thread(() -> {
 
             String searchTerm = "";

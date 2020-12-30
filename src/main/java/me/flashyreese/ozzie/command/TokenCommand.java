@@ -2,62 +2,81 @@ package me.flashyreese.ozzie.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import me.flashyreese.ozzie.api.OzzieApi;
-import me.flashyreese.ozzie.api.command.Command;
-import me.flashyreese.ozzie.api.command.CommandManager;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
+import me.flashyreese.ozzie.api.l10n.ParsableText;
+import me.flashyreese.ozzie.api.l10n.TranslatableText;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class TokenCommand extends Command {
-    public TokenCommand(String category, String description, String important) {
-        super(category, description, important, "ozzie.token");
+public class TokenCommand extends DiscordCommand {
+    public TokenCommand() {
+        super("", "ozzie.token.description", "ozzie.token");
     }
 
     @Override
-    public LiteralArgumentBuilder<MessageReceivedEvent> getArgumentBuilder() {
-        return CommandManager.literal("token").requires(this::hasPermission)
-                .then(CommandManager.literal("add")
-                        .then(CommandManager.argument("tokenName", StringArgumentType.word())
-                                .then(CommandManager.argument("token", StringArgumentType.word())
-                                        .executes(commandContext -> {
-                                            MessageReceivedEvent event = commandContext.getSource();
-                                            String tokenName = StringArgumentType.getString(commandContext, "tokenName");
-                                            String token = StringArgumentType.getString(commandContext, "token");
+    public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
+        return DiscordCommandManager.literal("token")
+                .requires(this::hasPermission)
+                .then(DiscordCommandManager.literal("add")
+                        .requires(commandContext -> this.hasPermissionOf(commandContext, "add"))
+                        .then(DiscordCommandManager.argument("tokenName", StringArgumentType.string())
+                                .then(DiscordCommandManager.argument("token", StringArgumentType.string())
+                                        .executes(this::add))))
+                .then(DiscordCommandManager.literal("remove")
+                        .requires(commandContext -> this.hasPermissionOf(commandContext, "remove"))
+                        .then(DiscordCommandManager.argument("tokenName", StringArgumentType.string())
+                                .executes(this::remove)))
+                .then(DiscordCommandManager.literal("reload")
+                        .requires(commandContext -> this.hasPermissionOf(commandContext, "reload"))
+                        .executes(this::reload));
+    }
 
-                                            if (OzzieApi.INSTANCE.getTokenManager().containsKey(tokenName)) {
-                                                OzzieApi.INSTANCE.getTokenManager().addToken(tokenName, token);
-                                                event.getChannel().sendMessage(String.format("The token `%s` has been updated.", tokenName)).queue();
-                                            } else {
-                                                event.getChannel().sendMessage(String.format("The token `%s` has been added.", tokenName)).queue();
-                                            }
-                                            event.getMessage().delete().queue();
-                                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                        })
-                                )
-                        )
-                ).then(CommandManager.literal("remove")
-                        .then(CommandManager.argument("tokenName", StringArgumentType.word())
-                                .executes(commandContext -> {
-                                    MessageReceivedEvent event = commandContext.getSource();
-                                    String tokenName = StringArgumentType.getString(commandContext, "tokenName");
+    private int add(CommandContext<DiscordCommandSource> commandContext) {
+        MessageReceivedEvent event = commandContext.getSource().getEvent();
+        String tokenName =
+                StringArgumentType.getString(commandContext, "tokenName");
+        String token = StringArgumentType.getString(commandContext, "token");
 
-                                    if (OzzieApi.INSTANCE.getTokenManager().containsKey(tokenName)) {
-                                        OzzieApi.INSTANCE.getTokenManager().removeToken(tokenName);
-                                        event.getChannel().sendMessage(String.format("The token `%s` has been removed.", tokenName)).queue();
-                                    } else {
-                                        event.getChannel().sendMessage(String.format("The token `%s` does not exist.", tokenName)).queue();
-                                    }
-                                    event.getMessage().delete().queue();
-                                    return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                })
-                        )
-                ).then(CommandManager.literal("reload")
-                        .executes(commandContext -> {
-                            MessageReceivedEvent event = commandContext.getSource();
-                            event.getChannel().sendMessage("Reloading saved tokens...").queue();
-                            OzzieApi.INSTANCE.getTokenManager().loadSavedTokens();
-                            event.getChannel().sendMessage("Saved tokens reloaded.").queue();
-                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                        })
-                );
+        OzzieApi.INSTANCE.getTokenManager().addToken(tokenName, token);
+        if (OzzieApi.INSTANCE.getTokenManager().containsKey(tokenName)) {
+            event.getChannel()
+                    .sendMessage(new ParsableText(new TranslatableText("ozzie.token.add.updated", commandContext), tokenName))
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(new ParsableText(new TranslatableText("ozzie.token.add.added", commandContext), tokenName))
+                    .queue();
+        }
+        event.getMessage().delete().queue();
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    private int remove(CommandContext<DiscordCommandSource> commandContext) {
+        MessageReceivedEvent event = commandContext.getSource().getEvent();
+        String tokenName = StringArgumentType.getString(commandContext, "tokenName");
+
+        if (OzzieApi.INSTANCE.getTokenManager().containsKey(tokenName)) {
+            OzzieApi.INSTANCE.getTokenManager().removeToken(tokenName);
+            event.getChannel()
+                    .sendMessage(new ParsableText(new TranslatableText("ozzie.token.remove.removed", commandContext), tokenName))
+                    .queue();
+        } else {
+            event.getChannel()
+                    .sendMessage(new ParsableText(new TranslatableText("ozzie.token.remove.not_exist", commandContext), tokenName))
+                    .queue();
+        }
+        event.getMessage().delete().queue();
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    private int reload(CommandContext<DiscordCommandSource> commandContext) {
+        MessageReceivedEvent event = commandContext.getSource().getEvent();
+        event.getChannel().sendMessage(new TranslatableText("ozzie.reload.reloading", commandContext)).queue();
+        OzzieApi.INSTANCE.getTokenManager().loadSavedTokens();
+        event.getChannel().sendMessage(new TranslatableText("ozzie.reload.complete", commandContext)).queue();
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 }

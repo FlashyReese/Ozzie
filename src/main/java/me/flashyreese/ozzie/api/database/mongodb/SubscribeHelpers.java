@@ -1,10 +1,10 @@
 package me.flashyreese.ozzie.api.database.mongodb;
 
 import com.mongodb.MongoTimeoutException;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -23,8 +23,8 @@ public class SubscribeHelpers {
         private volatile boolean completed;
 
         ObservableSubscriber() {
-            this.received = new ObjectArrayList<>();
-            this.errors = new ObjectArrayList<>();
+            this.received = new ArrayList<>();
+            this.errors = new ArrayList<>();
             this.latch = new CountDownLatch(1);
         }
 

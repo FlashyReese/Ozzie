@@ -1,28 +1,26 @@
 package me.flashyreese.ozzie.api.database.mongodb.schema;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.flashyreese.ozzie.api.OzzieApi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerConfigurationSchema {
     private long serverIdentifier;
-    private List<Long> owners = new ObjectArrayList<>();
+    private List<Long> owners = new ArrayList<>();
     private String commandPrefix = "";
     private String locale = "";
     private boolean allowUserLocale;
     private boolean allowUserCommandPrefix;
-    private List<Long> allowedCommandTextChannel = new ObjectArrayList<>();
+    private List<Long> allowedCommandTextChannel = new ArrayList<>();
 
-    public ServerConfigurationSchema(){
+    public ServerConfigurationSchema() {
 
     }
 
     public ServerConfigurationSchema(long serverIdentifier) {
         this.serverIdentifier = serverIdentifier;
         this.owners.add(OzzieApi.INSTANCE.getShardManager().getGuildById(serverIdentifier).getOwnerIdLong());
-        this.commandPrefix = "";
-        this.locale = "";
         this.allowUserLocale = true;
         this.allowUserCommandPrefix = true;
         this.allowedCommandTextChannel.add(OzzieApi.INSTANCE.getShardManager().getGuildById(serverIdentifier).getDefaultChannel().getIdLong());

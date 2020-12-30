@@ -8,14 +8,14 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.vdurmont.semver4j.Semver;
 import me.flashyreese.common.util.JarUtil;
 import me.flashyreese.ozzie.Ozzie;
-import me.flashyreese.ozzie.api.command.CommandManager;
 import me.flashyreese.ozzie.api.database.DatabaseHandler;
 import me.flashyreese.ozzie.api.l10n.L10nManager;
 import me.flashyreese.ozzie.api.permission.PermissionDispatcher;
-import me.flashyreese.ozzie.api.plugin.OzziePlugin;
+import me.flashyreese.ozzie.api.plugin.Plugin;
 import me.flashyreese.ozzie.api.plugin.PluginLoader;
 import me.flashyreese.ozzie.api.token.TokenManager;
 import me.flashyreese.ozzie.api.util.ActivityHelper;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -46,7 +46,7 @@ public class OzzieApi {
     private final File directory;
 
     private ShardManager shardManager;
-    private final CommandManager commandManager;
+    private final DiscordCommandManager commandManager;
     private final TokenManager tokenManager;
     private final PluginLoader pluginLoader;
     private final PermissionDispatcher permissionDispatcher;
@@ -63,7 +63,7 @@ public class OzzieApi {
         this.defaultCommandPrefix = "-";
         this.directory = new File(System.getProperty("user.dir"));
         this.tokenManager = new TokenManager(this.gson, this.directory);
-        this.commandManager = new CommandManager();
+        this.commandManager = new DiscordCommandManager();
         this.pluginLoader = new PluginLoader(this.gson, new File(this.directory.getAbsolutePath() + File.separator + "plugins"), "ozzie.plugin");
         this.permissionDispatcher = new PermissionDispatcher();
         this.databaseHandler = new DatabaseHandler();
@@ -105,11 +105,24 @@ public class OzzieApi {
     public synchronized void stop() {
         if (this.running) {
             this.logger.info("Stopping instance...");
-            this.pluginLoader.getPluginEntryContainers().forEach(pluginEntryContainer -> pluginEntryContainer.getEntryPoints().forEach(OzziePlugin::terminatePlugin));
+            this.pluginLoader.getPluginEntryContainers().forEach(pluginEntryContainer -> pluginEntryContainer.getEntryPoints().forEach(Plugin::terminatePlugin));
+            this.pluginLoader.getPluginEntryContainers().clear();
             this.shardManager.shutdown();
-            this.shardManager = null;
             this.running = false;
             this.logger.info("Instance stopped!");
+        } else {
+            this.logger.warn("Instance not running!");
+        }
+    }
+
+    public synchronized void restart() {
+        if (this.running) {
+            this.logger.info("Restarting instance...");
+            this.pluginLoader.getPluginEntryContainers().forEach(pluginEntryContainer -> pluginEntryContainer.getEntryPoints().forEach(Plugin::terminatePlugin));
+            this.pluginLoader.getPluginEntryContainers().clear();
+            this.shardManager.restart();
+            this.pluginLoader.registerPlugins();
+            this.logger.info("Restarted instance...");
         } else {
             this.logger.warn("Instance not running!");
         }
@@ -172,7 +185,7 @@ public class OzzieApi {
         return shardManager;
     }
 
-    public CommandManager getCommandManager() {
+    public DiscordCommandManager getCommandManager() {
         return commandManager;
     }
 

@@ -1,32 +1,38 @@
 package me.flashyreese.ozzie.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.flashyreese.ozzie.api.command.Command;
-import me.flashyreese.ozzie.api.command.CommandManager;
+import com.mojang.brigadier.context.CommandContext;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.util.Tenor;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 
 import java.util.List;
 import java.util.Random;
 
-public class ClaraCommand extends Command {
+public class ClaraCommand extends DiscordCommand {
 
-    public String[] tags = new String[]{"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald", "Doctor Who Clara Oswald", "Doctor Who Clara Oswin Oswald", "Doctor Who Oswin Oswald", "Doctor Who Clara Oswald"};
+    public String[] tags =
+            new String[]{"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald", "Doctor Who Clara Oswald", "Doctor Who Clara Oswin Oswald", "Doctor Who Oswin Oswald", "Doctor Who Clara Oswald"};
 
-    public ClaraCommand(String category, String description, String important) {
-        super(category, description, important, "ozzie.clara");
+    public ClaraCommand() {
+        super("", "ozzie.clara.description", "ozzie.clara");
     }
 
     @Override
-    public LiteralArgumentBuilder<MessageReceivedEvent> getArgumentBuilder() {
-        return CommandManager.literal("clara").requires(this::hasPermission).executes(commandContext -> {
-            Random r = new Random();
-            int randomNumber = r.nextInt(tags.length);
-            List<String> results = new Tenor().getItems(tags[randomNumber]);
-            int index = r.nextInt(results.size() - 1);
-            String s = results.get(index);
-            commandContext.getSource().getChannel().sendMessage(s).queue();
-            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-        });
+    public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
+        return DiscordCommandManager.literal("clara")
+                .requires(this::hasPermission)
+                .executes(this::clara);
+    }
+
+    private int clara(CommandContext<DiscordCommandSource> commandContext) {
+        Random r = new Random();
+        int randomNumber = r.nextInt(tags.length);
+        List<String> results = new Tenor().getItems(tags[randomNumber]);
+        int index = r.nextInt(results.size() - 1);
+        String s = results.get(index);
+        commandContext.getSource().getEvent().getChannel().sendMessage(s).queue();
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 }

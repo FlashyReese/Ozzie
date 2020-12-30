@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class PermissionDispatcher extends me.flashyreese.common.permission.PermissionDispatcher {
 
-    public boolean hasPermission(String requiredPermission, long roleIdentifier){
+    public boolean hasPermission(String requiredPermission, long roleIdentifier) {
         try {
             RoleSchema roleSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveRole(roleIdentifier);
             return this.hasPermission(requiredPermission, roleSchema);

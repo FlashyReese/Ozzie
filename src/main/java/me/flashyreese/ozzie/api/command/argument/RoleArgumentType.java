@@ -6,9 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
@@ -18,9 +19,10 @@ public class RoleArgumentType implements ArgumentType<Long> {
         return new RoleArgumentType();
     }
 
-    public static Role getRole(CommandContext<MessageReceivedEvent> context, String name) throws CommandSyntaxException {
+    public static Role getRole(CommandContext<DiscordCommandSource> context, String name) throws CommandSyntaxException {
         long id = context.getArgument(name, Long.class);
         return context.getSource()
+                .getEvent()
                 .getMessage()
                 .getMentionedRoles()
                 .stream()
@@ -69,6 +71,6 @@ public class RoleArgumentType implements ArgumentType<Long> {
 
     @Override
     public Collection<String> getExamples() {
-        return null;
+        return Arrays.asList("<@&1234567890>", "\\<@&1234567890>");
     }
 }

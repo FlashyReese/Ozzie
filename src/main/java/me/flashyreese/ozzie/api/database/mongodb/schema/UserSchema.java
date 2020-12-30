@@ -1,16 +1,15 @@
 package me.flashyreese.ozzie.api.database.mongodb.schema;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserSchema {
     private long userIdentifier;
     private String locale;
     private String commandPrefix;
-    private Map<String, Map<String, Boolean>> serverPermissionMap = new Object2ObjectOpenHashMap<>();
+    private Map<String, Map<String, Boolean>> serverPermissionMap = new HashMap<>();
 
-    public UserSchema(){
+    public UserSchema() {
 
     }
 

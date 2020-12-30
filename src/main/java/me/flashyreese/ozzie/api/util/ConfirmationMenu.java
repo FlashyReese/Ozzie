@@ -80,7 +80,9 @@ public class ConfirmationMenu extends Menu {
     public void display(MessageChannel channel) {
         if (channel.getType() == ChannelType.TEXT
                 && !allowTypedInput
-                && !((TextChannel) channel).getGuild().getSelfMember().hasPermission((TextChannel) channel, Permission.MESSAGE_ADD_REACTION))
+                && !((TextChannel) channel).getGuild()
+                .getSelfMember()
+                .hasPermission((TextChannel) channel, Permission.MESSAGE_ADD_REACTION))
             throw new PermissionException("Must be able to add reactions if not allowing typed input!");
         initialize(channel.sendMessage(getMessage()));
     }
@@ -89,7 +91,9 @@ public class ConfirmationMenu extends Menu {
     public void display(Message message) {
         if (message.getChannelType() == ChannelType.TEXT
                 && !allowTypedInput
-                && !message.getGuild().getSelfMember().hasPermission(message.getTextChannel(), Permission.MESSAGE_ADD_REACTION))
+                && !message.getGuild()
+                .getSelfMember()
+                .hasPermission(message.getTextChannel(), Permission.MESSAGE_ADD_REACTION))
             throw new PermissionException("Must be able to add reactions if not allowing typed input!");
         initialize(message.editMessage(getMessage()));
     }

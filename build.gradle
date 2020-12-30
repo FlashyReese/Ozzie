@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.wilsonhu'
-version = '0.5.2-SNAPSHOT+build-20201311'
+version = '0.9.0+build-20201228'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -52,7 +52,7 @@ dependencies {
     api "com.jagrosh:jda-utilities-menu:${project.jda_utilities}"
 
     api "com.google.code.gson:gson:${project.gson_version}"
-    api "it.unimi.dsi:fastutil:${project.fastutil_version}"
+    //api "it.unimi.dsi:fastutil:${project.fastutil_version}" For lightweight purposes
     api "org.jetbrains:annotations:${project.annotations_version}"
     api "com.mojang:brigadier:${project.brigadier_version}"
 

@@ -71,12 +71,4 @@ public class Helper {
         }
         return outputList;
     }
-
-    /*public static String convertYamlToJson(String yaml) throws JsonProcessingException {
-        ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
-        Object obj = yamlReader.readValue(yaml, Object.class);
-
-        ObjectMapper jsonWriter = new ObjectMapper();
-        return jsonWriter.writeValueAsString(obj);
-    }*/
 }
