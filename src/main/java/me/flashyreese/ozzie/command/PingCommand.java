@@ -10,6 +10,8 @@ import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.*;
+
 public class PingCommand extends DiscordCommand {
     public PingCommand() {
         super("", "ozzie.ping.description", "ozzie.ping");
@@ -28,7 +30,8 @@ public class PingCommand extends DiscordCommand {
         event.getChannel().sendTyping().queue(v -> {
             long ping = System.currentTimeMillis() - start;
             EmbedBuilder embed = new EmbedBuilder()
-                    .addField(new ParsableText(new TranslatableText("ozzie.ping.latency_to", commandContext), event.getAuthor().getAsMention()).toString(), "`" + ping + " ms`", false)
+                    .setColor(Color.ORANGE)
+                    .addField(new ParsableText(new TranslatableText("ozzie.ping.latency_to", commandContext), event.getAuthor().getName()).toString(), "`" + ping + " ms`", false)
                     .addField(new TranslatableText("ozzie.ping.latency_to_websocket", commandContext).toString(), "`" + event.getJDA().getGatewayPing() + " ms`", false);
 
             event.getChannel().sendMessage(embed.build()).queue();

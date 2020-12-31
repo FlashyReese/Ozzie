@@ -17,10 +17,10 @@
 	"about.by_dev": "By FlashyReese",
 
 	"channel.description": "Provides a list of text channels that are allowed to use commands, also to add/remove channels.",
-	"channel.already_add": "`{1}` is already allowed in the command text channel list.",
-	"channel.add": "`{1}` has been added to command text channel list.",
-	"channel.remove_invalid": "`{1}` isn't in the command text channel list.",
-	"channel.remove": "`{1}` has been removed to command text channel list.",
+	"channel.already_add": "{1} is already allowed in the command text channel list.",
+	"channel.add": "{1} has been added to command text channel list.",
+	"channel.remove_invalid": "{1} isn't in the command text channel list.",
+	"channel.remove": "{1} has been removed to command text channel list.",
 	"channel.list.allowed": "List of Allowed Text Channels",
 	"channel.list.channels": "Channels",
 

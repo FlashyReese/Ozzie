@@ -120,14 +120,14 @@ public class PluginLoader {
                 }
             }
 
-            List<Plugin> plugins = new ArrayList<>();
+            List<PluginClassLoaderContainer<Plugin>> plugins = new ArrayList<>();
             pluginMetadata.getEntryPoint()
                     .entrySet()
                     .stream()
                     .filter(stringListEntry -> stringListEntry.getKey().equals("main"))
                     .forEach(stringListEntry -> stringListEntry.getValue().forEach(entryPoint -> {
                         try {
-                            Plugin plugin =
+                            PluginClassLoaderContainer<Plugin> plugin =
                                     this.createEntryPointInstance(entryPoint, pluginFile, Plugin.class);
                             plugins.add(plugin);
                         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException | IOException e) {
@@ -141,18 +141,17 @@ public class PluginLoader {
         }
     }
 
-    public <T> T createEntryPointInstance(String entryPoint, File pluginFile, Class<T> tClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException, ClassNotFoundException {
+    public <T> PluginClassLoaderContainer<T> createEntryPointInstance(String entryPoint, File pluginFile, Class<T> tClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException, ClassNotFoundException {
         URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginFile.toURI().toURL()});
         @SuppressWarnings("unchecked")
         Class<T> entryPointInstance = (Class<T>) Class.forName(entryPoint, true, classLoader);
-        classLoader.close();
-        return entryPointInstance.getDeclaredConstructor().newInstance();
+        return new PluginClassLoaderContainer<T>(classLoader, entryPointInstance.getDeclaredConstructor().newInstance());
     }
 
     public <T> List<PluginEntryContainer<T>> getEntryPointContainer(String entryName, Class<T> classPath) {
         List<PluginEntryContainer<T>> containers = new ArrayList<>();
         this.pluginEntryContainers.forEach(pluginEntryContainer -> {
-            List<T> entryPoints = new ArrayList<>();
+            List<PluginClassLoaderContainer<T>> entryPoints = new ArrayList<>();
             pluginEntryContainer.getPluginMetadata()
                     .getEntryPoint()
                     .entrySet()
@@ -161,7 +160,7 @@ public class PluginLoader {
                     .forEach(entryPointContainers -> entryPointContainers.getValue()
                             .forEach(entryPoint -> {
                                 try {
-                                    T entryPointInstance =
+                                    PluginClassLoaderContainer<T> entryPointInstance =
                                             this.createEntryPointInstance(entryPoint, pluginEntryContainer.getPluginFile(), classPath);
                                     entryPoints.add(entryPointInstance);
                                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException | IOException e) {
@@ -180,7 +179,7 @@ public class PluginLoader {
             OzzieApi.INSTANCE.getLogger()
                     .info("Initializing {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
                             .getVersion());
-            plugin.initializePlugin();
+            plugin.getEntryPointInstance().initializePlugin();
             try {
                 OzzieApi.INSTANCE.getL10nManager().loadLocalizableContainerFromPluginEntryContainer(entry);
             } catch (Exception e) {
@@ -197,7 +196,12 @@ public class PluginLoader {
             OzzieApi.INSTANCE.getLogger()
                     .info("Terminating {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
                             .getVersion());
-            plugin.terminatePlugin();
+            plugin.getEntryPointInstance().terminatePlugin();
+            try {
+                plugin.getUrlClassLoader().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             OzzieApi.INSTANCE.getLogger()
                     .info("Terminated {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
                             .getVersion());
@@ -220,9 +224,9 @@ public class PluginLoader {
     public static class PluginEntryContainer<T> {
         private final PluginMetadataV1 pluginMetadata;
         private final File pluginFile;
-        private final List<T> entryPoints;
+        private final List<PluginClassLoaderContainer<T>> entryPoints;
 
-        public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile, List<T> entryPoints) {
+        public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile, List<PluginClassLoaderContainer<T>> entryPoints) {
             this.pluginMetadata = pluginMetadata;
             this.pluginFile = pluginFile;
             this.entryPoints = entryPoints;
@@ -236,8 +240,26 @@ public class PluginLoader {
             return pluginFile;
         }
 
-        public List<T> getEntryPoints() {
+        public List<PluginClassLoaderContainer<T>> getEntryPoints() {
             return entryPoints;
+        }
+    }
+
+    public static class PluginClassLoaderContainer<T> {
+        private final URLClassLoader urlClassLoader;
+        private final T entryPointInstance;
+
+        public PluginClassLoaderContainer(URLClassLoader urlClassLoader, T entryPointInstance) {
+            this.urlClassLoader = urlClassLoader;
+            this.entryPointInstance = entryPointInstance;
+        }
+
+        public URLClassLoader getUrlClassLoader() {
+            return urlClassLoader;
+        }
+
+        public T getEntryPointInstance() {
+            return entryPointInstance;
         }
     }
 }

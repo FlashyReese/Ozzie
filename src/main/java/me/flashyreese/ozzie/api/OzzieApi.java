@@ -105,7 +105,7 @@ public class OzzieApi {
     public synchronized void stop() {
         if (this.running) {
             this.logger.info("Stopping instance...");
-            this.pluginLoader.getPluginEntryContainers().forEach(pluginEntryContainer -> pluginEntryContainer.getEntryPoints().forEach(Plugin::terminatePlugin));
+            this.pluginLoader.unregisterPlugins();
             this.pluginLoader.getPluginEntryContainers().clear();
             this.shardManager.shutdown();
             this.running = false;
@@ -118,7 +118,7 @@ public class OzzieApi {
     public synchronized void restart() {
         if (this.running) {
             this.logger.info("Restarting instance...");
-            this.pluginLoader.getPluginEntryContainers().forEach(pluginEntryContainer -> pluginEntryContainer.getEntryPoints().forEach(Plugin::terminatePlugin));
+            this.pluginLoader.unregisterPlugins();
             this.pluginLoader.getPluginEntryContainers().clear();
             this.shardManager.restart();
             this.pluginLoader.registerPlugins();

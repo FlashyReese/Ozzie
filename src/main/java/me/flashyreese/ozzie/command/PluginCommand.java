@@ -6,15 +6,15 @@ import com.mojang.brigadier.context.CommandContext;
 import com.vdurmont.semver4j.Semver;
 import me.flashyreese.common.util.FileUtil;
 import me.flashyreese.ozzie.api.OzzieApi;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.plugin.Plugin;
 import me.flashyreese.ozzie.api.plugin.PluginLoader;
 import me.flashyreese.ozzie.api.plugin.PluginMetadataV1;
 import me.flashyreese.ozzie.api.util.ConfirmationMenu;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -62,7 +62,7 @@ public class PluginCommand extends DiscordCommand {
                         .executes(this::reload));
     }
 
-    private int list(CommandContext<DiscordCommandSource> commandContext){
+    private int list(CommandContext<DiscordCommandSource> commandContext) {
         MessageReceivedEvent event = commandContext.getSource().getEvent();
         //Todo: Navigate-able Embed
         for (PluginLoader.PluginEntryContainer<Plugin> entryContainer : OzzieApi.INSTANCE.getPluginLoader()
@@ -72,7 +72,7 @@ public class PluginCommand extends DiscordCommand {
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
-    private int install(CommandContext<DiscordCommandSource> commandContext){
+    private int install(CommandContext<DiscordCommandSource> commandContext) {
         MessageReceivedEvent event = commandContext.getSource().getEvent();
         if (event.getMessage().getAttachments().isEmpty()) {
             return 0;
@@ -87,7 +87,7 @@ public class PluginCommand extends DiscordCommand {
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
-    public int reload(CommandContext<DiscordCommandSource> commandContext){
+    public int reload(CommandContext<DiscordCommandSource> commandContext) {
         MessageReceivedEvent event = commandContext.getSource().getEvent();
         event.getChannel().sendMessage(new TranslatableText("ozzie.plugin.reload.reloading", commandContext)).queue();
         OzzieApi.INSTANCE.getPluginLoader().unregisterPlugins();
@@ -174,7 +174,14 @@ public class PluginCommand extends DiscordCommand {
                     File finalNewAttachmentFile = newAttachmentFile;
                     builder.setConfirm((msg) ->
                     {
-                        existingPluginEntryContainer.getEntryPoints().forEach(Plugin::terminatePlugin);
+                        existingPluginEntryContainer.getEntryPoints().forEach(pluginPluginClassLoaderContainer -> {
+                            pluginPluginClassLoaderContainer.getEntryPointInstance().terminatePlugin();
+                            try {
+                                pluginPluginClassLoaderContainer.getUrlClassLoader().close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
                         existingPluginEntryContainer.getEntryPoints().clear();
                         if (existingPluginEntryContainer.getPluginFile().delete()) {
                             OzzieApi.INSTANCE.getPluginLoader()
@@ -216,7 +223,7 @@ public class PluginCommand extends DiscordCommand {
                     .findFirst()
                     .orElse(null);
             if (entryContainer != null) {
-                entryContainer.getEntryPoints().forEach(Plugin::initializePlugin);
+                entryContainer.getEntryPoints().forEach(pluginPluginClassLoaderContainer -> pluginPluginClassLoaderContainer.getEntryPointInstance().initializePlugin());
                 event.getChannel().sendMessage("Installation Complete!").queue();
                 return;
             }
