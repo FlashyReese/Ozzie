@@ -1,4 +1,5 @@
 {
+	"about.description": "Provides information about bot.",
 	"about.bot": "About {1}",
 	"about.info": "Henlo, I am {1}, some call me Clara or Oswin. Started as an open source project made with :heart: on 2019-09-17; if you would like to contribute, here is my [GitHub Repository](https://github.com/FlashyReese/Ozzie).\n **[Add Me to A Server]({2})** !!",
 	"about.dev": "Developer",
@@ -14,19 +15,25 @@
 	"about.shard.single_instance": "Single Instance",
 	"about.shard.queue": "({1} Queued)",
 	"about.by_dev": "By FlashyReese",
-	
+
+	"channel.description": "Provides a list of text channels that are allowed to use commands, also to add/remove channels.",
 	"channel.already_add": "`{1}` is already allowed in the command text channel list.",
 	"channel.add": "`{1}` has been added to command text channel list.",
 	"channel.remove_invalid": "`{1}` isn't in the command text channel list.",
 	"channel.remove": "`{1}` has been removed to command text channel list.",
 	"channel.list.allowed": "List of Allowed Text Channels",
 	"channel.list.channels": "Channels",
-	
+
+	"help.description": "Provides available list of commands to the user, or provides information about a specific command.",
 	"help.uncategorized": "Uncategorized",
 	"help.total_commands": "Total Commands: {1}",
 	"help.invalid_command": "`{1}` is not a valid command.",
+	"help.for_command": "Information for \"{1}\" Command",
+	"help.syntax":"Usage Syntax",
+	"help.permission":"Permission",
+	"help.request_by":"Requested by {1}",
 	
-	"language.description": "",
+	"language.description": "Provides information of user/server's language settings, also set/clear languages.",
 	"language.user.current_language": "{1}'s current language is set to `{2}`.",
 	"language.user.no_language_set": "{1}'s language has not been set.",
 	"language.user.set_to": "{1}'s language has been set to `{2}`.",
@@ -40,17 +47,20 @@
 	"language.server.clear": "`{1}`'s language has been cleared.",
 	"language.server.already_clear": "`{1}`'s language already cleared.",
 	"language.invalid_lang": "{1} is an invalid language.",
-	
+
+	"permission.description": "Provides functionality to set/clear permissions and permission states per user/role.",
 	"permission.role.already_set_to": "Permission `{1}` already set to `{2}` for `{3}`.",
 	"permission.role.update_to": "Permission `{1}` updated to `{2}` for `{3}`.",
 	"permission.role.set_to": "Permission `{1}` with state of `{2}` set for `{3}`.",
 	"permission.user.already_set_to": "Permission `{1}` already set to `{2}` for `{3}`.",
 	"permission.user.update_to": "Permission `{1}` updated to `{2}` for `{3}`.",
 	"permission.user.set_to": "Permission `{1}` with state of `{2}` set for `{3}`.",
-	
+
+	"ping.description": "Provides information on latency between user and websocket.",
 	"ping.latency_to": "Latency to {1}",
 	"ping.latency_to_websocket": "Latency to WebSocket",
-	
+
+	"plugin.description": "Provides functionality install/reload plugins, also display list of installed plugins.",
 	"plugin.reload.reloading": "Reloading Plugins...",
 	"plugin.reload.complete": "Plugin Reload Complete!",
 	"plugin.install.missing_metadata": "Missing metadata file",
@@ -67,7 +77,8 @@
 	"plugin.install.newer_than": "`{1}` is newer than `{2}`",
 	"plugin.install.error": "something went wrong :c",
 	"plugin.install.incompatible_schema_version": "Incompatible schema version!",
-	
+
+	"prefix.description": "Provides functionality to set/clear command prefixes for server/user",
 	"prefix.user.current_prefix": "{1}'s current prefix is set to `{2}`.",
 	"prefix.user.no_prefix_set": "{1}'s prefix has not been set.",
 	"prefix.user.already_set_to": "{1}'s prefix already set to `{2}`.",
@@ -80,9 +91,11 @@
 	"prefix.server.set_to": "`{1}`'s prefix has been set to `{2}`.",
 	"prefix.server.already_clear": "`{1}`'s prefix already cleared.",
 	"prefix.server.clear": "`{1}`'s prefix has been cleared.",
-	
+
+	"restart.description": "Restarts the bot.",
 	"restart.restarting":"Restarting {1}...",
-	
+
+	"token.description": "Provides functionality to add/update/remove tokens for APIs.",
 	"token.add.updated":"The token `{1}` has been updated.",
 	"token.add.added":"The token `{1}` has been added.",
 	"token.remove.removed":"The token `{1}` has been removed.",

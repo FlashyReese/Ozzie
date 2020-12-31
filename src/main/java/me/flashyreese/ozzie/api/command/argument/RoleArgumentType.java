@@ -41,6 +41,7 @@ public class RoleArgumentType implements ArgumentType<Long> {
             if (stringReader.peek() == '<') {
                 roleId = getRoleId(stringReader, roleId);
             } else if (stringReader.peek() == '\\') {
+                stringReader.skip();
                 if (stringReader.peek() == '<') {
                     roleId = getRoleId(stringReader, roleId);
                 }

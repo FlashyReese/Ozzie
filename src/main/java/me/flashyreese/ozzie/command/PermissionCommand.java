@@ -33,7 +33,7 @@ public class PermissionCommand extends DiscordCommand {
                 .requires(this::hasPermission)
                 .then(DiscordCommandManager.argument("role", RoleArgumentType.role())
                         .then(DiscordCommandManager.literal("clear")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.word())
+                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .executes(context -> {
                                             //
                                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -44,12 +44,12 @@ public class PermissionCommand extends DiscordCommand {
                                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                                         })))
                         .then(DiscordCommandManager.literal("set")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.word())
+                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
                                                 .executes(this::setRolePermissionState)))))
                 .then(DiscordCommandManager.argument("user", UserArgumentType.user())
                         .then(DiscordCommandManager.literal("clear")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.word())
+                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .executes(context -> {
                                             //
                                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -60,7 +60,7 @@ public class PermissionCommand extends DiscordCommand {
                                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                                         })))
                         .then(DiscordCommandManager.literal("set")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.word())
+                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
                                                 .executes(this::setUserPermissionState)))));
     }

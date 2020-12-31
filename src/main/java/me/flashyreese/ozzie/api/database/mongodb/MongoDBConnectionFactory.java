@@ -4,6 +4,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
+import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.database.mongodb.schema.RoleSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.ServerConfigurationSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
@@ -23,7 +24,7 @@ public class MongoDBConnectionFactory {
                 CodecRegistries.fromProviders(PojoCodecProvider.builder().register(userSchemaClassModel, serverConfigurationSchemaClassModel, roleSchemaClassModel).automatic(true).build()));
         MongoClientSettings settings = MongoClientSettings.builder()
                 .codecRegistry(pojoCodecRegistry)
-                .applyConnectionString(new ConnectionString("mongodb://127.0.0.1:27017"))
+                .applyConnectionString(new ConnectionString(OzzieApi.INSTANCE.getTokenManager().getToken("mongodb")))
                 .build();
         this.mongoClient = MongoClients.create(settings);
     }

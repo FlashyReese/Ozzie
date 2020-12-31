@@ -15,6 +15,7 @@ import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -75,25 +76,28 @@ public class HelpCommand extends DiscordCommand {
         CommandDispatcher<DiscordCommandSource> dispatcher = OzzieApi.INSTANCE.getCommandManager().getDispatcher();
 
         String commandName = StringArgumentType.getString(commandContext, "commandName");
-        Optional<CommandNode<DiscordCommandSource>> optional = dispatcher.getRoot().getChildren().stream().filter(child -> child.getName().equals(commandName)).findFirst();
-        if (optional.isPresent()) {
-            CommandNode<DiscordCommandSource> commandNode = optional.get();
-            /*List<String> list = new ArrayList<>();
-            dispatcher.getSmartUsage(commandNode, commandContext.getSource()).forEach((k, v) -> list.add(String.format("%s %s", commandNode.getName(), v)));
-            StringBuilder builder = new StringBuilder();
-            for (String s : list) {
-                builder.append(s).append("\n");
-            }
-            event.getChannel().sendMessage(builder.toString()).queue();*/
+        Optional<CommandManager.CommandContainer<DiscordCommandSource, DiscordCommand>> optionalCommandContainer = OzzieApi.INSTANCE.getCommandManager().getCommandContainers().stream().filter(container -> container.getIdentifier().getName().equalsIgnoreCase(commandName)).findFirst();
+        if (optionalCommandContainer.isPresent()) {
+            CommandManager.CommandContainer<DiscordCommandSource, DiscordCommand> commandContainer = optionalCommandContainer.get();
+            CommandNode<DiscordCommandSource> commandNode = commandContainer.getCommand().getArgumentBuilder().build();
 
             StringBuilder syntaxTest = new StringBuilder();
-            for (CommandExampleContainer commandExampleContainer : getTree(commandNode, commandContext, dispatcher, new ArrayList<>())) {
+            for (CommandExampleContainer commandExampleContainer : this.getCommandExampleContainers(commandNode, commandContext, dispatcher, new ArrayList<>())) {
                 if (dispatcher.parse(commandExampleContainer.getValue(), commandContext.getSource()).getContext().getCommand() != null) {
                     syntaxTest.append(commandExampleContainer.getKey()).append("\n");
                 }
             }
 
-            event.getChannel().sendMessage(syntaxTest.toString()).queue();
+            MessageEmbed embed = new EmbedBuilder()
+                    .setAuthor(new ParsableText(new TranslatableText("ozzie.help.for_command", commandContext), commandNode.getName()).toString(), null, event.getJDA().getSelfUser().getAvatarUrl())
+                    .setDescription(new TranslatableText(commandContainer.getCommand().getDescription(), commandContext))
+                    .addField(new TranslatableText("ozzie.help.syntax", commandContext).toString(), syntaxTest.toString(), true)
+                    .addField(new TranslatableText("ozzie.help.permission", commandContext).toString(), commandContainer.getCommand().getPermission(), true)
+                    .setFooter(new ParsableText(new TranslatableText("ozzie.help.request_by", commandContext), event.getAuthor().getName()).toString(), event.getAuthor().getAvatarUrl())
+                    .build();
+
+
+            event.getChannel().sendMessage(embed).queue();
         } else {
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.help.invalid_command", commandContext), commandName)).queue();
         }
@@ -101,7 +105,7 @@ public class HelpCommand extends DiscordCommand {
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
-    public List<CommandExampleContainer> getTree(CommandNode<DiscordCommandSource> commandNode, CommandContext<DiscordCommandSource> commandContext, CommandDispatcher<DiscordCommandSource> dispatcher, List<CommandExampleContainer> list) {
+    private List<CommandExampleContainer> getCommandExampleContainers(CommandNode<DiscordCommandSource> commandNode, CommandContext<DiscordCommandSource> commandContext, CommandDispatcher<DiscordCommandSource> dispatcher, List<CommandExampleContainer> list) {
         if (list.isEmpty()) {
             list.add(new CommandExampleContainer(commandNode.getName(), commandNode.getName()));
         }
@@ -134,7 +138,7 @@ public class HelpCommand extends DiscordCommand {
 
             list.add(new CommandExampleContainer(newStringKey, newStringValue));
             if (!child.getChildren().isEmpty()) {
-                list = this.getTree(child, commandContext, dispatcher, list);
+                list = this.getCommandExampleContainers(child, commandContext, dispatcher, list);
             }
         }
         return list;

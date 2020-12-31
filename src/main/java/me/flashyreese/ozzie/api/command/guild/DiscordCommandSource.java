@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class DiscordCommandSource implements Permissible {
 
-
     private final UserSchema userSchema;
     private final ServerConfigurationSchema serverConfigurationSchema;
     private final Map<String, Boolean> permissions;
