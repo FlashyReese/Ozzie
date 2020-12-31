@@ -24,16 +24,12 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
     private final List<String> categories = new ArrayList<>();
 
     @Override
-    public void registerCommand(Identifier identifier, DiscordCommand command) {
-        Optional<CommandContainer<DiscordCommandSource, DiscordCommand>> optional = this.getCommandContainers().stream().filter(container -> container.getIdentifier().equals(identifier)).findFirst();
-        if (!optional.isPresent()) {
-            CommandContainer<DiscordCommandSource, DiscordCommand> commandContainer = new CommandContainer<>(identifier, command);
-            this.getCommandContainers().add(commandContainer);
-            this.getDispatcher().register(commandContainer.getCommand().getArgumentBuilder());
-            this.createCategories(commandContainer.getCommand());
-        } else {
-            OzzieApi.INSTANCE.getLogger().warn("Existing identifier \"{}\" skipping...", identifier.toString());
+    public boolean registerCommand(Identifier identifier, DiscordCommand command) {
+        if (super.registerCommand(identifier, command)){
+            this.createCategories(command);
+            return true;
         }
+        return false;
     }
 
     @Override

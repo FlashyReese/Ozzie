@@ -24,6 +24,9 @@
 	"channel.list.allowed": "List of Allowed Text Channels",
 	"channel.list.channels": "Channels",
 
+	"client.description": "Provides functionality to stop/restart the bot",
+	"client.restart.restarting":"Restarting {1}...",
+
 	"help.description": "Provides available list of commands to the user, or provides information about a specific command.",
 	"help.uncategorized": "Uncategorized",
 	"help.total_commands": "Total Commands: {1}",
@@ -91,9 +94,6 @@
 	"prefix.server.set_to": "`{1}`'s prefix has been set to `{2}`.",
 	"prefix.server.already_clear": "`{1}`'s prefix already cleared.",
 	"prefix.server.clear": "`{1}`'s prefix has been cleared.",
-
-	"restart.description": "Restarts the bot.",
-	"restart.restarting":"Restarting {1}...",
 
 	"token.description": "Provides functionality to add/update/remove tokens for APIs.",
 	"token.add.updated":"The token `{1}` has been updated.",

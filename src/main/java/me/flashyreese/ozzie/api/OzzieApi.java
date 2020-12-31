@@ -8,17 +8,14 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.vdurmont.semver4j.Semver;
 import me.flashyreese.common.util.JarUtil;
 import me.flashyreese.ozzie.Ozzie;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import me.flashyreese.ozzie.api.database.DatabaseHandler;
 import me.flashyreese.ozzie.api.l10n.L10nManager;
 import me.flashyreese.ozzie.api.permission.PermissionDispatcher;
-import me.flashyreese.ozzie.api.plugin.Plugin;
 import me.flashyreese.ozzie.api.plugin.PluginLoader;
 import me.flashyreese.ozzie.api.token.TokenManager;
 import me.flashyreese.ozzie.api.util.ActivityHelper;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -84,15 +81,6 @@ public class OzzieApi {
                 this.shardManager.addEventListener(this.commandManager);
                 this.shardManager.addEventListener(this.eventWaiter);
                 this.shardManager.setActivity(Activity.playing(ActivityHelper.getRandomQuote()));
-                this.shardManager.addEventListener((EventListener) event -> {
-                    if (event instanceof MessageReceivedEvent) {
-                        this.logger.info("Message: {}", ((MessageReceivedEvent) event).getMessage().getContentRaw());
-                        if (((MessageReceivedEvent) event).getAuthor().getIdLong() == 141594071033577472L) {
-                            this.shardManager.setActivity(Activity.playing(ActivityHelper.getRandomQuote()));
-                        }
-                    }
-                });
-
                 this.pluginLoader.registerPlugins();
             }
             this.running = true;

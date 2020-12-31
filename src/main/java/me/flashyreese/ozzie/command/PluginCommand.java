@@ -151,7 +151,7 @@ public class PluginCommand extends DiscordCommand {
 
                 if (existingPluginEntryContainer != null) {
                     Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().getVersion());
-                    Semver newSemver = new Semver(pluginMetadata.getVersion());
+                    Semver newSemver = new Semver(pluginMetadata.getVersion());//Semver Exception for patch builds
                     //resolve versioning
                     if (existingSemver.isEqualTo(newSemver)) {
                         pluginJarFile.close();
