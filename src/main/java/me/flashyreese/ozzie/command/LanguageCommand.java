@@ -61,7 +61,7 @@ public class LanguageCommand extends DiscordCommand {
                         new ParsableText(
                                 new TranslatableText("ozzie.language.user.current_language", commandContext),
                                 event.getAuthor().getAsMention(),
-                                Locale.forLanguageTag(userSchema.getLocale()).getDisplayName())
+                                OzzieApi.INSTANCE.getL10nManager().parseTag(userSchema.getLocale()).getDisplayName())
                 ).queue();
             } else {
                 event.getChannel().sendMessage(
@@ -76,7 +76,7 @@ public class LanguageCommand extends DiscordCommand {
                         new ParsableText(
                                 new TranslatableText("ozzie.language.server.current_language", commandContext),
                                 event.getGuild().getName(),
-                                Locale.forLanguageTag(serverConfigurationSchema.getLocale()).getDisplayName())
+                                OzzieApi.INSTANCE.getL10nManager().parseTag(serverConfigurationSchema.getLocale()).getDisplayName())
                 ).queue();
             } else {
                 event.getChannel().sendMessage(

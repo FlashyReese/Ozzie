@@ -1,6 +1,7 @@
 package me.flashyreese.ozzie.api.l10n;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.vdurmont.semver4j.Semver;
 import me.flashyreese.common.util.FileUtil;
@@ -160,9 +161,9 @@ public class L10nManager {
         return null;
     }
 
-    private void deserializeTranslations(Map<String, String> translations, BufferedReader bufferedReader) throws IOException {
+    private void deserializeTranslations(Map<String, String> translations, BufferedReader bufferedReader) throws IOException, JsonSyntaxException {
         String json = bufferedReader.lines().collect(Collectors.joining());
-        Map<String, String> map = gson.fromJson(json, new TypeToken<HashMap<String, String>>() {
+        Map<String, String> map = this.gson.fromJson(json, new TypeToken<HashMap<String, String>>() {
         }.getType());
         bufferedReader.close();
         translations.putAll(map);

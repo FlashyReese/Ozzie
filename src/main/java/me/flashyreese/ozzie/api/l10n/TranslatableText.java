@@ -4,6 +4,8 @@ import com.mojang.brigadier.context.CommandContext;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.database.mongodb.schema.ServerConfigurationSchema;
+import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class TranslatableText implements CharSequence{
@@ -16,16 +18,50 @@ public class TranslatableText implements CharSequence{
     }
 
     public TranslatableText(String key, CommandContext<DiscordCommandSource> commandContext){
+        DiscordCommandSource commandSource = commandContext.getSource();
         this.key = key;
-        ServerConfigurationSchema serverConfigurationSchema = commandContext.getSource().getServerConfigurationSchema();
+        ServerConfigurationSchema serverConfigurationSchema = commandSource.getServerConfigurationSchema();
         this.lang = serverConfigurationSchema.getLocale().toLowerCase();
 
         if (this.lang.isEmpty())
             this.lang = "en_us"; //Fixme: can't really fix lol
 
         if (serverConfigurationSchema.isAllowUserLocale()){
-            if (!commandContext.getSource().getUserSchema().getLocale().isEmpty()){
-                this.lang = commandContext.getSource().getUserSchema().getLocale().toLowerCase();
+            if (!commandSource.getUserSchema().getLocale().isEmpty()){
+                this.lang = commandSource.getUserSchema().getLocale().toLowerCase();
+            }
+        }
+    }
+
+    public TranslatableText(String key, MessageReceivedEvent event){
+        this.key = key;
+        if (event.isFromGuild()){
+            try {
+                ServerConfigurationSchema serverConfigurationSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveServerConfiguration(event.getGuild().getIdLong());
+                UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(event.getAuthor().getIdLong());
+
+                this.lang = serverConfigurationSchema.getLocale().toLowerCase();
+
+                if (this.lang.isEmpty())
+                    this.lang = "en_us"; //Fixme: can't really fix lol
+
+                if (serverConfigurationSchema.isAllowUserLocale()){
+                    if (!userSchema.getLocale().isEmpty()){
+                        this.lang = userSchema.getLocale().toLowerCase();
+                    }
+                }
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }else{
+            try {
+                UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(event.getAuthor().getIdLong());
+                this.lang = "en_us";
+                if (!userSchema.getLocale().isEmpty()){
+                    this.lang = userSchema.getLocale().toLowerCase();
+                }
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }

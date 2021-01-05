@@ -1,5 +1,6 @@
 package me.flashyreese.ozzie.command;
 
+import com.jagrosh.jdautilities.menu.Paginator;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -14,6 +15,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChannelCommand extends DiscordCommand {
     public ChannelCommand() {
         super("", "ozzie.channel.description", "ozzie.channel");
@@ -25,10 +29,7 @@ public class ChannelCommand extends DiscordCommand {
                 .requires(this::hasPermission)
                 .then(DiscordCommandManager.literal("add")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "add"))
-                        .executes(context -> {
-                            //Embed selector
-                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                        })
+                        .executes(this::addEmbed)
                         .then(DiscordCommandManager.argument("channels", StringArgumentType.greedyString())
                                 .executes(this::addMentioned)))
                 .then(DiscordCommandManager.literal("remove")
@@ -42,6 +43,24 @@ public class ChannelCommand extends DiscordCommand {
                 .then(DiscordCommandManager.literal("list")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "list"))
                         .executes(this::list));
+    }
+
+    private int addEmbed(CommandContext<DiscordCommandSource> commandContext) {
+        MessageReceivedEvent event = commandContext.getSource().getEvent();
+
+        List<Long> allowedTextChannels = commandContext.getSource().getServerConfigurationSchema().getAllowedCommandTextChannel();
+
+        List<String> items = new ArrayList<>();
+        event.getGuild().getTextChannels().stream().filter(textChannel -> !allowedTextChannels.contains(textChannel.getIdLong())).forEach(textChannel -> items.add(textChannel.getAsMention()));
+
+        Paginator paginator = new Paginator.Builder()
+                .setItems(items.toArray(new String[0]))
+                .setEventWaiter(OzzieApi.INSTANCE.getEventWaiter())
+                .setItemsPerPage(5)
+                .setUsers(event.getAuthor())
+                .build();
+        paginator.display(event.getChannel());
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
     private int addMentioned(CommandContext<DiscordCommandSource> commandContext) {

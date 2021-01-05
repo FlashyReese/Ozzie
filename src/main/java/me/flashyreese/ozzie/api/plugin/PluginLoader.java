@@ -8,6 +8,7 @@ import me.flashyreese.ozzie.api.OzzieApi;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -61,27 +62,22 @@ public class PluginLoader {
         BufferedReader bufferedReader;
         if (pluginFile.isFile()) {
             final JarFile pluginJarFile = new JarFile(pluginFile);
-            final JarEntry pluginJarFileJarEntry =
-                    pluginJarFile.getJarEntry(String.format("%s.json", this.jsonFileName));
+            final JarEntry pluginJarFileJarEntry = pluginJarFile.getJarEntry(String.format("%s.json", this.jsonFileName));
             if (pluginJarFileJarEntry == null) {
                 pluginJarFile.close();
                 OzzieApi.INSTANCE.getLogger().error("Invalid Plugin: {}", pluginFile.getName());
                 return;
             }
-            bufferedReader =
-                    new BufferedReader(new InputStreamReader(pluginJarFile.getInputStream(pluginJarFileJarEntry), StandardCharsets.UTF_8));
-            pluginMetadata =
-                    this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
+            bufferedReader = new BufferedReader(new InputStreamReader(pluginJarFile.getInputStream(pluginJarFileJarEntry), StandardCharsets.UTF_8));
+            pluginMetadata = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
             bufferedReader.close();
             pluginJarFile.close();
         } else {
             final URL url = ClassLoader.getSystemClassLoader().getResource(String.format("%s.json", this.jsonFileName));
             if (url != null) {
                 final File jsonSchema = new File(url.toURI());
-                bufferedReader =
-                        new BufferedReader(new InputStreamReader(new FileInputStream(jsonSchema), StandardCharsets.UTF_8));
-                pluginMetadata = this.gson.fromJson(bufferedReader.lines()
-                        .collect(Collectors.joining()), PluginMetadataV1.class);
+                bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(jsonSchema), StandardCharsets.UTF_8));
+                pluginMetadata = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
                 bufferedReader.close();
             }
         }
@@ -95,27 +91,17 @@ public class PluginLoader {
             }
 
             PluginMetadataV1 finalPluginMetadata = pluginMetadata;
-            Optional<PluginEntryContainer<Plugin>> optional = this.pluginEntryContainers.stream()
-                    .filter(container -> container.getPluginMetadata().getId().equals(finalPluginMetadata
-                            .getId()))
-                    .findFirst();
+            Optional<PluginEntryContainer<Plugin>> optional = this.pluginEntryContainers.stream().filter(container -> container.getPluginMetadata().getId().equals(finalPluginMetadata.getId())).findFirst();
 
             if (optional.isPresent()) {
                 PluginEntryContainer<Plugin> existingPluginEntryContainer = optional.get();
                 Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().getVersion());
                 Semver currentSemver = new Semver(pluginMetadata.getVersion());
                 if (existingSemver.isEquivalentTo(currentSemver)) {
-                    OzzieApi.INSTANCE.getLogger()
-                            .warn("Skipping {} {} as {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer
-                                    .getPluginMetadata()
-                                    .getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
+                    OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
                     return;
                 } else if (existingSemver.isGreaterThan(currentSemver)) {
-                    OzzieApi.INSTANCE.getLogger()
-                            .warn("Skipping {} {} as a newer {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata
-                                    .getVersion(), existingPluginEntryContainer
-                                    .getPluginMetadata()
-                                    .getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
+                    OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as a newer {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
                     return;
                 }
             }
@@ -126,14 +112,13 @@ public class PluginLoader {
                     .stream()
                     .filter(stringListEntry -> stringListEntry.getKey().equals("main"))
                     .forEach(stringListEntry -> stringListEntry.getValue().forEach(entryPoint -> {
+                        PluginClassLoaderContainer<Plugin> plugin = null;
                         try {
-                            PluginClassLoaderContainer<Plugin> plugin =
-                                    this.createEntryPointInstance(entryPoint, pluginFile, Plugin.class);
-                            plugins.add(plugin);
-                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException | IOException e) {
+                            plugin = this.createEntryPointInstance(entryPoint, pluginFile, Plugin.class);
+                        } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
                             e.printStackTrace();
-                            //print invalid class path or couldn't load
                         }
+                        plugins.add(plugin);
                     }));
             this.pluginEntryContainers.add(new PluginEntryContainer<>(pluginMetadata, pluginFile, plugins));
         } else {
@@ -141,11 +126,11 @@ public class PluginLoader {
         }
     }
 
-    public <T> PluginClassLoaderContainer<T> createEntryPointInstance(String entryPoint, File pluginFile, Class<T> tClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException, ClassNotFoundException {
+    public <T> PluginClassLoaderContainer<T> createEntryPointInstance(String entryPoint, File pluginFile, Class<T> tClass) throws NoSuchMethodException, MalformedURLException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginFile.toURI().toURL()});
         @SuppressWarnings("unchecked")
         Class<T> entryPointInstance = (Class<T>) Class.forName(entryPoint, true, classLoader);
-        return new PluginClassLoaderContainer<T>(classLoader, entryPointInstance.getDeclaredConstructor().newInstance());
+        return new PluginClassLoaderContainer<>(classLoader, entryPointInstance.getDeclaredConstructor().newInstance());
     }
 
     public <T> List<PluginEntryContainer<T>> getEntryPointContainer(String entryName, Class<T> classPath) {
@@ -160,12 +145,10 @@ public class PluginLoader {
                     .forEach(entryPointContainers -> entryPointContainers.getValue()
                             .forEach(entryPoint -> {
                                 try {
-                                    PluginClassLoaderContainer<T> entryPointInstance =
-                                            this.createEntryPointInstance(entryPoint, pluginEntryContainer.getPluginFile(), classPath);
+                                    PluginClassLoaderContainer<T> entryPointInstance = this.createEntryPointInstance(entryPoint, pluginEntryContainer.getPluginFile(), classPath);
                                     entryPoints.add(entryPointInstance);
-                                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException | IOException e) {
+                                } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
                                     e.printStackTrace();
-                                    //print invalid class path or couldn't load
                                 }
                             }));
             containers.add(new PluginEntryContainer<>(pluginEntryContainer.getPluginMetadata(), pluginEntryContainer.getPluginFile(), entryPoints));
@@ -175,38 +158,62 @@ public class PluginLoader {
 
     public void registerPlugins() {
         this.loadPlugins();
-        this.getPluginEntryContainers().forEach(entry -> entry.getEntryPoints().forEach(plugin -> {
-            OzzieApi.INSTANCE.getLogger()
-                    .info("Initializing {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
-                            .getVersion());
-            plugin.getEntryPointInstance().initializePlugin();
-            try {
-                OzzieApi.INSTANCE.getL10nManager().loadLocalizableContainerFromPluginEntryContainer(entry);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            OzzieApi.INSTANCE.getLogger()
-                    .info("Initialized {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
-                            .getVersion());
-        }));
+        this.getPluginEntryContainers().forEach(this::loadPlugin);
     }
 
-    public void unregisterPlugins() {
-        this.getPluginEntryContainers().forEach(entry -> entry.getEntryPoints().forEach(plugin -> {
-            OzzieApi.INSTANCE.getLogger()
-                    .info("Terminating {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
-                            .getVersion());
-            plugin.getEntryPointInstance().terminatePlugin();
+    public void registerPlugin(PluginEntryContainer<Plugin> entry){
+        if (!this.pluginEntryContainers.contains(entry)){
+            this.loadPlugin(entry);
+            this.pluginEntryContainers.add(entry);
+        }else{
+            OzzieApi.INSTANCE.getLogger().warn("Plugin {} {} already exist in plugin entry containers list...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
+        }
+    }
+
+    public void loadPlugin(PluginEntryContainer<Plugin> entry){
+        entry.getEntryPoints().forEach(plugin -> {
+            OzzieApi.INSTANCE.getLogger().info("Initializing {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
             try {
-                plugin.getUrlClassLoader().close();
-            } catch (IOException e) {
+                plugin.getEntryPointInstance().initializePlugin();
+                OzzieApi.INSTANCE.getL10nManager().loadLocalizableContainerFromPluginEntryContainer(entry);
+            } catch (Throwable e) {
+                try {
+                    plugin.getUrlClassLoader().close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                OzzieApi.INSTANCE.getLogger().error("Fail to initialize {} {} with " + e, entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
                 e.printStackTrace();
+                return;
             }
-            OzzieApi.INSTANCE.getLogger()
-                    .info("Terminated {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata()
-                            .getVersion());
-        }));
-        this.getPluginEntryContainers().clear();
+            OzzieApi.INSTANCE.getLogger().info("Initialized {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
+        });
+    }
+
+
+    public void unregisterPlugins() {
+        this.pluginEntryContainers.forEach(this::unregisterPlugin);
+        this.pluginEntryContainers.clear();
+    }
+
+    public void unregisterPlugin(PluginEntryContainer<Plugin> pluginEntryContainer){
+        if (this.pluginEntryContainers.contains(pluginEntryContainer)){
+            pluginEntryContainer.getEntryPoints().forEach(plugin -> {
+                OzzieApi.INSTANCE.getLogger().info("Terminating {} {}...", pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
+                try {
+                    plugin.getEntryPointInstance().terminatePlugin();
+                    plugin.getUrlClassLoader().close();
+                } catch (Throwable e) {
+                    OzzieApi.INSTANCE.getLogger().error("Fail to terminate {} {} with " + e, pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
+                    e.printStackTrace();
+                    return;
+                }
+                OzzieApi.INSTANCE.getLogger().info("Terminated {} {}...", pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
+            });
+            pluginEntryContainer.getEntryPoints().clear();
+        }else{
+            OzzieApi.INSTANCE.getLogger().warn("Plugin {} {} does not exist in plugin entry containers list...", pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
+        }
     }
 
     public File getDirectory() {

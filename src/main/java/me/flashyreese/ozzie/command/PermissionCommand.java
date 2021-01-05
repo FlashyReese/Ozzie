@@ -15,6 +15,9 @@ import me.flashyreese.ozzie.api.database.mongodb.schema.RoleSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
+import me.flashyreese.ozzie.api.util.ConfirmationMenu;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -34,15 +37,9 @@ public class PermissionCommand extends DiscordCommand {
                 .then(DiscordCommandManager.argument("role", RoleArgumentType.role())
                         .then(DiscordCommandManager.literal("clear")
                                 .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
-                                        .executes(context -> {
-                                            //
-                                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                        }))
+                                        .executes(this::clearRolePermissionState))
                                 .then(DiscordCommandManager.literal("all")
-                                        .executes(context -> {
-                                            //use embed to confirm
-                                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                        })))
+                                        .executes(this::clearRoleAllPermission)))
                         .then(DiscordCommandManager.literal("set")
                                 .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
@@ -50,19 +47,119 @@ public class PermissionCommand extends DiscordCommand {
                 .then(DiscordCommandManager.argument("user", UserArgumentType.user())
                         .then(DiscordCommandManager.literal("clear")
                                 .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
-                                        .executes(context -> {
-                                            //
-                                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                        }))
+                                        .executes(this::clearUserPermissionState))
                                 .then(DiscordCommandManager.literal("all")
-                                        .executes(context -> {
-                                            //use embed to confirm
-                                            return com.mojang.brigadier.Command.SINGLE_SUCCESS;
-                                        })))
+                                        .executes(this::clearUserAllPermission)))
                         .then(DiscordCommandManager.literal("set")
                                 .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
                                         .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
                                                 .executes(this::setUserPermissionState)))));
+    }
+
+    private int clearRoleAllPermission(CommandContext<DiscordCommandSource> commandContext) {
+        try {
+            Role role = RoleArgumentType.getRole(commandContext, "role");
+            RoleSchema roleSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveRole(role.getIdLong());
+            MessageEmbed messageEmbed = new EmbedBuilder()
+                    .setDescription(new ParsableText(new TranslatableText("ozzie.permission.role.clear_confirm", commandContext), role.getAsMention()))
+                    .build();
+            ConfirmationMenu confirmationMenu = new ConfirmationMenu.Builder()
+                    .setEventWaiter(OzzieApi.INSTANCE.getEventWaiter())
+                    .setCustomEmbed(messageEmbed)
+                    .setConfirm(message -> {
+                        roleSchema.getPermissions().clear();
+                        try {
+                            OzzieApi.INSTANCE.getDatabaseHandler().updateRole(roleSchema);
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                        commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.role.clear_all", commandContext), role.getAsMention())).queue();
+                    })
+                    .build();
+            confirmationMenu.display(commandContext.getSource().getEvent().getChannel());
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    private int clearUserAllPermission(CommandContext<DiscordCommandSource> commandContext) {
+        try {
+            User user = UserArgumentType.getUser(commandContext, "user");
+            UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(user.getIdLong());
+
+            if (userSchema.getServerPermissionMap().containsKey(commandContext.getSource().getEvent().getGuild().getId())) {
+                Map<String, Boolean> userPermissionMap = userSchema.getServerPermissionMap().get(commandContext.getSource().getEvent().getGuild().getId());
+                MessageEmbed messageEmbed = new EmbedBuilder()
+                        .setDescription(new ParsableText(new TranslatableText("ozzie.permission.user.clear_confirm", commandContext), user.getAsMention()))
+                        .build();
+                ConfirmationMenu confirmationMenu = new ConfirmationMenu.Builder()
+                        .setEventWaiter(OzzieApi.INSTANCE.getEventWaiter())
+                        .setCustomEmbed(messageEmbed)
+                        .setConfirm(message -> {
+                            userPermissionMap.clear();
+                            try {
+                                OzzieApi.INSTANCE.getDatabaseHandler().updateUser(userSchema);
+                            } catch (Throwable throwable) {
+                                throwable.printStackTrace();
+                            }
+                            commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.user.clear_all", commandContext), user.getAsMention())).queue();
+                        })
+                        .build();
+                confirmationMenu.display(commandContext.getSource().getEvent().getChannel());
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    private int clearRolePermissionState(CommandContext<DiscordCommandSource> commandContext) {
+        try {
+            Role role = RoleArgumentType.getRole(commandContext, "role");
+            String permission = StringArgumentType.getString(commandContext, "permission");
+            RoleSchema roleSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveRole(role.getIdLong());
+
+            if (roleSchema.getPermissions().containsKey(permission)) {
+                roleSchema.getPermissions().remove(permission);
+                commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.role.clear", commandContext), permission, role.getName())).queue();
+            } else {
+                commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.role.not_exist", commandContext), permission, role.getName())).queue();
+            }
+            OzzieApi.INSTANCE.getDatabaseHandler().updateRole(roleSchema);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    private int clearUserPermissionState(CommandContext<DiscordCommandSource> commandContext) {
+        MessageReceivedEvent event = commandContext.getSource().getEvent();
+        try {
+            User user = UserArgumentType.getUser(commandContext, "user");
+            String permission = StringArgumentType.getString(commandContext, "permission");
+            UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(user.getIdLong());
+
+            if (userSchema.getServerPermissionMap().containsKey(event.getGuild().getId())) {
+                Map<String, Boolean> userPermissionMap = userSchema.getServerPermissionMap().get(event.getGuild().getId());
+
+                if (userPermissionMap.containsKey(permission)) {
+                    userPermissionMap.remove(permission);
+                    commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.user.clear", commandContext), permission, user.getName())).queue();
+                } else {
+                    commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.user.not_exist", commandContext), permission, user.getName())).queue();
+                }
+            } else {
+                commandContext.getSource().getEvent().getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.permission.user.not_exist", commandContext), permission, user.getName())).queue();
+            }
+
+            OzzieApi.INSTANCE.getDatabaseHandler().updateUser(userSchema);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
     private int setRolePermissionState(CommandContext<DiscordCommandSource> commandContext) throws CommandSyntaxException {
