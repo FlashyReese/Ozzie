@@ -1,3 +1,12 @@
+/*
+ * Copyright © 2021 FlashyReese <reeszrbteam@gmail.com>
+ *
+ * This file is part of Ozzie.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
 package me.flashyreese.ozzie.api.command.guild;
 
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -19,10 +28,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * Represents Discord Command Manager.
+ *
+ * @author FlashyReese
+ * @version 0.9.0+build-20210105
+ * @since 0.9.0+build-20210105
+ */
 public final class DiscordCommandManager extends CommandManager<DiscordCommandSource, DiscordCommand> implements EventListener {
 
     private final List<String> categories = new ArrayList<>();
 
+    /**
+     * Registers Command to the Command Dispatcher, Command Containers and creates a category for command.
+     *
+     * @param identifier Identifier
+     * @param command    Discord Command Object
+     * @return Success
+     */
     @Override
     public boolean registerCommand(Identifier identifier, DiscordCommand command) {
         if (super.registerCommand(identifier, command)){
@@ -32,6 +55,11 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
         return false;
     }
 
+    /**
+     * Event Listener for Discord MessageReceivedEvent.
+     *
+     * @param event GenericEvent
+     */
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof MessageReceivedEvent) {
@@ -44,6 +72,12 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
         }
     }
 
+    /**
+     * Checks if MessageReceivedEvent is a command, if so process and execute command.
+     *
+     * @param event MessageReceivedEvent
+     * @throws Throwable if unable to fetch server/user configurations or invalid command, syntax or insufficient permissions
+     */
     private void onMessageReceived(MessageReceivedEvent event) throws Throwable {
         if (event.getAuthor().isBot() || event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
             return;
@@ -67,13 +101,19 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
             Optional<CommandNode<DiscordCommandSource>> optional = this.getDispatcher().getRoot().getChildren().stream().filter(child -> finalFull.startsWith(child.getName())).findFirst();
             if (optional.isPresent()) {
                 if (serverConfig.getAllowedCommandTextChannel() != null && serverConfig.getAllowedCommandTextChannel().contains(event.getChannel().getIdLong())) {
-                    this.executes(new DiscordCommandSource(user, serverConfig, this.permissionMap(event), event), full);
+                    this.executes(new DiscordCommandSource(user, serverConfig, this.createPermissionMap(event), event), full);
                 }
             }
         }
     }
 
-    private Map<String, Boolean> permissionMap(MessageReceivedEvent event) {
+    /**
+     * Creates a permission map by fetching all role/server-user permissions. Server-User permissions will have first priority then Server-Role permissions will have second priority.
+     *
+     * @param event MessageReceivedEvent
+     * @return Map of permission and it's state
+     */
+    private Map<String, Boolean> createPermissionMap(MessageReceivedEvent event) {
         Map<String, Boolean> permissions = new HashMap<>();
         try {
             UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(event.getAuthor().getIdLong());
@@ -97,6 +137,11 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
         return permissions;
     }
 
+    /**
+     * Creates a category for a Discord Command if category does not exist.
+     *
+     * @param command Discord Command
+     */
     private void createCategories(DiscordCommand command) {
         String category = command.getCategory().toLowerCase().trim();
         if (!this.categories.contains(category)) {

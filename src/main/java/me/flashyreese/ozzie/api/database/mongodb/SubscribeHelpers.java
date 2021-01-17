@@ -122,7 +122,7 @@ public class SubscribeHelpers {
 
         @Override
         public void onComplete() {
-            System.out.println(String.format(message, getReceived()));
+            System.out.printf((message) + "%n", getReceived());
             super.onComplete();
         }
     }

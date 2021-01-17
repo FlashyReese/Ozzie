@@ -1,3 +1,12 @@
+/*
+ * Copyright © 2021 FlashyReese <reeszrbteam@gmail.com>
+ *
+ * This file is part of Ozzie.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
 package me.flashyreese.ozzie.api.command.argument;
 
 import com.mojang.brigadier.StringReader;
@@ -13,12 +22,31 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Represents User Argument Type.
+ *
+ * @author FlashyReese
+ * @version 0.9.0+build-20210105
+ * @since 0.9.0+build-20210105
+ */
 public class UserArgumentType implements ArgumentType<Long> {
 
+    /**
+     * Create a new UserArgumentType.
+     *
+     * @return UserArgumentType
+     */
     public static UserArgumentType user() {
         return new UserArgumentType();
     }
 
+    /**
+     * Retrieve User from Command Context.
+     *
+     * @param context DiscordCommandSource Command Context
+     * @param name Name of the argument
+     * @return User
+     */
     public static User getUser(CommandContext<DiscordCommandSource> context, String name) throws CommandSyntaxException {
         long id = context.getArgument(name, Long.class);
         return context.getSource()
@@ -31,6 +59,13 @@ public class UserArgumentType implements ArgumentType<Long> {
                 .orElse(null);
     }
 
+    /**
+     * Parses StringReader to Long.
+     *
+     * @param stringReader StringReader
+     * @return Long
+     * @throws CommandSyntaxException if input does not match format
+     */
     @Override
     public Long parse(StringReader stringReader) throws CommandSyntaxException {
         long userId = 0L;

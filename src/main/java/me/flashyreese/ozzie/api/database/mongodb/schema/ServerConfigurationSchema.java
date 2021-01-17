@@ -1,3 +1,12 @@
+/*
+ * Copyright © 2021 FlashyReese <reeszrbteam@gmail.com>
+ *
+ * This file is part of Ozzie.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
 package me.flashyreese.ozzie.api.database.mongodb.schema;
 
 import me.flashyreese.ozzie.api.OzzieApi;
@@ -5,6 +14,13 @@ import me.flashyreese.ozzie.api.OzzieApi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Serialization/Deserialization template for Server Configuration
+ *
+ * @author FlashyReese
+ * @version 0.9.0+build-20210105
+ * @since 0.9.0+build-20210105
+ */
 public class ServerConfigurationSchema {
     private long serverIdentifier;
     private List<Long> owners = new ArrayList<>();

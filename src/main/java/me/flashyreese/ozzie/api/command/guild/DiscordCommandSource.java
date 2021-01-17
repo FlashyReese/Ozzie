@@ -1,3 +1,12 @@
+/*
+ * Copyright © 2021 FlashyReese <reeszrbteam@gmail.com>
+ *
+ * This file is part of Ozzie.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
 package me.flashyreese.ozzie.api.command.guild;
 
 import me.flashyreese.common.permission.Permissible;
@@ -7,6 +16,13 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Map;
 
+/**
+ * Represents Discord Command Source.
+ *
+ * @author FlashyReese
+ * @version 0.9.0+build-20210105
+ * @since 0.9.0+build-20210105
+ */
 public class DiscordCommandSource implements Permissible {
 
     private final UserSchema userSchema;
@@ -14,6 +30,14 @@ public class DiscordCommandSource implements Permissible {
     private final Map<String, Boolean> permissions;
     private final MessageReceivedEvent event;
 
+    /**
+     * Creates a DiscordCommandSource for DiscordCommandManager.
+     *
+     * @param userSchema User
+     * @param serverConfigurationSchema ServerConfiguration
+     * @param permissions Map of permissions and it's states
+     * @param event MessageReceivedEvent
+     */
     public DiscordCommandSource(UserSchema userSchema, ServerConfigurationSchema serverConfigurationSchema, Map<String, Boolean> permissions, MessageReceivedEvent event) {
         this.userSchema = userSchema;
         this.serverConfigurationSchema = serverConfigurationSchema;

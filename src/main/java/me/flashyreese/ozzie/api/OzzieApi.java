@@ -1,3 +1,12 @@
+/*
+ * Copyright © 2021 FlashyReese <reeszrbteam@gmail.com>
+ *
+ * This file is part of Ozzie.
+ *
+ * Licensed under the MIT license. For more information,
+ * see the LICENSE file.
+ */
+
 package me.flashyreese.ozzie.api;
 
 import com.google.gson.Gson;
@@ -27,10 +36,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the Ozzie API class.
+ *
+ * @author FlashyReese
+ * @version 0.9.0+build-20210105
+ * @since 0.9.0+build-20210105
+ */
 public class OzzieApi {
     public static OzzieApi INSTANCE;
     private final Logger logger = LogManager.getLogger(Ozzie.class);
@@ -51,7 +66,13 @@ public class OzzieApi {
     private final L10nManager l10nManager;
     private final EventWaiter eventWaiter;
 
-    public OzzieApi(String[] arguments) throws IOException, URISyntaxException {
+    /**
+     * Default constructor for Ozzie Instance.
+     *
+     * @param arguments Takes in program arguments for configuring optional settings
+     * @throws IOException if unable to parse plugin metadata or check for updates
+     */
+    public OzzieApi(String[] arguments) throws IOException {
         OzzieApi.INSTANCE = this;
         this.version = new Semver(JsonParser.parseString(JarUtil.readTextFile("ozzie.plugin.json")).getAsJsonObject().get("version").getAsString());
         this.checkForUpdates();
@@ -69,7 +90,12 @@ public class OzzieApi {
         this.logger.info("Instance built!");
     }
 
-    public synchronized void start() throws LoginException, URISyntaxException, IOException {
+    /**
+     * Starts the instance.
+     *
+     * @throws LoginException if token invalid or unable to login with Discord
+     */
+    public synchronized void start() throws LoginException {
         if (!this.running) {
             this.logger.info("Starting instance...");
             if (shardManager == null) {
@@ -90,6 +116,9 @@ public class OzzieApi {
         }
     }
 
+    /**
+     * Stops the instance
+     */
     public synchronized void stop() {
         if (this.running) {
             this.logger.info("Stopping instance...");
@@ -103,6 +132,9 @@ public class OzzieApi {
         }
     }
 
+    /**
+     * Restarts the ShardManager and reloads all registered plugins.
+     */
     public synchronized void restart() {
         if (this.running) {
             this.logger.info("Restarting instance...");
@@ -119,7 +151,7 @@ public class OzzieApi {
     /**
      * Checks for updates with a url provided from the repository.
      *
-     * @throws IOException if no connection with Internet or GitHub down
+     * @throws IOException if no connection with internet or GitHub down
      */
     public void checkForUpdates() throws IOException {
         this.logger.info("Checking for updates...");
