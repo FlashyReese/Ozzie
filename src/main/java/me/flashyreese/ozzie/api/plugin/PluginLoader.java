@@ -13,10 +13,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -28,11 +26,66 @@ public class PluginLoader {
     private final String jsonFileName;
 
     private final List<PluginEntryContainer<Plugin>> pluginEntryContainers = new ArrayList<>();
+    private final Map<Integer, Function<File, PluginEntryContainer<Plugin>>> schemaVersionMetadata = new HashMap<>();
 
     public PluginLoader(Gson gson, File directory, String jsonFileName) {
         this.gson = gson;
         this.directory = directory;
         this.jsonFileName = jsonFileName;
+        this.loadSchematicVersionMetas();
+    }
+
+    private void loadSchematicVersionMetas(){
+        this.schemaVersionMetadata.put(1, pluginFile -> {
+            PluginMetadataV1 pluginMetadata = null;
+            try {
+                BufferedReader bufferedReader;
+                if (pluginFile.isFile()) {
+                    final JarFile pluginJarFile = new JarFile(pluginFile);
+                    final JarEntry pluginJarFileJarEntry = pluginJarFile.getJarEntry(String.format("%s.json", jsonFileName));
+                    if (pluginJarFileJarEntry == null) {
+                        pluginJarFile.close();
+                        OzzieApi.INSTANCE.getLogger().error("Invalid Plugin: {}", pluginFile.getName());
+                        return null;
+                    }
+                    bufferedReader = new BufferedReader(new InputStreamReader(pluginJarFile.getInputStream(pluginJarFileJarEntry), StandardCharsets.UTF_8));
+                    pluginMetadata = gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
+                    bufferedReader.close();
+                    pluginJarFile.close();
+                } else {
+                    final URL url = ClassLoader.getSystemClassLoader().getResource(String.format("%s.json", jsonFileName));
+                    if (url != null) {
+                        final File jsonSchema = new File(url.toURI());
+                        bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(jsonSchema), StandardCharsets.UTF_8));
+                        pluginMetadata = gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
+                        bufferedReader.close();
+                    }
+                }
+                if (pluginMetadata.getId() == null) {
+                    OzzieApi.INSTANCE.getLogger().error("Missing identifier for {}", pluginFile.getName());
+                    return null;
+                }
+
+                PluginMetadataV1 finalPluginMetadata = pluginMetadata;
+                Optional<PluginEntryContainer<Plugin>> optional = pluginEntryContainers.stream().filter(container -> container.getPluginMetadata().getId().equals(finalPluginMetadata.getId())).findFirst();
+
+                if (optional.isPresent()) {
+                    PluginEntryContainer<Plugin> existingPluginEntryContainer = optional.get();
+                    Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().getVersion());
+                    Semver currentSemver = new Semver(pluginMetadata.getVersion());
+                    if (existingSemver.isEquivalentTo(currentSemver)) {
+                        OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
+                        return null;
+                    } else if (existingSemver.isGreaterThan(currentSemver)) {
+                        OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as a newer {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
+                        return null;
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return new PluginEntryContainer<>(pluginMetadata, pluginFile);
+        });
     }
 
     private void loadPlugins() {
@@ -43,6 +96,25 @@ public class PluginLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public <T> List<EntryPointContainer<T>> instantiateEntryPoints(PluginEntryContainer<Plugin> pluginEntryContainer){
+        List<EntryPointContainer<T>> entryPoints = new ArrayList<>();
+        pluginEntryContainer.getPluginMetadata()
+                .getEntryPoint()
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals("main"))
+                .forEach(entryPointContainers -> entryPointContainers.getValue()
+                        .forEach(entryPoint -> {
+                            try {
+                                EntryPointContainer<T> entryPointInstance = this.createEntryPointInstance(entryPoint, pluginEntryContainer.getPluginFile());
+                                entryPoints.add(entryPointInstance);
+                            } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }));
+        return entryPoints;
     }
 
     public void searchDirectoryForPlugins(File directory) {
@@ -58,10 +130,8 @@ public class PluginLoader {
     }
 
     public void verifyPlugin(File pluginFile) throws IOException, URISyntaxException {
-        PluginMetadataV1 pluginMetadata = null;
+        SchematicVersion schematicVersion = null;
         BufferedReader bufferedReader;
-        // Todo: Instead of deserializing PluginMetadataV1, deserialize SchematicVersion check version, have a Function Map to deserialize accordingly
-        // Also
         if (pluginFile.isFile()) {
             final JarFile pluginJarFile = new JarFile(pluginFile);
             final JarEntry pluginJarFileJarEntry = pluginJarFile.getJarEntry(String.format("%s.json", this.jsonFileName));
@@ -71,7 +141,7 @@ public class PluginLoader {
                 return;
             }
             bufferedReader = new BufferedReader(new InputStreamReader(pluginJarFile.getInputStream(pluginJarFileJarEntry), StandardCharsets.UTF_8));
-            pluginMetadata = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
+            schematicVersion = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), SchematicVersion.class);
             bufferedReader.close();
             pluginJarFile.close();
         } else {
@@ -79,119 +149,71 @@ public class PluginLoader {
             if (url != null) {
                 final File jsonSchema = new File(url.toURI());
                 bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(jsonSchema), StandardCharsets.UTF_8));
-                pluginMetadata = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
+                schematicVersion = this.gson.fromJson(bufferedReader.lines().collect(Collectors.joining()), SchematicVersion.class);
                 bufferedReader.close();
             }
         }
-        if (pluginMetadata == null)
+
+        if (schematicVersion == null)
             return;
 
-        if (pluginMetadata.getSchemaVersion() == 1) {
-            if (pluginMetadata.getId() == null) {
-                OzzieApi.INSTANCE.getLogger().error("Missing identifier for {}", pluginFile.getName());
-                return;
-            }
+        Function<File, PluginEntryContainer<Plugin>> function = this.schemaVersionMetadata.getOrDefault(schematicVersion.getSchemaVersion(), null);
 
-            PluginMetadataV1 finalPluginMetadata = pluginMetadata;
-            Optional<PluginEntryContainer<Plugin>> optional = this.pluginEntryContainers.stream().filter(container -> container.getPluginMetadata().getId().equals(finalPluginMetadata.getId())).findFirst();
-
-            if (optional.isPresent()) {
-                PluginEntryContainer<Plugin> existingPluginEntryContainer = optional.get();
-                Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().getVersion());
-                Semver currentSemver = new Semver(pluginMetadata.getVersion());
-                if (existingSemver.isEquivalentTo(currentSemver)) {
-                    OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
-                    return;
-                } else if (existingSemver.isGreaterThan(currentSemver)) {
-                    OzzieApi.INSTANCE.getLogger().warn("Skipping {} {} as a newer {} {} is already loaded.", pluginMetadata.getId(), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getId(), existingPluginEntryContainer.getPluginMetadata().getVersion());
-                    return;
-                }
-            }
-
-            List<PluginClassLoaderContainer<Plugin>> plugins = new ArrayList<>();
-            pluginMetadata.getEntryPoint()
-                    .entrySet()
-                    .stream()
-                    .filter(stringListEntry -> stringListEntry.getKey().equals("main"))
-                    .forEach(stringListEntry -> stringListEntry.getValue().forEach(entryPoint -> {
-                        PluginClassLoaderContainer<Plugin> plugin = null;
-                        try {
-                            plugin = this.createEntryPointInstance(entryPoint, pluginFile, Plugin.class);
-                        } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        plugins.add(plugin);
-                    }));
-            this.pluginEntryContainers.add(new PluginEntryContainer<>(pluginMetadata, pluginFile, plugins));
-        } else {
+        if (function != null){
+            PluginEntryContainer<Plugin> pluginEntryContainer = function.apply(pluginFile);
+            this.pluginEntryContainers.add(pluginEntryContainer);
+        }else{
             OzzieApi.INSTANCE.getLogger().info("Skipping {}", pluginFile.getName());
         }
     }
 
-    public <T> PluginClassLoaderContainer<T> createEntryPointInstance(String entryPoint, File pluginFile, Class<T> tClass) throws NoSuchMethodException, MalformedURLException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+    public <T> EntryPointContainer<T> createEntryPointInstance(String entryPoint, File pluginFile) throws NoSuchMethodException, MalformedURLException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginFile.toURI().toURL()});
         @SuppressWarnings("unchecked")
         Class<T> entryPointInstance = (Class<T>) Class.forName(entryPoint, true, classLoader);
-        return new PluginClassLoaderContainer<>(classLoader, entryPointInstance.getDeclaredConstructor().newInstance());
+        return new EntryPointContainer<>(classLoader, entryPointInstance.getDeclaredConstructor().newInstance());
     }
 
-    public <T> List<PluginEntryContainer<T>> getEntryPointContainer(String entryName, Class<T> classPath) {
+    public <T> List<PluginEntryContainer<T>> getPluginEntryContainer(String entryName) {
         List<PluginEntryContainer<T>> containers = new ArrayList<>();
-        this.pluginEntryContainers.forEach(pluginEntryContainer -> {
-            List<PluginClassLoaderContainer<T>> entryPoints = new ArrayList<>();
-            pluginEntryContainer.getPluginMetadata()
-                    .getEntryPoint()
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> entry.getKey().equals(entryName))
-                    .forEach(entryPointContainers -> entryPointContainers.getValue()
-                            .forEach(entryPoint -> {
-                                try {
-                                    PluginClassLoaderContainer<T> entryPointInstance = this.createEntryPointInstance(entryPoint, pluginEntryContainer.getPluginFile(), classPath);
-                                    entryPoints.add(entryPointInstance);
-                                } catch (NoSuchMethodException | MalformedURLException | IllegalAccessException | InvocationTargetException | InstantiationException | ClassNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                            }));
-            containers.add(new PluginEntryContainer<>(pluginEntryContainer.getPluginMetadata(), pluginEntryContainer.getPluginFile(), entryPoints));
-        });
+        this.pluginEntryContainers.forEach(pluginEntryContainer -> containers.add(new PluginEntryContainer<>(pluginEntryContainer.getPluginMetadata(), pluginEntryContainer.getPluginFile(), this.instantiateEntryPoints(pluginEntryContainer))));
         return containers;
     }
 
     public void registerPlugins() {
         this.loadPlugins();
-        this.getPluginEntryContainers().forEach(this::loadPlugin);
+        this.getPluginEntryContainers().forEach(this::initializePlugin);
     }
 
     public void registerPlugin(PluginEntryContainer<Plugin> entry){
         if (!this.pluginEntryContainers.contains(entry)){
-            this.loadPlugin(entry);
+            this.initializePlugin(entry);
             this.pluginEntryContainers.add(entry);
         }else{
             OzzieApi.INSTANCE.getLogger().warn("Plugin {} {} already exist in plugin entry containers list...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
         }
     }
 
-    public void loadPlugin(PluginEntryContainer<Plugin> entry){
-        entry.getEntryPoints().forEach(plugin -> {
-            OzzieApi.INSTANCE.getLogger().info("Initializing {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
+    public void initializePlugin(PluginEntryContainer<Plugin> pluginEntryContainer){
+        pluginEntryContainer.getEntryPoints().addAll(this.instantiateEntryPoints(pluginEntryContainer));
+        pluginEntryContainer.getEntryPoints().forEach(plugin -> {
+            OzzieApi.INSTANCE.getLogger().info("Initializing {} {}...", pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
             try {
                 plugin.getEntryPointInstance().initializePlugin();
-                OzzieApi.INSTANCE.getL10nManager().loadLocalizableContainerFromPluginEntryContainer(entry);
+                OzzieApi.INSTANCE.getL10nManager().loadLocalizableContainerFromPluginEntryContainer(pluginEntryContainer);
             } catch (Throwable e) {
                 try {
                     plugin.getUrlClassLoader().close();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
-                OzzieApi.INSTANCE.getLogger().error("Fail to initialize {} {} with " + e, entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
+                OzzieApi.INSTANCE.getLogger().error("Fail to initialize {} {} with " + e, pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
                 e.printStackTrace();
                 return;
             }
-            OzzieApi.INSTANCE.getLogger().info("Initialized {} {}...", entry.getPluginMetadata().getName(), entry.getPluginMetadata().getVersion());
+            OzzieApi.INSTANCE.getLogger().info("Initialized {} {}...", pluginEntryContainer.getPluginMetadata().getName(), pluginEntryContainer.getPluginMetadata().getVersion());
         });
     }
-
 
     public void unregisterPlugins() {
         this.pluginEntryContainers.forEach(this::unregisterPlugin);
@@ -233,12 +255,14 @@ public class PluginLoader {
     public static class PluginEntryContainer<T> {
         private final PluginMetadataV1 pluginMetadata;
         private final File pluginFile;
-        // Todo: Remove final for entrypoints
-        private final List<PluginClassLoaderContainer<T>> entryPoints;
+        private List<EntryPointContainer<T>> entryPoints = new ArrayList<>();
 
-        // Todo: Create constructor without list of entrypoints
+        public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile){
+            this.pluginMetadata = pluginMetadata;
+            this.pluginFile = pluginFile;
+        }
 
-        public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile, List<PluginClassLoaderContainer<T>> entryPoints) {
+        public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile, List<EntryPointContainer<T>> entryPoints) {
             this.pluginMetadata = pluginMetadata;
             this.pluginFile = pluginFile;
             this.entryPoints = entryPoints;
@@ -252,16 +276,16 @@ public class PluginLoader {
             return pluginFile;
         }
 
-        public List<PluginClassLoaderContainer<T>> getEntryPoints() {
+        public List<EntryPointContainer<T>> getEntryPoints() {
             return entryPoints;
         }
     }
 
-    public static class PluginClassLoaderContainer<T> {
+    public static class EntryPointContainer<T> {
         private final URLClassLoader urlClassLoader;
         private final T entryPointInstance;
 
-        public PluginClassLoaderContainer(URLClassLoader urlClassLoader, T entryPointInstance) {
+        public EntryPointContainer(URLClassLoader urlClassLoader, T entryPointInstance) {
             this.urlClassLoader = urlClassLoader;
             this.entryPointInstance = entryPointInstance;
         }

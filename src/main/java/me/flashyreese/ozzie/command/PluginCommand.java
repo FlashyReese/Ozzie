@@ -121,7 +121,7 @@ public class PluginCommand extends DiscordCommand {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(pluginJarFile.getInputStream(pluginJarFileJarEntry), StandardCharsets.UTF_8));
         PluginMetadataV1 pluginMetadata = OzzieApi.INSTANCE.getGson().fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
         bufferedReader.close();
-        if (pluginMetadata.getSchemaVersion() == 1) {
+        if (pluginMetadata.getSchemaVersion() == 1) {//Todo: Move to separate class alongside PluginLoader#loadSchematicVersionMetas()
             PluginLoader.PluginEntryContainer<Plugin> existingPluginEntryContainer = OzzieApi.INSTANCE.getPluginLoader().getPluginEntryContainers().stream().filter(pluginEntryContainer -> pluginEntryContainer.getPluginMetadata().getId().equals(pluginMetadata.getId())).findFirst().orElse(null);
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -191,7 +191,7 @@ public class PluginCommand extends DiscordCommand {
                     .findFirst()
                     .orElse(null);
             if (entryContainer != null) {
-                OzzieApi.INSTANCE.getPluginLoader().loadPlugin(entryContainer);
+                OzzieApi.INSTANCE.getPluginLoader().initializePlugin(entryContainer);
                 event.getChannel().sendMessage("Installation Complete!").queue();
                 return;
             }
