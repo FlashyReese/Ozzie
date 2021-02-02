@@ -6,7 +6,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import me.flashyreese.common.permission.PermissionException;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.CommandManager;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
@@ -49,16 +48,12 @@ public class HelpCommand extends DiscordCommand {
             StringBuilder line = new StringBuilder();
             for (CommandManager.CommandContainer<DiscordCommandSource, DiscordCommand> commandContainer : OzzieApi.INSTANCE.getCommandManager().getCommandContainers()) {
                 DiscordCommand cmd = commandContainer.getCommand();
-                try {
-                    if (!cmd.isHidden() && cmd.getCategory().equalsIgnoreCase(cc) && OzzieApi.INSTANCE.getPermissionDispatcher()
-                            .hasPermission(cmd
-                                    .getPermission(), permissions)) {
-                        line.append(String.format("`%s` ", cmd.getArgumentBuilder().getLiteral()));
+                if (!cmd.isHidden() && cmd.getCategory().equalsIgnoreCase(cc) && OzzieApi.INSTANCE.getPermissionDispatcher()
+                        .hasPermission(cmd
+                                .getPermission(), permissions)) {
+                    line.append(String.format("`%s` ", cmd.getArgumentBuilder().getLiteral()));
 
-                        adder++;
-                    }
-                } catch (PermissionException e) {
-                    e.printStackTrace();
+                    adder++;
                 }
             }
             if (!line.toString().isEmpty()) {

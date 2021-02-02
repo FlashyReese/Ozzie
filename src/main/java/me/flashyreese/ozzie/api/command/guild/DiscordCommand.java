@@ -9,11 +9,8 @@
 
 package me.flashyreese.ozzie.api.command.guild;
 
-import me.flashyreese.common.permission.PermissionException;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.Command;
-
-import java.util.Map;
 
 /**
  * Represents an abstract Discord Command.
@@ -31,9 +28,9 @@ public abstract class DiscordCommand implements Command<DiscordCommandSource> {
     /**
      * Default constructor for Discord Command.
      *
-     * @param category Command Category
+     * @param category    Command Category
      * @param description Command Description
-     * @param permission Command Permission
+     * @param permission  Command Permission
      */
     public DiscordCommand(String category, String description, String permission) {
         this.category = category;
@@ -48,13 +45,7 @@ public abstract class DiscordCommand implements Command<DiscordCommandSource> {
      * @return Sufficient permissions
      */
     protected boolean hasPermission(DiscordCommandSource commandContext) {
-        Map<String, Boolean> permissions = commandContext.permissions();
-        try {
-            return OzzieApi.INSTANCE.getPermissionDispatcher().hasPermission(this.permission, permissions);
-        } catch (PermissionException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return OzzieApi.INSTANCE.getPermissionDispatcher().hasPermission(this.permission, commandContext.permissions());
     }
 
     /**
@@ -64,13 +55,7 @@ public abstract class DiscordCommand implements Command<DiscordCommandSource> {
      * @return Sufficient permissions
      */
     protected boolean hasPermissionOf(DiscordCommandSource commandContext, String subPermission) {
-        Map<String, Boolean> permissions = commandContext.permissions();
-        try {
-            return OzzieApi.INSTANCE.getPermissionDispatcher().hasPermission(String.format("%s.%s", this.permission, subPermission), permissions);
-        } catch (PermissionException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return OzzieApi.INSTANCE.getPermissionDispatcher().hasPermission(String.format("%s.%s", this.permission, subPermission), commandContext.permissions());
     }
 
     public boolean isHidden() {

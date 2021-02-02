@@ -15,18 +15,17 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.CommandManager;
-import me.flashyreese.ozzie.api.database.mongodb.schema.RoleSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.ServerConfigurationSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
 import me.flashyreese.ozzie.api.util.Identifier;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents Discord Command Manager.
@@ -48,7 +47,7 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
      */
     @Override
     public boolean registerCommand(Identifier identifier, DiscordCommand command) {
-        if (super.registerCommand(identifier, command)){
+        if (super.registerCommand(identifier, command)) {
             this.createCategories(command);
             return true;
         }
@@ -79,11 +78,15 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
      * @throws Throwable if unable to fetch server/user configurations or invalid command, syntax or insufficient permissions
      */
     private void onMessageReceived(MessageReceivedEvent event) throws Throwable {
+        // Verify message author is not a bot or itself
         if (event.getAuthor().isBot() || event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
             return;
         }
+        // Retrieve server settings and user settings/permissions
         ServerConfigurationSchema serverConfig = OzzieApi.INSTANCE.getDatabaseHandler().retrieveServerConfiguration(event.getGuild().getIdLong());
         UserSchema user = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(event.getAuthor().getIdLong());
+
+        // Check prefix for command using server settings and user settings
         String prefix = serverConfig.getCommandPrefix();
         if (prefix.isEmpty())
             prefix = OzzieApi.INSTANCE.getDefaultCommandPrefix();
@@ -94,47 +97,21 @@ public final class DiscordCommandManager extends CommandManager<DiscordCommandSo
             }
         }
 
+        // Check if message starts with prefix
         String full = event.getMessage().getContentRaw();
         if (full.startsWith(prefix)) {
             full = full.replaceFirst(prefix, "");
             String finalFull = full;
+            // Check if received command is a valid command
             Optional<CommandNode<DiscordCommandSource>> optional = this.getDispatcher().getRoot().getChildren().stream().filter(child -> finalFull.startsWith(child.getName())).findFirst();
             if (optional.isPresent()) {
+                // Verify if command can be executed in text channel
                 if (serverConfig.getAllowedCommandTextChannel() != null && serverConfig.getAllowedCommandTextChannel().contains(event.getChannel().getIdLong())) {
-                    this.executes(new DiscordCommandSource(user, serverConfig, this.createPermissionMap(event), event), full);
+                    // Creates a CommandSource and executes command
+                    this.executes(new DiscordCommandSource(user, serverConfig, event), full);
                 }
             }
         }
-    }
-
-    /**
-     * Creates a permission map by fetching all role/server-user permissions. Server-User permissions will have first priority then Server-Role permissions will have second priority.
-     *
-     * @param event MessageReceivedEvent
-     * @return Map of permission and it's state
-     */
-    private Map<String, Boolean> createPermissionMap(MessageReceivedEvent event) {
-        Map<String, Boolean> permissions = new HashMap<>();
-        try {
-            UserSchema userSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveUser(event.getAuthor().getIdLong());
-            if (userSchema.getServerPermissionMap().containsKey(event.getGuild().getId())) {
-                permissions.putAll(userSchema.getServerPermissionMap().get(event.getGuild().getId()));
-            }
-
-            Member member = event.getMember();
-            if (member != null) {
-                for (Role role : member.getRoles()) {
-                    RoleSchema roleSchema = OzzieApi.INSTANCE.getDatabaseHandler().retrieveRole(role.getIdLong());
-                    roleSchema.permissions().forEach((key, aBoolean) -> {
-                        if (!permissions.containsKey(key)) permissions.put(key, aBoolean);
-                    });
-                }
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            return permissions;
-        }
-        return permissions;
     }
 
     /**

@@ -9,7 +9,7 @@
 
 package me.flashyreese.ozzie.api.database.mongodb.schema;
 
-import me.flashyreese.common.permission.Permissible;
+import me.flashyreese.ozzie.api.permission.Permissible;
 
 import java.util.HashMap;
 import java.util.Map;

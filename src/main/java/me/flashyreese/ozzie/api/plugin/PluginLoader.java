@@ -60,6 +60,8 @@ public class PluginLoader {
     public void verifyPlugin(File pluginFile) throws IOException, URISyntaxException {
         PluginMetadataV1 pluginMetadata = null;
         BufferedReader bufferedReader;
+        // Todo: Instead of deserializing PluginMetadataV1, deserialize SchematicVersion check version, have a Function Map to deserialize accordingly
+        // Also
         if (pluginFile.isFile()) {
             final JarFile pluginJarFile = new JarFile(pluginFile);
             final JarEntry pluginJarFileJarEntry = pluginJarFile.getJarEntry(String.format("%s.json", this.jsonFileName));
@@ -231,7 +233,10 @@ public class PluginLoader {
     public static class PluginEntryContainer<T> {
         private final PluginMetadataV1 pluginMetadata;
         private final File pluginFile;
+        // Todo: Remove final for entrypoints
         private final List<PluginClassLoaderContainer<T>> entryPoints;
+
+        // Todo: Create constructor without list of entrypoints
 
         public PluginEntryContainer(PluginMetadataV1 pluginMetadata, File pluginFile, List<PluginClassLoaderContainer<T>> entryPoints) {
             this.pluginMetadata = pluginMetadata;

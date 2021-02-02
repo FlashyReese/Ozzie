@@ -1,4 +1,4 @@
-package me.flashyreese.common.permission;
+package me.flashyreese.ozzie.api.permission;
 
 import java.util.Map;
 
