@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -101,7 +102,8 @@ public class OzzieApi {
             if (shardManager == null) {
                 DefaultShardManagerBuilder shardManagerBuilder;
                 shardManagerBuilder = DefaultShardManagerBuilder.createDefault(this.tokenManager.getToken("discord"));
-                shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING);
+                shardManagerBuilder.enableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS);
+                shardManagerBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.GUILD_WEBHOOKS);
                 shardManagerBuilder.setAutoReconnect(true);
                 this.shardManager = shardManagerBuilder.build();
                 this.shardManager.addEventListener(this.commandManager);
