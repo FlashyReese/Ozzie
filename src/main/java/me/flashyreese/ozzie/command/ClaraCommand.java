@@ -2,10 +2,9 @@ package me.flashyreese.ozzie.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.util.Tenor;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 
 import java.util.List;
 import java.util.Random;
@@ -21,7 +20,7 @@ public class ClaraCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("clara")
+        return this.literal("clara")
                 .requires(this::hasPermission)
                 .executes(this::clara);
     }

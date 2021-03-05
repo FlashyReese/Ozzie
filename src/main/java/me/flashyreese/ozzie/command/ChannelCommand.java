@@ -5,12 +5,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.flashyreese.ozzie.api.OzzieApi;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.database.mongodb.schema.ServerConfigurationSchema;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -25,22 +24,22 @@ public class ChannelCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("channel")
+        return this.literal("channel")
                 .requires(this::hasPermission)
-                .then(DiscordCommandManager.literal("add")
+                .then(this.literal("add")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "add"))
                         .executes(this::addEmbed)
-                        .then(DiscordCommandManager.argument("channels", StringArgumentType.greedyString())
+                        .then(this.argument("channels", StringArgumentType.greedyString())
                                 .executes(this::addMentioned)))
-                .then(DiscordCommandManager.literal("remove")
+                .then(this.literal("remove")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "remove"))
                         .executes(context -> {
                             //Embed selector
                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                         })
-                        .then(DiscordCommandManager.argument("channels", StringArgumentType.greedyString())
+                        .then(this.argument("channels", StringArgumentType.greedyString())
                                 .executes(this::removeMentioned)))
-                .then(DiscordCommandManager.literal("list")
+                .then(this.literal("list")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "list"))
                         .executes(this::list));
     }

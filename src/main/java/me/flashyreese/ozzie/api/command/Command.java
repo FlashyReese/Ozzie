@@ -9,7 +9,9 @@
 
 package me.flashyreese.ozzie.api.command;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
 /**
  * Represents Command Interface
@@ -20,4 +22,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
  */
 public interface Command<S> {
     LiteralArgumentBuilder<S> getArgumentBuilder();
+
+    default LiteralArgumentBuilder<S> literal(String literal) {
+        return LiteralArgumentBuilder.literal(literal);
+    }
+
+    default <T> RequiredArgumentBuilder<S, T> argument(String name, ArgumentType<T> type) {
+        return RequiredArgumentBuilder.argument(name, type);
+    }
 }

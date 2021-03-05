@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
@@ -18,18 +17,18 @@ public class TokenCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("token")
+        return this.literal("token")
                 .requires(this::hasPermission)
-                .then(DiscordCommandManager.literal("add")
+                .then(this.literal("add")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "add"))
-                        .then(DiscordCommandManager.argument("tokenName", StringArgumentType.string())
-                                .then(DiscordCommandManager.argument("token", StringArgumentType.string())
+                        .then(this.argument("tokenName", StringArgumentType.string())
+                                .then(this.argument("token", StringArgumentType.string())
                                         .executes(this::add))))
-                .then(DiscordCommandManager.literal("remove")
+                .then(this.literal("remove")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "remove"))
-                        .then(DiscordCommandManager.argument("tokenName", StringArgumentType.string())
+                        .then(this.argument("tokenName", StringArgumentType.string())
                                 .executes(this::remove)))
-                .then(DiscordCommandManager.literal("reload")
+                .then(this.literal("reload")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "reload"))
                         .executes(this::reload));
     }

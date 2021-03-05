@@ -7,7 +7,6 @@ import com.vdurmont.semver4j.Semver;
 import me.flashyreese.common.util.FileUtil;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
@@ -42,22 +41,22 @@ public class PluginCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("plugin")
+        return this.literal("plugin")
                 .requires(this::hasPermission)
                 .executes(commandContext -> com.mojang.brigadier.Command.SINGLE_SUCCESS)
-                .then(DiscordCommandManager.literal("list")
+                .then(this.literal("list")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "list"))
                         .executes(this::list))
-                .then(DiscordCommandManager.literal("install")
+                .then(this.literal("install")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "install"))
                         .executes(this::install)
-                        .then(DiscordCommandManager.argument("url", StringArgumentType.greedyString())
+                        .then(this.argument("url", StringArgumentType.greedyString())
                                 .requires(commandContext -> this.hasPermissionOf(commandContext, "install.url"))
                                 .executes(commandContext -> {
                                     //Todo:
                                     return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                                 })))
-                .then(DiscordCommandManager.literal("reload")
+                .then(this.literal("reload")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "reload"))
                         .executes(this::reload));
     }
@@ -67,7 +66,7 @@ public class PluginCommand extends DiscordCommand {
         //Todo: Navigate-able Embed
         for (PluginLoader.PluginEntryContainer<Plugin> entryContainer : OzzieApi.INSTANCE.getPluginLoader()
                 .getPluginEntryContainers()) {
-            event.getChannel().sendMessage(entryContainer.getPluginMetadata().getName()).queue();
+            event.getChannel().sendMessage(entryContainer.getPluginMetadata().asV1().getName()).queue();
         }
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
@@ -122,7 +121,7 @@ public class PluginCommand extends DiscordCommand {
         PluginMetadataV1 pluginMetadata = OzzieApi.INSTANCE.getGson().fromJson(bufferedReader.lines().collect(Collectors.joining()), PluginMetadataV1.class);
         bufferedReader.close();
         if (pluginMetadata.getSchemaVersion() == 1) {//Todo: Move to separate class alongside PluginLoader#loadSchematicVersionMetas()
-            PluginLoader.PluginEntryContainer<Plugin> existingPluginEntryContainer = OzzieApi.INSTANCE.getPluginLoader().getPluginEntryContainers().stream().filter(pluginEntryContainer -> pluginEntryContainer.getPluginMetadata().getId().equals(pluginMetadata.getId())).findFirst().orElse(null);
+            PluginLoader.PluginEntryContainer<Plugin> existingPluginEntryContainer = OzzieApi.INSTANCE.getPluginLoader().getPluginEntryContainers().stream().filter(pluginEntryContainer -> pluginEntryContainer.getPluginMetadata().asV1().getId().equals(pluginMetadata.getId())).findFirst().orElse(null);
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
                     .setColor(Color.orange)
@@ -142,7 +141,7 @@ public class PluginCommand extends DiscordCommand {
                     .setUsers(event.getAuthor());
 
             if (existingPluginEntryContainer != null) {
-                Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().getVersion());
+                Semver existingSemver = new Semver(existingPluginEntryContainer.getPluginMetadata().asV1().getVersion());
                 Semver newSemver = new Semver(pluginMetadata.getVersion());//Semver Exception for patch builds
                 //resolve versioning
                 if (existingSemver.isEqualTo(newSemver)) {
@@ -151,11 +150,11 @@ public class PluginCommand extends DiscordCommand {
                     event.getChannel().sendMessage(new TranslatableText("ozzie.plugin.install.identical_version", commandContext)).queue();
                     return;
                 } else if (existingSemver.isEquivalentTo(newSemver)) {
-                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.replace", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getVersion()));
+                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.replace", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().asV1().getVersion()));
                 } else if (existingSemver.isGreaterThan(newSemver)) {
-                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.older_than", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getVersion()));
+                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.older_than", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().asV1().getVersion()));
                 } else if (existingSemver.isLowerThan(newSemver)) {
-                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.newer_than", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().getVersion()));
+                    embedBuilder.setDescription(new ParsableText(new TranslatableText("ozzie.plugin.install.newer_than", commandContext), pluginMetadata.getVersion(), existingPluginEntryContainer.getPluginMetadata().asV1().getVersion()));
                 }
                 builder.setConfirm((msg) -> {
                     OzzieApi.INSTANCE.getPluginLoader().unregisterPlugin(existingPluginEntryContainer);

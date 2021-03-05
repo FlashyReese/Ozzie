@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PluginMetadataV1 extends SchematicVersion {
+public class PluginMetadataV1 extends SchematicVersionMetadata {
 
     private String id;
     private String name;

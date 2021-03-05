@@ -9,7 +9,6 @@ import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.argument.RoleArgumentType;
 import me.flashyreese.ozzie.api.command.argument.UserArgumentType;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.database.mongodb.schema.RoleSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
@@ -32,27 +31,27 @@ public class PermissionCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("permission")
+        return this.literal("permission")
                 .requires(this::hasPermission)
-                .then(DiscordCommandManager.argument("role", RoleArgumentType.role())
-                        .then(DiscordCommandManager.literal("clear")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
+                .then(this.argument("role", RoleArgumentType.role())
+                        .then(this.literal("clear")
+                                .then(this.argument("permission", StringArgumentType.string())
                                         .executes(this::clearRolePermissionState))
-                                .then(DiscordCommandManager.literal("all")
+                                .then(this.literal("all")
                                         .executes(this::clearRoleAllPermission)))
-                        .then(DiscordCommandManager.literal("set")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
-                                        .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
+                        .then(this.literal("set")
+                                .then(this.argument("permission", StringArgumentType.string())
+                                        .then(this.argument("state", BoolArgumentType.bool())
                                                 .executes(this::setRolePermissionState)))))
-                .then(DiscordCommandManager.argument("user", UserArgumentType.user())
-                        .then(DiscordCommandManager.literal("clear")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
+                .then(this.argument("user", UserArgumentType.user())
+                        .then(this.literal("clear")
+                                .then(this.argument("permission", StringArgumentType.string())
                                         .executes(this::clearUserPermissionState))
-                                .then(DiscordCommandManager.literal("all")
+                                .then(this.literal("all")
                                         .executes(this::clearUserAllPermission)))
-                        .then(DiscordCommandManager.literal("set")
-                                .then(DiscordCommandManager.argument("permission", StringArgumentType.string())
-                                        .then(DiscordCommandManager.argument("state", BoolArgumentType.bool())
+                        .then(this.literal("set")
+                                .then(this.argument("permission", StringArgumentType.string())
+                                        .then(this.argument("state", BoolArgumentType.bool())
                                                 .executes(this::setUserPermissionState)))));
     }
 

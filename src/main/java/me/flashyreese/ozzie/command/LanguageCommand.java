@@ -4,13 +4,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.flashyreese.ozzie.api.OzzieApi;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.database.mongodb.schema.ServerConfigurationSchema;
 import me.flashyreese.ozzie.api.database.mongodb.schema.UserSchema;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Locale;
@@ -22,31 +21,31 @@ public class LanguageCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("language")
+        return this.literal("language")
                 .requires(this::hasPermission)
                 .executes(this::language)
-                .then(DiscordCommandManager.literal("set")
+                .then(this.literal("set")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "set"))
                         .executes(context -> {
                             //embed chooser
                             return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                         })
-                        .then(DiscordCommandManager.argument("lang", StringArgumentType.word())
+                        .then(this.argument("lang", StringArgumentType.word())
                                 .executes(this::setUserLanguage)))
-                .then(DiscordCommandManager.literal("clear")
+                .then(this.literal("clear")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "clear"))
                         .executes(this::clearUserLanguage))
-                .then(DiscordCommandManager.literal("server")
+                .then(this.literal("server")
                         .requires(commandContext -> this.hasPermissionOf(commandContext, "server"))
-                        .then(DiscordCommandManager.literal("set")
+                        .then(this.literal("set")
                                 .requires(commandContext -> this.hasPermissionOf(commandContext, "server.set"))
                                 .executes(context -> {
                                     //Embed chooser
                                     return com.mojang.brigadier.Command.SINGLE_SUCCESS;
                                 })
-                                .then(DiscordCommandManager.argument("lang", StringArgumentType.word())
+                                .then(this.argument("lang", StringArgumentType.word())
                                         .executes(this::setServerLanguage)))
-                        .then(DiscordCommandManager.literal("clear")
+                        .then(this.literal("clear")
                                 .requires(commandContext -> this.hasPermissionOf(commandContext, "server.clear"))
                                 .executes(this::clearServerLanguage)));
     }

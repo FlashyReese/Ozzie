@@ -81,13 +81,13 @@ public class L10nManager {
      */
     public void loadLocalizableContainerFromPluginEntryContainer(PluginLoader.PluginEntryContainer<Plugin> pluginEntryContainer) throws Exception {
         // Check if localization containers contains plugin entry container identifier
-        Optional<LocalizationContainer> optionalLocalizableContainer = this.localizationContainers.stream().filter(container -> container.getIdentifier().equals(pluginEntryContainer.getPluginMetadata().getId())).findFirst();
+        Optional<LocalizationContainer> optionalLocalizableContainer = this.localizationContainers.stream().filter(container -> container.getIdentifier().equals(pluginEntryContainer.getPluginMetadata().asV1().getId())).findFirst();
         if (optionalLocalizableContainer.isPresent()) {
             LocalizationContainer localizationContainer = optionalLocalizableContainer.get();
 
             // Compare existing version to plugin entry container version
             Semver pluginContainerSemver = new Semver(localizationContainer.getVersion());
-            Semver pluginEntryContainerSemver = new Semver(pluginEntryContainer.getPluginMetadata().getVersion());
+            Semver pluginEntryContainerSemver = new Semver(pluginEntryContainer.getPluginMetadata().asV1().getVersion());
             if (!pluginContainerSemver.isEqualTo(pluginEntryContainerSemver)) {
                 // Search for list of locales available in plugin
                 List<Locale> validLocales = this.searchValidLocales(pluginEntryContainer.getPluginFile());
@@ -113,7 +113,7 @@ public class L10nManager {
                     e.printStackTrace();
                 }
             });
-            this.localizationContainers.add(new LocalizationContainer(pluginEntryContainer.getPluginMetadata().getId(), pluginEntryContainer.getPluginMetadata().getVersion(), locales));
+            this.localizationContainers.add(new LocalizationContainer(pluginEntryContainer.getPluginMetadata().asV1().getId(), pluginEntryContainer.getPluginMetadata().asV1().getVersion(), locales));
         }
         this.writeChanges();
     }

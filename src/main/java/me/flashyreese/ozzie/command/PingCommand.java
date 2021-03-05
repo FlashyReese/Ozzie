@@ -2,11 +2,10 @@ package me.flashyreese.ozzie.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
 import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -19,7 +18,7 @@ public class PingCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("ping")
+        return this.literal("ping")
                 .requires(this::hasPermission)
                 .executes(this::ping);
     }

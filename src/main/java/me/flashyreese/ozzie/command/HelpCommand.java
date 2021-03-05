@@ -8,11 +8,10 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.flashyreese.ozzie.api.OzzieApi;
 import me.flashyreese.ozzie.api.command.CommandManager;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
+import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import me.flashyreese.ozzie.api.l10n.ParsableText;
 import me.flashyreese.ozzie.api.l10n.TranslatableText;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommand;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandManager;
-import me.flashyreese.ozzie.api.command.guild.DiscordCommandSource;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -30,10 +29,10 @@ public class HelpCommand extends DiscordCommand {
 
     @Override
     public LiteralArgumentBuilder<DiscordCommandSource> getArgumentBuilder() {
-        return DiscordCommandManager.literal("help")
+        return this.literal("help")
                 .requires(this::hasPermission)
                 .executes(this::displayCommands)
-                .then(DiscordCommandManager.argument("commandName", StringArgumentType.word())
+                .then(this.argument("commandName", StringArgumentType.word())
                         .executes(this::getHelpForCommand));
     }
 
