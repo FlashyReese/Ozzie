@@ -89,6 +89,7 @@ public class OzzieApi {
         this.l10nManager = new L10nManager(this.gson, this.directory, "assets/lang");
         this.eventWaiter = new EventWaiter();
         this.logger.info("Instance built!");
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
 
     /**
