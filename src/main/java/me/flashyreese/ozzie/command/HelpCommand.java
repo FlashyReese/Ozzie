@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public class HelpCommand extends DiscordCommand {
     public HelpCommand() {
-        super("", "ozzie.help.description", "ozzie.help");
+        super("ozzie.help.category.information", "ozzie.help.description", "ozzie.help");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class HelpCommand extends DiscordCommand {
         EmbedBuilder embed = new EmbedBuilder().setColor(Color.orange).setTitle(OzzieApi.INSTANCE.getBotName());
         int adder = 0;
         for (String cc : OzzieApi.INSTANCE.getCommandManager().getCategories()) {
-            String name = cc.isEmpty() ? new TranslatableText("ozzie.help.uncategorized", commandContext).toString() : new TranslatableText(cc, commandContext).toString();
+            String name = cc.isEmpty() ? new TranslatableText("ozzie.help.category.uncategorized", commandContext).toString() : new TranslatableText(cc, commandContext).toString();
             StringBuilder line = new StringBuilder();
             for (CommandManager.CommandContainer<DiscordCommandSource, DiscordCommand> commandContainer : OzzieApi.INSTANCE.getCommandManager().getCommandContainers()) {
                 DiscordCommand cmd = commandContainer.getCommand();
@@ -61,7 +61,7 @@ public class HelpCommand extends DiscordCommand {
             }
         }
         embed.setFooter(new ParsableText(new TranslatableText("ozzie.help.total_commands", commandContext), String.valueOf(adder)).toString(), null);
-        event.getChannel().sendMessage(embed.build()).queue();
+        event.getChannel().sendMessageEmbeds(embed.build()).queue();
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
@@ -92,7 +92,7 @@ public class HelpCommand extends DiscordCommand {
                     .build();
 
 
-            event.getChannel().sendMessage(embed).queue();
+            event.getChannel().sendMessageEmbeds(embed).queue();
         } else {
             event.getChannel().sendMessage(new ParsableText(new TranslatableText("ozzie.help.invalid_command", commandContext), commandName)).queue();
         }

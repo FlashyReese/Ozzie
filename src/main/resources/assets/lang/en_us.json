@@ -28,7 +28,11 @@
 	"client.restart.restarting":"Restarting {1}...",
 
 	"help.description": "Provides available list of commands to the user, or provides information about a specific command.",
-	"help.uncategorized": "Uncategorized",
+	"help.category.uncategorized": "Uncategorized",
+	"help.category.information": "Information",
+	"help.category.setting": "Setting",
+	"help.category.easter_egg": "Surprise surprise",
+	"help.category.super_commands": "Super User Commands",
 	"help.total_commands": "Total Commands: {1}",
 	"help.invalid_command": "`{1}` is not a valid command.",
 	"help.for_command": "Information for \"{1}\" Command",

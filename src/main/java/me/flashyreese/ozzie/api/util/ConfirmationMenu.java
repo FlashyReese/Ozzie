@@ -179,9 +179,9 @@ public class ConfirmationMenu extends Menu {
         if (text != null)
             messageBuilder.append(text);
         if (useCustomEmbed && customEmbed != null) {
-            messageBuilder.setEmbed(customEmbed);
+            messageBuilder.setEmbeds(customEmbed);
         } else {
-            messageBuilder.setEmbed(new EmbedBuilder().setColor(color)
+            messageBuilder.setEmbeds(new EmbedBuilder().setColor(color)
                     .setDescription(description == null ? "" : description).build());//Todo: should fix this
         }
         return messageBuilder.build();

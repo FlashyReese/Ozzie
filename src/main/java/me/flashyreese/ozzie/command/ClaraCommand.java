@@ -16,7 +16,7 @@ public class ClaraCommand extends DiscordCommand {
             new String[]{"Clara Oswald", "Clara Who", "Clara Oswin", "Oswin Oswald", "Clara Oswin Oswald", "Doctor Who Clara Oswald", "Doctor Who Clara Oswin Oswald", "Doctor Who Oswin Oswald", "Doctor Who Clara Oswald"};
 
     public ClaraCommand() {
-        super("", "ozzie.clara.description", "ozzie.clara");
+        super("ozzie.help.category.easter_egg", "ozzie.clara.description", "ozzie.clara");
     }
 
     @Override
@@ -34,5 +34,10 @@ public class ClaraCommand extends DiscordCommand {
         String s = results.get(index);
         commandContext.getSource().getEvent().getChannel().sendMessage(s).queue();
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return true;
     }
 }

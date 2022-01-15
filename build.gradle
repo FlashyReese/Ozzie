@@ -1,66 +1,53 @@
 plugins {
     id 'application'
-    id 'java'
-    id 'java-library'
 }
 
 group = 'me.flashyreese'
-version = '0.9.0+build-20210105'
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'me.flashyreese.ozzie.Application'
-    }
-    from "LICENSE"
-    from {
-        configurations.runtimeClasspath.findAll { !it.name.endsWith('pom') }
-                .collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+version = '0.9.0+build-20220115'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
     maven {
         name 'm2-dv8tion'
         url 'https://m2.dv8tion.net/releases'
-    }
-    maven {
-        url = 'https://jcenter.bintray.com'
     }
     maven {
         url "https://libraries.minecraft.net"
     }
 }
 
+dependencies {
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:${project.log4j}"
+
+    implementation "net.dv8tion:JDA:${project.jda}"
+    implementation "com.jagrosh:jda-utilities-commons:${project.jda_utilities}"
+    implementation "com.jagrosh:jda-utilities-menu:${project.jda_utilities}"
+
+    implementation "com.google.code.gson:gson:${project.gson_version}"
+    implementation "org.jetbrains:annotations:${project.annotations_version}"
+    implementation "com.mojang:brigadier:${project.brigadier_version}"
+
+    implementation 'org.mongodb:mongodb-driver-reactivestreams:4.4.0'
+    implementation "com.vdurmont:semver4j:3.1.0"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.flashyreese.ozzie.Application'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    from "LICENSE"
+}
+
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "ozzie.plugin.json"
+    filesMatching("ozzie.plugin.json") {
         expand "version": project.version
     }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "ozzie.plugin.json"
-    }
-}
-
-dependencies {
-    api "org.apache.logging.log4j:log4j-slf4j-impl:${project.log4j}"
-
-    api "net.dv8tion:JDA:${project.jda}"
-    api "com.jagrosh:jda-utilities-commons:${project.jda_utilities}"
-    api "com.jagrosh:jda-utilities-menu:${project.jda_utilities}"
-
-    api "com.google.code.gson:gson:${project.gson_version}"
-    //api "it.unimi.dsi:fastutil:${project.fastutil_version}" For lightweight purposes
-    api "org.jetbrains:annotations:${project.annotations_version}"
-    api "com.mojang:brigadier:${project.brigadier_version}"
-
-    api 'org.mongodb:mongodb-driver-reactivestreams:4.1.1'
-    api "com.h2database:h2:1.4.200"
-    api "com.vdurmont:semver4j:3.1.0"
 }

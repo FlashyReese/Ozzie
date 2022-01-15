@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class PrefixCommand extends DiscordCommand {
     public PrefixCommand() {
-        super("ozzie.help.uncategorized", "ozzie.prefix.description", "ozzie.prefix");
+        super("ozzie.help.category.setting", "ozzie.prefix.description", "ozzie.prefix");
     }
 
     @Override

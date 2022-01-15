@@ -37,7 +37,7 @@ import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 
 public class PluginCommand extends DiscordCommand {
     public PluginCommand() {
-        super("", "ozzie.plugin.description", "ozzie.plugin");
+        super("ozzie.help.category.super_commands", "ozzie.plugin.description", "ozzie.plugin");
     }
 
     @Override

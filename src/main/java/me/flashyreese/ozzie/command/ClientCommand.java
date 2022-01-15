@@ -11,7 +11,7 @@ import me.flashyreese.ozzie.api.l10n.TranslatableText;
 
 public class ClientCommand extends DiscordCommand {
     public ClientCommand() {
-        super("", "ozzie.client.description", "ozzie.client");
+        super("ozzie.help.category.super_commands", "ozzie.client.description", "ozzie.client");
     }
 
     @Override

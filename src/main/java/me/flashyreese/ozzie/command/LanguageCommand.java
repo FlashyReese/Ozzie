@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class LanguageCommand extends DiscordCommand {
     public LanguageCommand() {
-        super("", "ozzie.language.description", "ozzie.language");
+        super("ozzie.help.category.setting", "ozzie.language.description", "ozzie.language");
     }
 
     @Override

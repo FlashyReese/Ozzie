@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ChannelCommand extends DiscordCommand {
     public ChannelCommand() {
-        super("", "ozzie.channel.description", "ozzie.channel");
+        super("ozzie.help.category.setting", "ozzie.channel.description", "ozzie.channel");
     }
 
     @Override
@@ -120,7 +120,7 @@ public class ChannelCommand extends DiscordCommand {
                 }
             }
             embedBuilder.addField(new TranslatableText("ozzie.channel.list.channels", commandContext).toString(), line.toString(), false);
-            event.getChannel().sendMessage(embedBuilder.build()).queue();
+            event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             return 0;

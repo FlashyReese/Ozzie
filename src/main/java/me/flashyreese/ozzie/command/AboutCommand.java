@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class AboutCommand extends DiscordCommand {
     public AboutCommand() {
-        super("", "ozzie.about.description", "ozzie.about");
+        super("ozzie.help.category.information", "ozzie.about.description", "ozzie.about");
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AboutCommand extends DiscordCommand {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-        event.getChannel().sendMessage(embed.build()).queue();
+        event.getChannel().sendMessageEmbeds(embed.build()).queue();
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 }

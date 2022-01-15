@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class TokenCommand extends DiscordCommand {
     public TokenCommand() {
-        super("", "ozzie.token.description", "ozzie.token");
+        super("ozzie.help.category.super_commands", "ozzie.token.description", "ozzie.token");
     }
 
     @Override

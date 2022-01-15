@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class PingCommand extends DiscordCommand {
     public PingCommand() {
-        super("", "ozzie.ping.description", "ozzie.ping");
+        super("ozzie.help.category.information", "ozzie.ping.description", "ozzie.ping");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PingCommand extends DiscordCommand {
                     .addField(new ParsableText(new TranslatableText("ozzie.ping.latency_to", commandContext), event.getAuthor().getName()).toString(), "`" + ping + " ms`", false)
                     .addField(new TranslatableText("ozzie.ping.latency_to_websocket", commandContext).toString(), "`" + event.getJDA().getGatewayPing() + " ms`", false);
 
-            event.getChannel().sendMessage(embed.build()).queue();
+            event.getChannel().sendMessageEmbeds(embed.build()).queue();
         });
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }

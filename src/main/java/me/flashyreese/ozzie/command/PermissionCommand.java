@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class PermissionCommand extends DiscordCommand {
     public PermissionCommand() {
-        super("", "ozzie.permission.description", "ozzie.permission");
+        super("ozzie.help.category.setting", "ozzie.permission.description", "ozzie.permission");
     }
 
     @Override
